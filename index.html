@@ -264,7 +264,7 @@
 
         @media (max-width: 480px) {
             .modal-content {
-                padding: 80px; /* Μείωση padding μέσα στο modal */
+                padding: 10px; /* Μείωση padding μέσα στο modal */
                 width: 90%;
             }
         }
@@ -306,15 +306,25 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <a href="index.html">Αρχική Σελίδα</a>
-            <a href="index1.html">Καταγραφή Συναλλαγών</a>
+            <div class="dropdown">
+                <a href="#">Συναλλαγές</a>
+                <div class="dropdown-content">
+                    <a href="index1.html">Καταγραφή Συναλλαγών</a>
+                    <a href="index4.html">Τιμολόγια Επί Πιστώσει</a>
+                    <a href="index5.html">Πληρωμές Τράπεζας</a>
+                </div>
+            </div>
             <a href="index3.html">Καταγραφή Εσόδων</a>
-            <a href="index4.html">Τιμολόγια Επί Πιστώσει</a>
-            <a href="index5.html">Πληρωμές Τράπεζας</a>
             <a href="index2.html">Καρτέλες Προμηθευτών</a>
-            <a href="index7.html">Ημερήσια Αναφορά</a>
-            <a href="index6.html">Εβδομαδιαία Αναφορά</a>
-            <a href="index8.html">Μηνιαία Αναφορά</a>
-            <a href="index9.html">Ετήσια Αναφορά</a>
+            <div class="dropdown">
+                <a href="#">Αναφορές</a>
+                <div class="dropdown-content">
+                    <a href="index7.html">Ημερήσια Αναφορά</a>
+                    <a href="index6.html">Εβδομαδιαία Αναφορά</a>
+                    <a href="index8.html">Μηνιαία Αναφορά</a>
+                    <a href="index9.html">Ετήσια Αναφορά</a>
+                </div>
+            </div>
         </div>
     </div>
 
