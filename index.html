@@ -435,37 +435,27 @@
         &copy; 2024 Εφαρμογή Καταγραφής Συναλλαγών - <a href="mailto:support@example.com">Επικοινωνία</a>
     </footer>
 
- <script>
-    // Όταν γίνεται κλικ στο κουμπί toggle, εμφανίζει το modal
-    document.querySelector('.menu-toggle').addEventListener('click', function() {
-        document.getElementById('menuModal').style.display = 'flex';
-    });
+document.querySelector('.menu-toggle').addEventListener('click', function() {
+    document.getElementById('menuModal').style.display = 'flex';
+});
 
-    // Όταν γίνεται κλικ στο κουμπί κλεισίματος, κλείνει το modal
-    document.querySelector('.close').addEventListener('click', function() {
+document.querySelector('.close').addEventListener('click', function() {
+    document.getElementById('menuModal').style.display = 'none';
+});
+
+window.onclick = function(event) {
+    if (event.target == document.getElementById('menuModal')) {
         document.getElementById('menuModal').style.display = 'none';
-    });
-
-    // Κλείνει το modal όταν γίνεται κλικ εκτός του modal
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('menuModal')) {
-            document.getElementById('menuModal').style.display = 'none';
-        }
-    };
-
-    // Κλείνει το modal αν το μέγεθος της οθόνης είναι μεγαλύτερο από 768px
-    function handleResize() {
-        if (window.innerWidth > 500) {
-            document.getElementById('menuModal').style.display = 'none';
-        }
     }
+}
 
-    // Προσθέτει τον ακροατή γεγονότων για το resize
-    window.addEventListener('resize', handleResize);
+// Κώδικας για την απόκρυψη του toggle menu όταν μεγαλώνει η οθόνη
+window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+        document.getElementById('menuModal').style.display = 'none';
+    }
+});
 
-    // Κλήση της συνάρτησης handleResize αρχικά για να βεβαιωθείτε ότι το menu είναι σωστά κλειστό στην αρχική φόρτωση
-    handleResize();
-</script>
 
 
 
