@@ -435,21 +435,32 @@
         &copy; 2024 Εφαρμογή Καταγραφής Συναλλαγών - <a href="mailto:support@example.com">Επικοινωνία</a>
     </footer>
 
-    <script>
-        document.querySelector('.menu-toggle').addEventListener('click', function() {
-            document.getElementById('menuModal').style.display = 'flex';
-        });
+   <script>
+    // Ανοίγει το modal menu όταν πατηθεί το menu-toggle
+    document.querySelector('.menu-toggle').addEventListener('click', function() {
+        document.getElementById('menuModal').style.display = 'flex';
+    });
 
-        document.querySelector('.close').addEventListener('click', function() {
+    // Κλείνει το modal menu όταν πατηθεί το close button
+    document.querySelector('.close').addEventListener('click', function() {
+        document.getElementById('menuModal').style.display = 'none';
+    });
+
+    // Κλείνει το modal menu όταν πατηθεί οπουδήποτε εκτός του modal
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('menuModal')) {
             document.getElementById('menuModal').style.display = 'none';
-        });
-
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('menuModal')) {
-                document.getElementById('menuModal').style.display = 'none';
-            }
         }
-    </script>
+    };
+
+    // Κλείνει το modal menu αν το πλάτος της οθόνης γίνει μεγαλύτερο από 768px
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            document.getElementById('menuModal').style.display = 'none';
+        }
+    });
+</script>
+
 
 </body>
 </html>
