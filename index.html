@@ -346,16 +346,60 @@ nav a:hover {
     }
 }
 
+/* Το λογότυπο εμφανίζεται μόνο σε μικρές οθόνες */
+@media (max-width: 768px) {
+    .logo {
+        display: block;
+        width: 60px; /* Ρυθμίστε το μέγεθος του λογότυπου */
+        height: auto;
+        position: absolute;
+        left: 10px;
+        top: 10px;
+    }
+    nav {
+    width: 100%;
+    background-color: #0066cc;
+    padding: 40px 0;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box; /* Βεβαιώνει ότι το padding συμπεριλαμβάνεται στο πλάτος */
+    position: relative; /* Προστέθηκε για να είναι τοποθετημένο το logo και το menu-toggle */
+}
+
+    .menu-toggle {
+    display: block;
+    cursor: pointer;
+    color: white;
+    background-color: #0066cc;
+    padding: 10px 20px;
+    border: none;
+    font-size: 18px;
+    position: absolute;
+    right: 10px; /* Τοποθετεί το κουμπί στη δεξιά πλευρά */
+    top: 10px;
+    margin-left: auto;
+}
+}
+
+/* Το λογότυπο κρύβεται σε μεγαλύτερες οθόνες */
+@media (min-width: 769px) {
+    .logo {
+        display: none;
+    }
+}
+
 
     </style>
 </head>
 <body>
 
     <nav>
+        <img src="10.jpg" alt="Logo" class="logo"> <!-- Λογότυπο -->
         <button class="menu-toggle">
-            &#9776; <!-- Αυτός ο χαρακτήρας είναι το "hamburger" menu icon -->
-            <br>Menu
+            &#9776;<br>Menu
         </button>
+        <div class="menu-items">
         
         <div class="menu-items">
             <a href="index.html">Αρχική Σελίδα</a>
