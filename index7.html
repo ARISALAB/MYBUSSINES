@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css"> <!-- Σύνδεσμος στο αρχείο CSS -->
+
+    <title>Καταγραφή Εσόδων</title>
+    
+</head>
+<body>
+
+    <nav>
+        <img src="10.jpg" alt="Logo" class="logo"> <!-- Λογότυπο -->
+        <button class="menu-toggle">
+            &#9776;<br>Menu
+        </button>
+        <div class="menu-items">
+        
+        <div class="menu-items">
+            <a href="index.html">Αρχική Σελίδα</a>
+
+            <div class="dropdown">
+                <a href="#">Συναλλαγές &#9662;</a> <!-- Βέλος κάτω -->
+                <div class="dropdown-content">
+                    <a href="index1.html">Καταγραφή Συναλλαγών</a>
+                    <a href="index4.html">Τιμολόγια Επί Πιστώσει</a>
+                    <a href="index5.html">Πληρωμές Τράπεζας</a>
+                </div>
+            </div>
+            </div>
+
+            <a href="index3.html">Καταγραφή Εσόδων</a>
+            <a href="index2.html">Καρτέλες Προμηθευτών</a>
+
+           <div class="dropdown">
+    <a href="#">Αναφορές &#9662;</a> <!-- Βέλος κάτω -->
+    <div class="dropdown-content">
+        <a href="index7.html">Ημερήσια Αναφορά</a>
+        <a href="index6.html">Εβδομαδιαία Αναφορά</a>
+        <a href="index8.html">Μηνιαία Αναφορά</a>
+        <a href="index9.html">Ετήσια Αναφορά</a>
+    </div>
+</div>
+        </div>
+    </nav>
+
+    <!-- Modal -->
+    <div id="menuModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <a href="index.html">Αρχική Σελίδα</a>
+            <div class="dropdown">
+                <a href="#">Συναλλαγές</a>
+                <div class="dropdown-content">
+                    <a href="index1.html">Καταγραφή Συναλλαγών</a>
+                    <a href="index4.html">Τιμολόγια Επί Πιστώσει</a>
+                    <a href="index5.html">Πληρωμές Τράπεζας</a>
+                </div>
+            </div>
+            <a href="index3.html">Καταγραφή Εσόδων</a>
+            <a href="index2.html">Καρτέλες Προμηθευτών</a>
+            <div class="dropdown">
+                <a href="#">Αναφορές</a>
+                <div class="dropdown-content">
+                    <a href="index7.html">Ημερήσια Αναφορά</a>
+                    <a href="index6.html">Εβδομαδιαία Αναφορά</a>
+                    <a href="index8.html">Μηνιαία Αναφορά</a>
+                    <a href="index9.html">Ετήσια Αναφορά</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h1>Ημερήσια Αναφορά</h1>
+    <form id="revenue-form">
+        <label for="revenue-date">Ημερομηνία</label>
+        <input type="date" id="revenue-date" required>
+
+     
+    </form>
+
+    <div id="revenue-summary">
+        <p id="revenue-date-display" class="summary-item">Ημερομηνία: -</p>
+        <p id="cash-revenue-display" class="summary-item">Ταμείο Ημέρας: 0.00 €</p>
+        <p id="card-revenue-display" class="summary-item">Έσοδα από Κάρτες: 0.00 €</p>
+        <p id="total-payments-display" class="summary-item">Συνολικές Πληρωμές με Μετρητά: 0.00 €</p>
+        <p id="balance-display" class="summary-item">Υπόλοιπο Μετρητών: 0.00 €</p>
+        <button id="export-pdf">Εξαγωγή σε PDF</button>
+    </div>
+
+    <div class="nav-links">
+        <a href="index.html">Καταγραφή Συναλλαγών</a>
+    </div>
+
+    <footer>&copy; 2024 Ημερήσια Αναφορά</footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.72/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.72/vfs_fonts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const revenueForm = document.getElementById('revenue-form');
+            const revenueDate = document.getElementById('revenue-date');
+            const cashRevenueInput = document.getElementById('cash-revenue');
+            const cardRevenueInput = document.getElementById('card-revenue');
+            const cashRevenueDisplay = document.getElementById('cash-revenue-display');
+            const cardRevenueDisplay = document.getElementById('card-revenue-display');
+            const totalPaymentsDisplay = document.getElementById('total-payments-display');
+            const balanceDisplay = document.getElementById('balance-display');
+            const revenueDateDisplay = document.getElementById('revenue-date-display');
+            const exportPdfButton = document.getElementById('export-pdf');
+    
+            const revenueData = JSON.parse(localStorage.getItem('revenueData')) || {};
+            const paymentsData = JSON.parse(localStorage.getItem('payments')) || {};
+            const creditInvoicesData = JSON.parse(localStorage.getItem('credit-invoices')) || {};
+            const bankPaymentsData = JSON.parse(localStorage.getItem('bank-payments')) || {};
+    
+            function saveRevenue() {
+                localStorage.setItem('revenueData', JSON.stringify(revenueData));
+            }
+    
+            function savePayments() {
+                localStorage.setItem('payments', JSON.stringify(paymentsData));
+            }
+    
+            function updateSummary() {
+                const date = revenueDate.value;
+                if (date) {
+                    const cashRevenue = revenueData[date] ? revenueData[date].cash : 0;
+                    const cardRevenue = revenueData[date] ? revenueData[date].card : 0;
+    
+                    const totalPayments = paymentsData[date] ? paymentsData[date].reduce((sum, payment) => sum + payment.amount, 0) : 0;
+    
+                    const balance = cashRevenue - cardRevenue - totalPayments;
+    
+                    revenueDateDisplay.textContent = `Ημερομηνία: ${date}`;
+                    cashRevenueDisplay.textContent = `Ταμείο Ημέρας: ${cashRevenue.toFixed(2)} €`;
+                    cardRevenueDisplay.textContent = `Έσοδα από Κάρτες: ${cardRevenue.toFixed(2)} €`;
+                    totalPaymentsDisplay.textContent = `Συνολικές Πληρωμές με Μετρητά: ${totalPayments.toFixed(2)} €`;
+                    balanceDisplay.textContent = `Υπόλοιπο Μετρητών: ${balance.toFixed(2)} €`;
+                }
+            }
+    
+            revenueForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const date = revenueDate.value;
+                if (date) {
+                    const cashRevenue = parseFloat(cashRevenueInput.value) || 0;
+                    const cardRevenue = parseFloat(cardRevenueInput.value) || 0;
+    
+                    if (!revenueData[date]) {
+                        revenueData[date] = { cash: 0, card: 0 };
+                    }
+    
+                    revenueData[date].cash = cashRevenue;
+                    revenueData[date].card = cardRevenue;
+    
+                    saveRevenue();
+                    updateSummary();
+                    revenueForm.reset();
+                }
+            });
+    
+            revenueDate.addEventListener('change', updateSummary);
+    
+            updateSummary();
+    
+            exportPdfButton.addEventListener('click', () => {
+                const date = revenueDate.value;
+                if (date) {
+                    const cashRevenue = parseFloat(cashRevenueDisplay.textContent.split(': ')[1].trim());
+                    const cardRevenue = parseFloat(cardRevenueDisplay.textContent.split(': ')[1].trim());
+                    const totalPayments = parseFloat(totalPaymentsDisplay.textContent.split(': ')[1].trim());
+                    const balance = parseFloat(balanceDisplay.textContent.split(': ')[1].trim());
+    
+                    const allDates = Object.keys(revenueData).filter(d => new Date(d) <= new Date(date));
+                    const totalCashBalances = allDates.reduce((sum, d) => {
+                        const dailyData = revenueData[d] || {};
+                        const dailyCash = dailyData.cash || 0;
+                        const dailyCard = dailyData.card || 0;
+                        const dailyCashExpenses = paymentsData[d]?.reduce((acc, p) => acc + (p.amount || 0), 0) || 0;
+                        const dailyCashBalance = dailyCash - dailyCard - dailyCashExpenses;
+                        return sum + dailyCashBalance;
+                    }, 0);
+    
+                    const totalCardRevenue = allDates.reduce((sum, d) => sum + (revenueData[d]?.card || 0), 0);
+                    const totalBankPayments = allDates.reduce((sum, d) => sum + (bankPaymentsData[d]?.reduce((acc, p) => acc + p.amount, 0) || 0), 0);
+                    const remainingBankBalance = totalCardRevenue - totalBankPayments;
+    
+                    const detailedPayments = paymentsData[date] || [];
+                    const creditInvoices = creditInvoicesData[date] || [];
+                    const bankPayments = bankPaymentsData[date] || [];
+    
+                    const createRows = (data) => {
+                        const rows = data.map(item => [
+                            item.supplier || '',
+                            (item.amount !== undefined ? item.amount.toFixed(2) + ' €' : '')
+                        ]);
+                        rows.unshift(['Προμηθευτής', 'Ποσό']);
+                        return rows;
+                    };
+    
+                    const paymentRows = createRows(detailedPayments);
+                    const creditInvoiceRows = createRows(creditInvoices);
+                    const bankPaymentRows = createRows(bankPayments);
+    
+                    const docDefinition = {
+    pageSize: 'A4',
+    content: [
+        { text: 'Καταγραφή Εσόδων', style: 'header' },
+        { text: `Ημερομηνία: ${date}`, style: 'subheader' },
+        {
+            table: {
+                headerRows: 1,
+                widths: ['*', '*'],
+                body: [
+                    [{ text: 'Ταμείο Ημέρας', color: 'white' }, { text: cashRevenue.toFixed(2) + ' €', color: 'white' }],
+                    ['Έσοδα από Κάρτες', cardRevenue.toFixed(2) + ' €'],
+                    ['Έσοδα από Μετρητά', (cashRevenue - cardRevenue).toFixed(2) + ' €'],
+                    ['Συνολικές Πληρωμές με Μετρητά', totalPayments.toFixed(2) + ' €'],
+                    ['Υπόλοιπο Μετρητών', balance.toFixed(2) + ' €']
+                ],
+                layout: 'lightHorizontalLines',
+                margin: [0, 10, 0, 10]
+            },
+            layout: {
+                fillColor: function (rowIndex, node, columnIndex) {
+                    return rowIndex === 0 ? '#003366' : (rowIndex % 2 === 0 ? '#ffffff' : '#e6f2ff');
+                },
+                hLineColor: function (i, node) {
+                    return '#004080';
+                },
+                vLineColor: function (i, node) {
+                    return '#004080';
+                },
+                paddingLeft: function (i, node) {
+                    return 10;
+                },
+                paddingRight: function (i, node) {
+                    return 10;
+                },
+                paddingTop: function (i, node) {
+                    return 8;
+                },
+                paddingBottom: function (i, node) {
+                    return 8;
+                }
+            }
+        },
+        { text: 'Αναλυτικές Πληρωμές Μετρητών', style: 'subheader' },
+        {
+            table: {
+                headerRows: 1,
+                widths: ['*', '*'],
+                body: paymentRows,
+                layout: 'lightHorizontalLines',
+                margin: [0, 10, 0, 10]
+            },
+            layout: {
+                fillColor: function (rowIndex, node, columnIndex) {
+                    return rowIndex === 0 ? '#003366' : (rowIndex % 2 === 0 ? '#ffffff' : '#e6f2ff');
+                },
+                hLineColor: function (i, node) {
+                    return '#004080';
+                },
+                vLineColor: function (i, node) {
+                    return '#004080';
+                },
+                paddingLeft: function (i, node) {
+                    return 10;
+                },
+                paddingRight: function (i, node) {
+                    return 10;
+                },
+                paddingTop: function (i, node) {
+                    return 8;
+                },
+                paddingBottom: function (i, node) {
+                    return 8;
+                }
+            }
+        },
+        { text: 'Πιστωτικά Τιμολόγια', style: 'subheader' },
+        {
+            table: {
+                headerRows: 1,
+                widths: ['*', '*'],
+                body: creditInvoiceRows,
+                layout: 'lightHorizontalLines',
+                margin: [0, 10, 0, 10]
+            },
+            layout: {
+                fillColor: function (rowIndex, node, columnIndex) {
+                    return rowIndex === 0 ? '#003366' : (rowIndex % 2 === 0 ? '#ffffff' : '#e6f2ff');
+                },
+                hLineColor: function (i, node) {
+                    return '#004080';
+                },
+                vLineColor: function (i, node) {
+                    return '#004080';
+                },
+                paddingLeft: function (i, node) {
+                    return 10;
+                },
+                paddingRight: function (i, node) {
+                    return 10;
+                },
+                paddingTop: function (i, node) {
+                    return 8;
+                },
+                paddingBottom: function (i, node) {
+                    return 8;
+                }
+            }
+        },
+        { text: 'Τραπεζικές Καταθέσεις', style: 'subheader' },
+        {
+            table: {
+                headerRows: 1,
+                widths: ['*', '*'],
+                body: bankPaymentRows,
+                layout: 'lightHorizontalLines',
+                margin: [0, 10, 0, 10]
+            },
+            layout: {
+                fillColor: function (rowIndex, node, columnIndex) {
+                    return rowIndex === 0 ? '#003366' : (rowIndex % 2 === 0 ? '#ffffff' : '#e6f2ff');
+                },
+                hLineColor: function (i, node) {
+                    return '#004080';
+                },
+                vLineColor: function (i, node) {
+                    return '#004080';
+                },
+                paddingLeft: function (i, node) {
+                    return 10;
+                },
+                paddingRight: function (i, node) {
+                    return 10;
+                },
+                paddingTop: function (i, node) {
+                    return 8;
+                },
+                paddingBottom: function (i, node) {
+                    return 8;
+                }
+            }
+        },
+        { text: '', margin: [0, 20] },  // Κενό για διαχωρισμό
+        {
+            table: {
+                headerRows: 0,
+                widths: ['*'],
+                body: [
+                    [{ text: `Σύνολο Μετρητών: ${totalCashBalances.toFixed(2)} €`, bold: true, fontSize: 14, alignment: 'center', fillColor: '#e6f2ff', margin: [0, 10, 0, 5] }],
+                    [{ text: `Σύνολο Τράπεζας : ${remainingBankBalance.toFixed(2)} €`, bold: true, fontSize: 14, alignment: 'center', fillColor: '#e6f2ff', margin: [0, 10, 0, 5] }]
+                ],
+                layout: 'noBorders',
+            }
+        }
+    ],
+    styles: {
+        header: {
+            fontSize: 18,
+            bold: true,
+            alignment: 'center',
+            margin: [0, 20, 0, 10]
+        },
+        subheader: {
+            fontSize: 14,
+            bold: true,
+            margin: [0, 10, 0, 5]
+        },
+        footer: {
+            fontSize: 12,
+            italics: true,
+            margin: [0, 10, 0, 20],
+            alignment: 'center'
+        }
+    },
+    defaultStyle: {
+        columnGap: 20
+    }
+};
+
+    
+                    // Generate the PDF and trigger download
+                    pdfMake.createPdf(docDefinition).download(`Revenue_Report_${date}.pdf`);
+                } else {
+                    alert('Επιλέξτε μια ημερομηνία για να εξάγετε το PDF.');
+                }
+            });
+        });
+    </script>
+    
+       <script>
+document.querySelector('.menu-toggle').addEventListener('click', function() {
+    document.getElementById('menuModal').style.display = 'flex';
+});
+
+document.querySelector('.close').addEventListener('click', function() {
+    document.getElementById('menuModal').style.display = 'none';
+});
+
+window.onclick = function(event) {
+    if (event.target == document.getElementById('menuModal')) {
+        document.getElementById('menuModal').style.display = 'none';
+    }
+}
+
+// Κώδικας για την απόκρυψη του toggle menu όταν μεγαλώνει η οθόνη
+window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+        document.getElementById('menuModal').style.display = 'none';
+    }
+});
+
+</script>
+      
+</body>
+</html>

@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Μηνιαία Αναφορά</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #0066cc;
+            margin-bottom: 20px;
+        }
+
+        #month-form {
+            width: 100%;
+            max-width: 600px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        input[type="month"] {
+            width: calc(100% - 20px);
+            padding: 8px 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        input[type="submit"] {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            max-width: 1000px;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #total-monthly-cash {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0066cc;
+            margin-top: 10px;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .nav-links a {
+    text-decoration: none;
+    color: #0066cc;
+    font-size: 16px;
+    margin: 0 10px;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+nav {
+    width: 100%;
+    background-color: #0066cc;
+    padding: 20px 0;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box; /* Βεβαιώνει ότι το padding συμπεριλαμβάνεται στο πλάτος */
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    background-color: #0066cc;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    display: inline-block;
+}
+
+nav a:hover {
+    background-color: #005bb5;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown {
+    display: inline-block;
+    position: relative;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    min-width: 150px; /* Αύξηση του πλάτους αν χρειάζεται */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 10px 0; /* Αυξάνει την εσωτερική απόσταση */
+}
+
+.dropdown-content a {
+    color: #0066cc;
+    padding: 10px 20px; /* Αυξάνει την εσωτερική απόσταση γύρω από το κείμενο */
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    transition: background-color 0.3s, color 0.3s, font-weight 0.3s;
+    background-color: #ffffff;
+    margin: 5px 0; /* Προσθέτει περιθώριο πάνω και κάτω από τα στοιχεία */
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+    color: #0f559b;
+    font-weight: bold; /* Κάνει το κείμενο bold στο hover */
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+        .highlight-green {
+            background-color: #28a745;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .highlight-orange {
+            background-color: #fd7e14;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">Αρχική Σελίδα</a>
+
+        <div class="dropdown">
+            <a href="#">Συναλλαγές</a>
+            <div class="dropdown-content">
+                <a href="index1.html">Καταγραφή Συναλλαγών</a>
+                <a href="index4.html">Τιμολόγια Επί Πιστώσει</a>
+                <a href="index5.html">Πληρωμές Τράπεζας</a>
+
+            </div>
+
+        </div>
+
+        <a href="index3.html">Καταγραφη Εσόδων</a>
+        <a href="index2.html">Καρτέλες Προμηθευτών</a>
+
+        <div class="dropdown">
+            <a href="#">Αναφορές</a>
+            <div class="dropdown-content">
+                <a href="index7.html">Ημερήσια Αναφορά</a>
+                <a href="index6.html">Εβδομαδιαια Αναφορά</a>
+                <a href="index8.html">Μηνιαία Αναφορά</a>
+                <a href="index9.html">Ετήσια Αναφορά</a>
+
+            </div>
+
+    </nav>
+
+    <h1>Μηνιαία Αναφορά</h1>
+    <form id="month-form">
+        <label for="month">Επιλέξτε Μήνα</label>
+        <input type="month" id="month" required>
+        <input type="submit" value="Προβολή Αναφοράς">
+    </form>
+
+    <table id="monthly-report">
+        <thead>
+            <tr>
+                <th>Ημερομηνία</th>
+                <th>Ταμείο (€)</th>
+                <th>Έσοδα από Κάρτα (€)</th>
+                <th>Έσοδα από Μετρητά (€)</th>
+                <th>Πληρωμές (€)</th>
+                <th>Υπόλοιπο Μετρητών (€)</th>
+                <th>Τιμολόγια Επί Πιστώσει (€)</th>
+                <th>Καταθέσεις (€)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <p id="total-monthly-cash">Ταμείο Μήνα: 0.00 €</p>
+    <p id="total-card-income">Τραπεζικά Έσοδα: 0.00 €</p>
+    <p id="total-cash-balance">Μετρητά: 0.00 €</p>
+    <p id="total-credit-invoices">Εκκρεμότητες: 0.00 €</p>
+
+    <footer>&copy; 2024 Μηνιαία Αναφορά</footer>
+ <!-- Προσθέστε το στοιχείο canvas για το γράφημα -->
+ <canvas id="incomeChart" width="400" height="200"></canvas>
+
+ <!-- Προσθέστε σημεία για να εμφανίσετε τα αποτελέσματα -->
+ <p id="highest-earnings-day"></p>
+ <p id="daily-average"></p>
+ <footer>&copy; 2024 Μηνιαία Αναφορά</footer>
+
+ <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const monthForm = document.getElementById('month-form');
+        const monthInput = document.getElementById('month');
+        const monthlyReportTableBody = document.querySelector('#monthly-report tbody');
+        const totalMonthlyCashDisplay = document.getElementById('total-monthly-cash');
+        const totalCardIncomeDisplay = document.getElementById('total-card-income');
+        const totalCashBalanceDisplay = document.getElementById('total-cash-balance');
+        const totalCreditInvoicesDisplay = document.getElementById('total-credit-invoices');
+        const incomeChartCanvas = document.getElementById('incomeChart');
+        const highestEarningsDayDisplay = document.getElementById('highest-earnings-day');
+        const dailyAverageDisplay = document.getElementById('daily-average');
+
+        let chartInstance = null;
+
+        // Data directories
+        const paymentDir = 'payments';
+        const revenueDir = 'revenueData';
+        const creditInvoicesDir = 'credit-invoices';
+        const depositDir = 'bank-payments';
+
+        // Load stored data
+        let payments = JSON.parse(localStorage.getItem(paymentDir)) || {};
+        let revenueData = JSON.parse(localStorage.getItem(revenueDir)) || {};
+        let creditInvoices = JSON.parse(localStorage.getItem(creditInvoicesDir)) || {};
+        let deposits = JSON.parse(localStorage.getItem(depositDir)) || {};
+
+        function getMonthRange(month) {
+            const [year, monthIndex] = month.split('-').map(Number);
+            const start = new Date(year, monthIndex - 1, 2);
+            const end = new Date(year, monthIndex, 1);
+            return { start, end };
+        }
+
+        function formatDateString(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        function renderMonthlyReport(monthData) {
+            monthlyReportTableBody.innerHTML = '';
+
+            let totalCashIncome = 0;
+            let totalCardIncome = 0;
+            let totalCashIncomeFromCash = 0;
+            let totalPayments = 0;
+            let totalCashBalance = 0;
+            let totalCreditInvoices = 0;
+            let totalDeposits = 0;
+
+            const labels = [];
+            const cashIncomeData = [];
+            const cardIncomeData = [];
+            const cashExpenseData = []; // Νέα σειρά για έξοδα μετρητών
+
+            let highestEarnings = { date: null, amount: 0 };
+            let totalDays = 0;
+
+            monthData.forEach(data => {
+                const cashIncome = data.cashIncome;
+                const cardIncome = data.cardIncome;
+                const payments = data.payments;
+                const cashExpenses = data.cashExpenses; // Νέα δεδομένα για έξοδα μετρητών
+
+                const cashIncomeFromCash = cashIncome - cardIncome;
+                const cashBalance = cashIncome - cardIncome - payments;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${data.date}</td>
+                    <td>${cashIncome.toFixed(2)}</td>
+                    <td>${cardIncome.toFixed(2)}</td>
+                    <td>${cashIncomeFromCash.toFixed(2)}</td>
+                    <td>${payments.toFixed(2)}</td>
+                    <td>${cashBalance.toFixed(2)}</td>
+                    <td>${data.creditInvoices.toFixed(2)}</td>
+                    <td>${data.deposits.toFixed(2)}</td>
+                `;
+                monthlyReportTableBody.appendChild(row);
+
+                totalCashIncome += cashIncome;
+                totalCardIncome += cardIncome;
+                totalCashIncomeFromCash += cashIncomeFromCash;
+                totalPayments += payments;
+                totalCashBalance += cashBalance;
+                totalCreditInvoices += data.creditInvoices;
+                totalDeposits += data.deposits;
+
+                labels.push(data.date);
+                cashIncomeData.push(cashIncome);
+                cardIncomeData.push(cardIncome);
+                cashExpenseData.push(cashExpenses); // Νέα δεδομένα για έξοδα μετρητών
+
+                // Ενημερώστε για την ημέρα με τα υψηλότερα έσοδα από μετρητά
+                if (cashIncome > highestEarnings.amount) {
+                    highestEarnings = { date: data.date, amount: cashIncome };
+                }
+
+                totalDays++;
+            });
+
+            // Δημιουργία γραμμής συνολικών
+            const totalRow = document.createElement('tr');
+            totalRow.innerHTML = `
+                <td><strong>Σύνολο:</strong></td>
+                <td><strong>${totalCashIncome.toFixed(2)}</strong></td>
+                <td><strong>${totalCardIncome.toFixed(2)}</strong></td>
+                <td><strong>${totalCashIncomeFromCash.toFixed(2)}</strong></td>
+                <td><strong>${totalPayments.toFixed(2)}</strong></td>
+                <td><strong>${totalCashBalance.toFixed(2)}</strong></td>
+                <td><strong>${totalCreditInvoices.toFixed(2)}</strong></td>
+                <td><strong>${totalDeposits.toFixed(2)}</strong></td>
+            `;
+            monthlyReportTableBody.appendChild(totalRow);
+
+            // Ενημέρωση των συνολικών ποσών
+            totalMonthlyCashDisplay.textContent = `Ταμείο Μήνα: ${totalCashIncome.toFixed(2)} €`;
+            totalCardIncomeDisplay.textContent = `Τραπεζικά Έσοδα: ${totalCardIncome.toFixed(2)} €`;
+            totalCashBalanceDisplay.textContent = `Μετρητά: ${totalCashBalance.toFixed(2)} €`;
+            totalCreditInvoicesDisplay.textContent = `Εκκρεμότητες: ${totalCreditInvoices.toFixed(2)} €`;
+
+            // Υπολογισμός ημερήσιου μέσου όρου
+            const dailyAverage = totalCashIncome / totalDays;
+            dailyAverageDisplay.innerHTML = `Ο ημερήσιος Μέσος Όρος ήταν <span class="highlight-orange">${dailyAverage.toFixed(2)} €</span>`;
+
+            // Ενημέρωση της ημέρας με τα υψηλότερα έσοδα
+            highestEarningsDayDisplay.innerHTML = `Η μέρα με τα περισσότερα έσοδα ήταν η: ${highestEarnings.date} με ποσό <span class="highlight-green">${highestEarnings.amount.toFixed(2)} €</span>`;
+
+            // Δημιουργία ή Ενημέρωση του Γραφήματος
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(incomeChartCanvas, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Έσοδα από Κάρτα (€)',
+                            data: cardIncomeData,
+                            borderColor: '#28a745',
+                            backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                            fill: false
+                        },
+                        {
+                            label: 'Έσοδα από Μετρητά (€)',
+                            data: cashIncomeData,
+                            borderColor: '#007bff',
+                            backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                            fill: false
+                        },
+                        {
+                            label: 'Έξοδα από Μετρητά (€)',
+                            data: cashExpenseData,
+                            borderColor: '#dc3545',
+                            backgroundColor: 'rgba(220, 53, 69, 0.2)',
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return `${tooltipItem.dataset.label}: ${tooltipItem.raw.toFixed(2)} €`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Ημερομηνία'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadMonthlyReport(month) {
+            const { start, end } = getMonthRange(month);
+            const monthData = [];
+
+            for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                const dateStr = formatDateString(d);
+
+                const cashIncome = revenueData[dateStr]?.cash || 0;
+                const cardIncome = revenueData[dateStr]?.card || 0;
+                const paymentsForDate = payments[dateStr] || [];
+                const creditInvoicesForDate = creditInvoices[dateStr] || [];
+                const depositsForDate = deposits[dateStr] || [];
+
+                const totalPayments = paymentsForDate.reduce((total, payment) => total + payment.amount, 0);
+                const totalCreditInvoices = creditInvoicesForDate.reduce((total, invoice) => total + invoice.amount, 0);
+                const totalDeposits = depositsForDate.reduce((total, deposit) => total + deposit.amount, 0);
+
+                // Υπολογισμός εξόδων μετρητών
+                const cashExpenses = paymentsForDate.reduce((total, payment) => total + payment.amount, 0);
+
+                monthData.push({
+                    date: dateStr,
+                    cashIncome,
+                    cardIncome,
+                    payments: totalPayments,
+                    cashExpenses, // Νέα δεδομένα για έξοδα μετρητών
+                    creditInvoices: totalCreditInvoices,
+                    deposits: totalDeposits
+                });
+            }
+
+            renderMonthlyReport(monthData);
+        }
+
+        monthForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const month = monthInput.value;
+            loadMonthlyReport(month);
+        });
+    });
+</script>
+</body>
+</html>
