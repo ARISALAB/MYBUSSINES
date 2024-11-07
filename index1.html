@@ -100,7 +100,9 @@
         <input type="date" id="transaction-date" required>
 
         <label for="supplier">Προμηθευτής</label>
-        <input type="text" id="supplier" required>
+        <input type="text" id="supplier" list="suppliers-list" required>
+        <datalist id="suppliers-list"></datalist>
+        
 
         <label for="invoice-number">Αριθμός Τιμολογίου</label>
         <input type="text" id="invoice-number" required>
@@ -121,7 +123,7 @@
     <footer>&copy; 2024 Καταγραφή Συναλλαγών</footer>
 
     <script>
-   document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     const transactionForm = document.getElementById('transaction-form');
     const transactionDate = document.getElementById('transaction-date');
     const supplierInput = document.getElementById('supplier');
@@ -130,15 +132,31 @@
     const amountInput = document.getElementById('amount');
     const transactionList = document.getElementById('transaction-list');
     const totalAmountDisplay = document.getElementById('total-amount');
+    const suppliersList = document.getElementById('suppliers-list');
 
     // Ανάκτηση των συναλλαγών από το localStorage
     const transactions = JSON.parse(localStorage.getItem('payments')) || {};
+    let suppliers = JSON.parse(localStorage.getItem('suppliers')) || [];
 
-    // Ενημέρωση της λίστας συναλλαγών για την αρχική ημερομηνία
-    let currentDate = transactionDate.value || new Date().toISOString().split('T')[0];
+    // Ενημέρωση του datalist με αποθηκευμένους προμηθευτές
+    function updateSuppliersList() {
+        suppliersList.innerHTML = '';
+        suppliers.forEach(supplier => {
+            const option = document.createElement('option');
+            option.value = supplier;
+            suppliersList.appendChild(option);
+        });
+    }
+
+    // Κλήση κατά την αρχική φόρτωση της σελίδας
+    updateSuppliersList();
 
     function saveTransactions() {
         localStorage.setItem('payments', JSON.stringify(transactions));
+    }
+
+    function saveSuppliers() {
+        localStorage.setItem('suppliers', JSON.stringify(suppliers));
     }
 
     function renderTransactionList(transactionsForDate, date) {
@@ -179,7 +197,7 @@
     }
 
     function loadTransactions(date) {
-        currentDate = date;  // Ενημέρωση της τρέχουσας ημερομηνίας
+        currentDate = date;
         transactionDate.value = date;
         if (transactions[date]) {
             renderTransactionList(transactions[date], date);
@@ -203,6 +221,13 @@
             return;
         }
 
+        // Προσθήκη προμηθευτή στη λίστα εάν δεν υπάρχει ήδη
+        if (!suppliers.includes(supplier)) {
+            suppliers.push(supplier);
+            saveSuppliers();
+            updateSuppliersList();
+        }
+
         if (!transactions[date]) {
             transactions[date] = [];
         }
@@ -215,9 +240,9 @@
         });
 
         saveTransactions();
-        loadTransactions(date); // Διατήρηση της επιλεγμένης ημερομηνίας
+        loadTransactions(date);
         transactionForm.reset();
-        transactionDate.value = date; // Επαναφορά της ημερομηνίας
+        transactionDate.value = date;
     }
 
     function editTransaction(transactionItem, date, index) {
@@ -245,8 +270,7 @@
     transactionForm.addEventListener('submit', addTransaction);
     transactionDate.addEventListener('change', (e) => loadTransactions(e.target.value));
 
-    // Επαναφόρτωση της τρέχουσας ημερομηνίας κατά την αρχική φόρτωση
-    loadTransactions(currentDate);
+    loadTransactions(transactionDate.value || new Date().toISOString().split('T')[0]);
 });
 
     </script>
