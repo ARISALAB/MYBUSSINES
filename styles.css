@@ -1259,4 +1259,77 @@ input[type="submit"]:hover {
             padding: 6px; /* Μικρότερο padding για εξοικονόμηση χώρου */
         }
     }
-    
+    /* Γενική προσαρμογή σελίδας για κινητές συσκευές */
+@media (max-width: 768px) {
+  /* Στυλ για το βασικό περιεχόμενο της σελίδας */
+  body {
+      padding: 10px;
+      font-size: 0.95em;
+  }
+
+  /* Επικεφαλίδα και φόρμα επιλογής ημερομηνίας */
+  h1 {
+      font-size: 1.2em;
+      text-align: center;
+  }
+
+  #week-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 10px;
+  }
+
+  #week-form label {
+      font-size: 1em;
+      margin-bottom: 5px;
+  }
+
+  #week-form input[type="date"] {
+      width: 90%;
+      padding: 8px;
+      font-size: 1em;
+  }
+
+  /* Προσαρμογή του πίνακα */
+  #employee-hours-table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+      width: 100%;
+      margin-top: 10px;
+      border-collapse: separate;
+      border-spacing: 0;
+  }
+
+  /* Σταθερή πρώτη στήλη (Ονόματα υπαλλήλων) */
+  #employee-hours-table th:first-child, 
+  #employee-hours-table td:first-child {
+      position: sticky;
+      left: 0;
+      background: #f3f3f3; /* Χρώμα υποβάθρου για την πρώτη στήλη */
+      min-width: 100px; /* Ελάχιστο πλάτος για καλύτερη ορατότητα */
+      z-index: 2;
+  }
+
+  /* Μείωση μεγέθους κελιών για κινητές συσκευές */
+  #employee-hours-table th, #employee-hours-table td {
+      padding: 8px;
+      font-size: 0.85em;
+  }
+}
+/* Στυλ για τις ημερομηνίες στο κείμενο */
+.date-link {
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}
+
