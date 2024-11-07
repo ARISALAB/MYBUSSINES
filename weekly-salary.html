@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Καταγραφή Μισθοδοσίας Βάσει Ωρών Εργασίας</title>
+    
+</head>
+<body>
+    <nav>
+        <img src="11.png" alt="Logo" class="logo">
+        <button class="menu-toggle">
+            &#9776;<br>Menu
+        </button>
+        <div class="menu-items">
+            <a href="index.html">Αρχική Σελίδα</a>
+    
+            <div class="dropdown">
+                <a href="#">Συναλλαγές &#9662;</a>
+                <div class="dropdown-content">
+                    <a href="index1.html">Καταγραφή Συναλλαγών</a>
+                    <a href="index4.html">Τιμολόγια Επί Πιστώσει</a>
+                    <a href="index5.html">Πληρωμές Τράπεζας</a>
+                </div>
+            </div>
+    
+            <a href="index3.html">Καταγραφή Εσόδων</a>
+            <a href="index2.html">Καρτέλες Προμηθευτών</a>
+    
+            <div class="dropdown">
+                <a href="#">Αναφορές &#9662;</a>
+                <div class="dropdown-content">
+                    <a href="index7.html">Ημερήσια Αναφορά</a>
+                    <a href="index6.html">Εβδομαδιαία Αναφορά</a>
+                    <a href="index8.html">Μηνιαία Αναφορά</a>
+                    <a href="index9.html">Ετήσια Αναφορά</a>
+                </div>
+            </div>
+    
+            <div class="dropdown">
+                <a href="#">Προσωπικό &#9662;</a>
+                <div class="dropdown-content">
+                    <a href="employee-management.html">Καταγραφή Προσωπικού</a>
+                    <a href="salary.html">Καταγραφή Μισθοδοσίας</a>
+                    <a href="weekly-salary.html">Εβδομαδιαία Μισθοδοσία </a>
+                    <a href="salary-report.html">Αναφορά Μισθοδοσίας</a>
+                    
+
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div id="menuModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <a href="index.html">Αρχική Σελίδα</a>
+            
+            <div class="dropdown">
+                <a href="#">Συναλλαγές</a>
+                <div class="dropdown-content">
+                    <a href="index1.html">Καταγραφή Συναλλαγών</a>
+                    <a href="index4.html">Τιμολόγια Επί Πιστώσει</a>
+                    <a href="index5.html">Πληρωμές Τράπεζας</a>
+                </div>
+            </div>
+            
+            <a href="index3.html">Καταγραφή Εσόδων</a>
+            <a href="index2.html">Καρτέλες Προμηθευτών</a>
+            
+            <div class="dropdown">
+                <a href="#">Αναφορές</a>
+                <div class="dropdown-content">
+                    <a href="index7.html">Ημερήσια Αναφορά</a>
+                    <a href="index6.html">Εβδομαδιαία Αναφορά</a>
+                    <a href="index8.html">Μηνιαία Αναφορά</a>
+                    <a href="index9.html">Ετήσια Αναφορά</a>
+                </div>
+            </div>
+            
+            <!-- Νέα ενότητα για Προσωπικό -->
+            <div class="dropdown">
+                <a href="#">Προσωπικό &#9662;</a>
+                <div class="dropdown-content">
+                    <a href="employee-management.html">Καταγραφή Προσωπικού</a>
+                    <a href="salary.html">Καταγραφή Μισθοδοσίας</a>
+                    <a href="weekly-salary.html">Εβδομαδιαία Μισθοδοσία</a>
+                    <a href="salary-report.html">Αναφορά Μισθοδοσίας</a>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <h1>Καταγραφή Μισθοδοσίας Βάσει Ωρών Εργασίας</h1>
+    <form id="week-form">
+        <label for="week-start">Επιλογή εβδομάδας (αρχή):</label>
+        <input type="date" id="week-start" required><br>
+    </form>
+
+    <table id="employee-hours-table">
+        <thead>
+            <tr>
+                <th>Όνομα</th>
+                <th>Ειδικότητα</th>
+                <th>Ωρομίσθιο (€)</th>
+                <th class="day-header"></th>
+                <th class="day-header"></th>
+                <th class="day-header"></th>
+                <th class="day-header"></th>
+                <th class="day-header"></th>
+                <th class="day-header"></th>
+                <th class="day-header"></th>
+                <th>Σύνολο Ώρες</th>
+                <th>Σύνολο Ποσό (€)</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div>
+        <strong>Συνολικές Ώρες:</strong> <span id="total-hours">0</span><br>
+        <strong>Συνολικό Ποσό:</strong> <span id="total-amount">0.00 €</span>
+    </div>
+
+    <button id="save-records">Καταγραφή Μισθοδοσίας</button>
+
+    <script>
+        document.getElementById('week-start').addEventListener('change', function() {
+            const weekStart = new Date(this.value);
+            if (isNaN(weekStart)) return;
+            
+            const employeeTableBody = document.getElementById('employee-hours-table').querySelector('tbody');
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            const wageData = JSON.parse(localStorage.getItem('wageData')) || {};
+            const weeklyData = JSON.parse(localStorage.getItem('weeklySalaryData')) || [];
+
+            // Καθαρισμός πίνακα
+            employeeTableBody.innerHTML = '';
+            
+            // Υπολογισμός ημερομηνιών εβδομάδας
+            const daysOfWeek = Array.from({ length: 7 }, (_, i) => {
+                const date = new Date(weekStart);
+                date.setDate(weekStart.getDate() + i);
+                return date.toISOString().split('T')[0];
+            });
+
+            // Ενημέρωση κεφαλίδων με ημερομηνίες
+            document.querySelectorAll('.day-header').forEach((header, i) => {
+                header.textContent = daysOfWeek[i];
+            });
+
+            // Δημιουργία γραμμών για κάθε υπάλληλο
+            employees.forEach(employee => {
+                const storedWage = wageData[employee.name] || 0; // Ανάκτηση αποθηκευμένου ωρομισθίου
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${employee.name}</td>
+                    <td>${employee.role}</td>
+                    <td><input type="number" class="wage-input" data-name="${employee.name}" value="${storedWage}" step="0.01"></td>
+                    ${daysOfWeek.map(date => `<td><input type="number" class="hours-input" data-name="${employee.name}" data-date="${date}" placeholder="Ώρες" step="0.1"></td>`).join('')}
+                    <td class="total-hours-cell" data-name="${employee.name}">0</td>
+                    <td class="total-wage-cell" data-name="${employee.name}">0.00 €</td>
+                `;
+                employeeTableBody.appendChild(row);
+            });
+
+            // Φόρτωση υπαρχόντων δεδομένων μισθοδοσίας
+            weeklyData.forEach(entry => {
+                if (daysOfWeek.includes(entry.date)) {
+                    const hoursInput = document.querySelector(`.hours-input[data-name="${entry.name}"][data-date="${entry.date}"]`);
+                    if (hoursInput) {
+                        hoursInput.value = entry.hoursWorked;
+                    }
+                }
+            });
+
+            // Υπολογισμός συνολικών ωρών και ποσού
+            document.querySelectorAll('.hours-input, .wage-input').forEach(input => {
+                input.addEventListener('input', () => updateTotals(employeeTableBody));
+            });
+
+            updateTotals(employeeTableBody);
+        });
+
+        function updateTotals(tableBody) {
+            let totalHours = 0;
+            let totalAmount = 0;
+
+            tableBody.querySelectorAll('tr').forEach(row => {
+                const name = row.querySelector('.wage-input').dataset.name;
+                const wagePer8Hours = parseFloat(row.querySelector('.wage-input').value) || 0;
+                let totalEmployeeHours = 0;
+
+                row.querySelectorAll('.hours-input').forEach(input => {
+                    const hoursWorked = parseFloat(input.value) || 0;
+                    totalEmployeeHours += hoursWorked;
+                });
+
+                const totalWage = (totalEmployeeHours * wagePer8Hours) / 8;
+                row.querySelector(`.total-hours-cell[data-name="${name}"]`).textContent = totalEmployeeHours.toFixed(2);
+                row.querySelector(`.total-wage-cell[data-name="${name}"]`).textContent = totalWage.toFixed(2) + ' €';
+
+                totalHours += totalEmployeeHours;
+                totalAmount += totalWage;
+
+                // Αποθήκευση του ωρομισθίου
+                const wageData = JSON.parse(localStorage.getItem('wageData')) || {};
+                wageData[name] = wagePer8Hours;
+                localStorage.setItem('wageData', JSON.stringify(wageData));
+            });
+
+            document.getElementById('total-hours').textContent = totalHours.toFixed(2);
+            document.getElementById('total-amount').textContent = totalAmount.toFixed(2) + ' €';
+        }
+
+        // Αποθήκευση δεδομένων μισθοδοσίας
+        document.getElementById('save-records').addEventListener('click', () => {
+            const weekStart = document.getElementById('week-start').value;
+            if (!weekStart) {
+                alert('Παρακαλώ επιλέξτε αρχική ημερομηνία εβδομάδας.');
+                return;
+            }
+
+            const weeklyData = JSON.parse(localStorage.getItem('weeklySalaryData')) || [];
+            const newRecords = [];
+
+            document.querySelectorAll('.hours-input').forEach(input => {
+                const name = input.dataset.name;
+                const date = input.dataset.date;
+                const hoursWorked = parseFloat(input.value) || 0;
+                const wagePer8Hours = parseFloat(document.querySelector(`.wage-input[data-name="${name}"]`).value) || 0;
+
+                if (hoursWorked > 0) {
+                    newRecords.push({
+                        date,
+                        name,
+                        hoursWorked,
+                        wagePer8Hours
+                    });
+                }
+            });
+
+            // Αφαίρεση παλαιών δεδομένων της ίδιας εβδομάδας
+            const updatedData = weeklyData.filter(record => !newRecords.some(newRecord => newRecord.date === record.date && newRecord.name === record.name));
+
+            localStorage.setItem('weeklySalaryData', JSON.stringify([...updatedData, ...newRecords]));
+            alert('Η μισθοδοσία καταγράφηκε επιτυχώς!');
+
+            // Επαναφόρτωση των δεδομένων στον πίνακα
+            document.getElementById('week-start').dispatchEvent(new Event('change'));
+        });
+    </script>
+      <script>
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.getElementById('menuModal').style.display = 'flex';
+        });
+        
+        document.querySelector('.close').addEventListener('click', function() {
+            document.getElementById('menuModal').style.display = 'none';
+        });
+        
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('menuModal')) {
+                document.getElementById('menuModal').style.display = 'none';
+            }
+        }
+        
+        // Κώδικας για την απόκρυψη του toggle menu όταν μεγαλώνει η οθόνη
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                document.getElementById('menuModal').style.display = 'none';
+            }
+        });
+        
+        </script>
+          <script>
+            document.querySelector('.menu-toggle').addEventListener('click', function() {
+                document.getElementById('menuModal').style.display = 'flex';
+            });
+            
+            document.querySelector('.close').addEventListener('click', function() {
+                document.getElementById('menuModal').style.display = 'none';
+            });
+            
+            window.onclick = function(event) {
+                if (event.target == document.getElementById('menuModal')) {
+                    document.getElementById('menuModal').style.display = 'none';
+                }
+            }
+            
+            // Κώδικας για την απόκρυψη του toggle menu όταν μεγαλώνει η οθόνη
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    document.getElementById('menuModal').style.display = 'none';
+                }
+            });
+            
+            </script>
+ 
+</body>
+</html>

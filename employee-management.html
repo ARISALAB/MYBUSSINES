@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+
+    <title>Διαχείριση Υπαλλήλων</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #edit-modal {
+            display: none; /* Αρχικά κρυφό */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        /* Στυλ για να καλύπτει την υπόλοιπη σελίδα όταν το modal είναι ανοιχτό */
+        #modal-overlay {
+            display: none; /* Αρχικά κρυφό */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 500;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <img src="11.png" alt="Logo" class="logo">
+        <button class="menu-toggle">
+            &#9776;<br>Menu
+        </button>
+        <div class="menu-items">
+            <a href="index.html">Αρχική Σελίδα</a>
+    
+            <div class="dropdown">
+                <a href="#">Συναλλαγές &#9662;</a>
+                <div class="dropdown-content">
+                    <a href="index1.html">Καταγραφή Συναλλαγών</a>
+                    <a href="index4.html">Τιμολόγια Επί Πιστώσει</a>
+                    <a href="index5.html">Πληρωμές Τράπεζας</a>
+                </div>
+            </div>
+    
+            <a href="index3.html">Καταγραφή Εσόδων</a>
+            <a href="index2.html">Καρτέλες Προμηθευτών</a>
+    
+            <div class="dropdown">
+                <a href="#">Αναφορές &#9662;</a>
+                <div class="dropdown-content">
+                    <a href="index7.html">Ημερήσια Αναφορά</a>
+                    <a href="index6.html">Εβδομαδιαία Αναφορά</a>
+                    <a href="index8.html">Μηνιαία Αναφορά</a>
+                    <a href="index9.html">Ετήσια Αναφορά</a>
+                </div>
+            </div>
+    
+            <div class="dropdown">
+                <a href="#">Προσωπικό &#9662;</a>
+                <div class="dropdown-content">
+                    <a href="employee-management.html">Καταγραφή Προσωπικού</a>
+                    <a href="salary.html">Καταγραφή Μισθοδοσίας</a>
+                    <a href="weekly-salary.html">Εβδομαδιαία Μισθοδοσία </a>
+                    <a href="salary-report.html">Αναφορά Μισθοδοσίας</a>
+                    
+
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <div id="menuModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <a href="index.html">Αρχική Σελίδα</a>
+            
+            <div class="dropdown">
+                <a href="#">Συναλλαγές</a>
+                <div class="dropdown-content">
+                    <a href="index1.html">Καταγραφή Συναλλαγών</a>
+                    <a href="index4.html">Τιμολόγια Επί Πιστώσει</a>
+                    <a href="index5.html">Πληρωμές Τράπεζας</a>
+                </div>
+            </div>
+            
+            <a href="index3.html">Καταγραφή Εσόδων</a>
+            <a href="index2.html">Καρτέλες Προμηθευτών</a>
+            
+            <div class="dropdown">
+                <a href="#">Αναφορές</a>
+                <div class="dropdown-content">
+                    <a href="index7.html">Ημερήσια Αναφορά</a>
+                    <a href="index6.html">Εβδομαδιαία Αναφορά</a>
+                    <a href="index8.html">Μηνιαία Αναφορά</a>
+                    <a href="index9.html">Ετήσια Αναφορά</a>
+                </div>
+            </div>
+            
+            <!-- Νέα ενότητα για Προσωπικό -->
+            <div class="dropdown">
+                <a href="#">Προσωπικό &#9662;</a>
+                <div class="dropdown-content">
+                    <a href="employee-management.html">Καταγραφή Προσωπικού</a>
+                    <a href="salary.html">Καταγραφή Μισθοδοσίας</a>
+                    <a href="weekly-salary.html">Εβδομαδιαία Μισθοδοσία</a>
+                    <a href="salary-report.html">Αναφορά Μισθοδοσίας</a>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <h1>Διαχείριση Υπαλλήλων</h1>
+    <form id="employee-form">
+        <label for="employee-name">Όνομα:</label>
+        <input type="text" id="employee-name" required><br>
+
+        <label for="employee-role">Ειδικότητα:</label>
+        <input type="text" id="employee-role" required><br>
+
+        <label for="employee-phone">Τηλέφωνο:</label>
+        <input type="text" id="employee-phone" required><br>
+
+        <input type="hidden" id="employee-index" value="-1">
+        <button type="submit">Προσθήκη Υπαλλήλου</button>
+    </form>
+
+    <h2>Λίστα Υπαλλήλων</h2>
+    <table id="employee-table">
+        <thead>
+            <tr>
+                <th>Όνομα</th>
+                <th>Ειδικότητα</th>
+                <th>Τηλέφωνο</th>
+                <th>Ενέργειες</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <!-- Modal Overlay -->
+    <div id="modal-overlay"></div>
+
+    <!-- Modal Επεξεργασίας Υπαλλήλου -->
+    <div id="edit-modal">
+        <h2>Επεξεργασία Υπαλλήλου</h2>
+        <label for="modal-employee-name">Όνομα:</label>
+        <input type="text" id="modal-employee-name" required><br>
+
+        <label for="modal-employee-role">Ειδικότητα:</label>
+        <input type="text" id="modal-employee-role" required><br>
+
+        <label for="modal-employee-phone">Τηλέφωνο:</label>
+        <input type="text" id="modal-employee-phone" required><br>
+
+        <input type="hidden" id="modal-employee-index" value="-1">
+        <button id="modal-save-button">Αποθήκευση</button>
+        <button id="modal-close-button">Κλείσιμο</button>
+    </div>
+
+    <script>
+        document.getElementById('employee-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('employee-name').value;
+            const role = document.getElementById('employee-role').value;
+            const phone = document.getElementById('employee-phone').value;
+
+            // Αποθήκευση στο localStorage
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            employees.push({ name, role, phone });
+            localStorage.setItem('employees', JSON.stringify(employees));
+
+            // Προβολή στη λίστα
+            updateEmployeeList();
+
+            // Καθαρισμός της φόρμας
+            document.getElementById('employee-form').reset();
+        });
+
+        function updateEmployeeList() {
+            const employeeTableBody = document.getElementById('employee-table').querySelector('tbody');
+            employeeTableBody.innerHTML = '';
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+
+            employees.forEach((employee, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${employee.name}</td>
+                    <td>${employee.role}</td>
+                    <td>${employee.phone}</td>
+                    <td>
+                        <button onclick="openEditModal(${index})">Επεξεργασία</button>
+                        <button onclick="deleteEmployee(${index})">Διαγραφή</button>
+                    </td>
+                `;
+                employeeTableBody.appendChild(row);
+            });
+        }
+
+        function openEditModal(index) {
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            const employee = employees[index];
+
+            // Ενημέρωση του modal με τα στοιχεία του υπαλλήλου προς επεξεργασία
+            document.getElementById('modal-employee-name').value = employee.name;
+            document.getElementById('modal-employee-role').value = employee.role;
+            document.getElementById('modal-employee-phone').value = employee.phone;
+            document.getElementById('modal-employee-index').value = index; // Set index for editing
+
+            // Άνοιγμα του modal και του overlay
+            document.getElementById('edit-modal').style.display = 'block';
+            document.getElementById('modal-overlay').style.display = 'block';
+        }
+
+        document.getElementById('modal-save-button').addEventListener('click', function() {
+            const index = document.getElementById('modal-employee-index').value;
+            const name = document.getElementById('modal-employee-name').value;
+            const role = document.getElementById('modal-employee-role').value;
+            const phone = document.getElementById('modal-employee-phone').value;
+
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+
+            // Ενημέρωση υπάρχοντος υπαλλήλου
+            employees[index] = { name, role, phone };
+            localStorage.setItem('employees', JSON.stringify(employees));
+
+            // Ενημέρωση της λίστας και κλείσιμο του modal
+            updateEmployeeList();
+            closeModal();
+        });
+
+        document.getElementById('modal-close-button').addEventListener('click', closeModal);
+
+        function closeModal() {
+            document.getElementById('edit-modal').style.display = 'none';
+            document.getElementById('modal-overlay').style.display = 'none'; // Κλείσιμο του overlay
+            document.getElementById('modal-employee-name').value = '';
+            document.getElementById('modal-employee-role').value = '';
+            document.getElementById('modal-employee-phone').value = '';
+            document.getElementById('modal-employee-index').value = '-1'; // Reset index
+        }
+
+        function deleteEmployee(index) {
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            employees.splice(index, 1); // Διαγραφή υπαλλήλου
+            localStorage.setItem('employees', JSON.stringify(employees));
+            updateEmployeeList(); // Ενημέρωση της λίστας
+        }
+
+        // Φόρτωση των υπαλλήλων κατά την εκκίνηση της σελίδας
+        window.addEventListener('load', updateEmployeeList);
+    </script>
+     <script>
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.getElementById('menuModal').style.display = 'flex';
+        });
+        
+        document.querySelector('.close').addEventListener('click', function() {
+            document.getElementById('menuModal').style.display = 'none';
+        });
+        
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('menuModal')) {
+                document.getElementById('menuModal').style.display = 'none';
+            }
+        }
+        
+        // Κώδικας για την απόκρυψη του toggle menu όταν μεγαλώνει η οθόνη
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                document.getElementById('menuModal').style.display = 'none';
+            }
+        });
+        
+        </script>
+</body>
+</html>
