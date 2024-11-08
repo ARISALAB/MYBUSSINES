@@ -118,6 +118,17 @@
             padding: 5px;
             border-radius: 5px;
         }
+         /* Κεντράρισμα του πίνακα στις μεγαλύτερες οθόνες */
+    @media (min-width: 768px) {
+        #monthly-report-container {
+            overflow-x: visible; /* Αφαίρεση κύλισης */
+            justify-content: center; /* Κεντράρισμα περιεχομένου */
+        }
+
+        #monthly-report {
+            max-width: 80%; /* Μειωμένο πλάτος για καλύτερη κεντράρισμα */
+        }
+    }
     </style>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
