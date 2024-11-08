@@ -6,130 +6,119 @@
 <link rel="stylesheet" href="styles.css"> <!-- Σύνδεσμος στο αρχείο CSS -->
     <link rel="icon" href="11.png" type="image/png">
 
-    <style>
-       
-        #month-form {
-            width: 100%;
-            max-width: 600px;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
+  <style>
+    #month-form {
+        width: 100%;
+        max-width: 600px;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
 
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: #444;
-        }
+    label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+        color: #444;
+    }
 
-        input[type="month"] {
-            width: calc(100% - 20px);
-            padding: 8px 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
+    input[type="month"] {
+        width: calc(100% - 20px);
+        padding: 8px 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
 
-        input[type="submit"] {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s;
-        }
+    input[type="submit"] {
+        background-color: #28a745;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s;
+    }
 
-        input[type="submit"]:hover {
-            background-color: #218838;
-        }
+    input[type="submit"]:hover {
+        background-color: #218838;
+    }
 
-        table {
-            width: 100%;
-            max-width: 1000px;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
+    /* Στυλ για το περιτύλιγμα του πίνακα και τον πίνακα */
+    #monthly-report-container {
+        display: flex;
+        justify-content: center; /* Κεντρική στοίχιση */
+        overflow-x: auto;
+        width: 100%;
+        margin: 0 auto;
+    }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
+    #monthly-report {
+        width: 100%;
+        max-width: 1000px;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
 
-        th {
-            background-color: #007bff;
-            color: white;
-        }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
 
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
+    th {
+        background-color: #007bff;
+        color: white;
+    }
 
-        #total-monthly-cash {
-            font-size: 18px;
-            font-weight: bold;
-            color: #0066cc;
-            margin-top: 10px;
-        }
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
 
-     
-     /* Στυλ για τον συγκεκριμένο πίνακα και τα δεδομένα του */
-        #monthly-report-container {
-            overflow-x: auto;
-            width: 100%;
-        }
+    #total-monthly-cash {
+        font-size: 18px;
+        font-weight: bold;
+        color: #0066cc;
+        margin-top: 10px;
+    }
 
-        #monthly-report {
-            width: 100%;
-            max-width: 1000px;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        /* Στυλ για τα σύνολα και το footer */
-        #total-monthly-cash {
-            font-size: 18px;
-            font-weight: bold;
-            color: #0066cc;
-            margin-top: 10px;
-        }
+    footer {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #777;
+    }
 
-        footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #777;
-        }
+    /* Χρώματα για τα σημαντικά ποσά */
+    .highlight-green {
+        background-color: #28a745;
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+    }
+    .highlight-orange {
+        background-color: #fd7e14;
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+    }
 
-        /* Χρώματα για τα σημαντικά ποσά */
-        .highlight-green {
-            background-color: #28a745;
-            color: white;
-            padding: 5px;
-            border-radius: 5px;
-        }
-        .highlight-orange {
-            background-color: #fd7e14;
-            color: white;
-            padding: 5px;
-            border-radius: 5px;
-        }
-         /* Κεντράρισμα του πίνακα στις μεγαλύτερες οθόνες */
+    /* Στυλ για κεντράρισμα του πίνακα στις μεγαλύτερες οθόνες */
     @media (min-width: 768px) {
         #monthly-report-container {
             overflow-x: visible; /* Αφαίρεση κύλισης */
-            justify-content: center; /* Κεντράρισμα περιεχομένου */
+            max-width: 80%; /* Μείωση πλάτους */
         }
-
+        
         #monthly-report {
-            max-width: 80%; /* Μειωμένο πλάτος για καλύτερη κεντράρισμα */
+            max-width: 100%; /* Πλάτος του πίνακα να προσαρμόζεται */
         }
     }
-    </style>
+</style>
+
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
