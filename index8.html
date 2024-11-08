@@ -48,15 +48,13 @@
         background-color: #218838;
     }
 
-    /* Στυλ για το περιτύλιγμα του πίνακα και τον πίνακα */
+    /* Στυλ για το περιτύλιγμα του πίνακα */
     #monthly-report-container {
-        display: flex;
-        justify-content: center; /* Κεντρική στοίχιση */
-        overflow-x: auto;
+        overflow-x: auto;  /* Προσθήκη οριζόντιας κύλισης */
         width: 100%;
-        margin: 0 auto;
     }
 
+    /* Στυλ για τον πίνακα */
     #monthly-report {
         width: 100%;
         max-width: 1000px;
@@ -106,18 +104,20 @@
         border-radius: 5px;
     }
 
-    /* Στυλ για κεντράρισμα του πίνακα στις μεγαλύτερες οθόνες */
+    /* Στυλ για μεγαλύτερες οθόνες ώστε ο πίνακας να είναι στο κέντρο */
     @media (min-width: 768px) {
         #monthly-report-container {
             overflow-x: visible; /* Αφαίρεση κύλισης */
-            max-width: 80%; /* Μείωση πλάτους */
+            display: flex;
+            justify-content: center; /* Κεντρική στοίχιση */
         }
-        
+
         #monthly-report {
-            max-width: 100%; /* Πλάτος του πίνακα να προσαρμόζεται */
+            max-width: 80%; /* Περιορισμός πλάτους για καλύτερο κεντράρισμα */
         }
     }
 </style>
+
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
