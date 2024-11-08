@@ -78,12 +78,27 @@
             margin-top: 10px;
         }
 
+
+        /* Προσθήκη κύλισης σε μικρές οθόνες */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        /* Στυλ για τα σύνολα και το footer */
+        #total-monthly-cash {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0066cc;
+            margin-top: 10px;
+        }
+
         footer {
             margin-top: 20px;
             font-size: 12px;
             color: #777;
         }
 
+        /* Χρώματα για τα σημαντικά ποσά */
         .highlight-green {
             background-color: #28a745;
             color: white;
@@ -195,23 +210,27 @@
         <input type="submit" value="Προβολή Αναφοράς">
     </form>
 
-    <table id="monthly-report">
-        <thead>
-            <tr>
-                <th>Ημερομηνία</th>
-                <th>Ταμείο (€)</th>
-                <th>Έσοδα από Κάρτα (€)</th>
-                <th>Έσοδα από Μετρητά (€)</th>
-                <th>Πληρωμές (€)</th>
-                <th>Υπόλοιπο Μετρητών (€)</th>
-                <th>Τιμολόγια Επί Πιστώσει (€)</th>
-                <th>Καταθέσεις (€)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Rows will be dynamically added here -->
-        </tbody>
-    </table>
+    <!-- Προσθέστε ένα div για να έχει οριζόντια κύλιση ο πίνακας σε μικρές οθόνες -->
+    <div class="table-container">
+        <table id="monthly-report">
+            <thead>
+                <tr>
+                    <th>Ημερομηνία</th>
+                    <th>Ταμείο (€)</th>
+                    <th>Έσοδα από Κάρτα (€)</th>
+                    <th>Έσοδα από Μετρητά (€)</th>
+                    <th>Πληρωμές (€)</th>
+                    <th>Υπόλοιπο Μετρητών (€)</th>
+                    <th>Τιμολόγια Επί Πιστώσει (€)</th>
+                    <th>Καταθέσεις (€)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
 
     <p id="total-monthly-cash">Ταμείο Μήνα: 0.00 €</p>
     <p id="total-card-income">Τραπεζικά Έσοδα: 0.00 €</p>
