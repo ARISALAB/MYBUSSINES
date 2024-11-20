@@ -137,6 +137,8 @@
             <strong>Συνολικά Τιμολόγια Επί Πιστώσει:</strong> <span id="total-credit">0.00 €</span><br>
             <strong>Συνολικά Καταγεγραμμένα:</strong> <span id="total-recorded">0.00 €</span><br>
             <strong>Σύνολο Αγορών:</strong> <span id="total-purchases">0.00 €</span><br> <!-- Νέα γραμμή για το σύνολο αγορών -->
+                   <strong>Συνολικές Καταθέσεις:</strong> <span id="total-deposits">0.00 €</span>
+
             <strong>Συνολικό Υπόλοιπο:</strong> <span id="total-balance">0.00 €</span>
         </div>
         <button id="export-pdf" class="export-button">Εξαγωγή σε PDF</button> <!-- Κουμπί τοποθετημένο στο τέλος -->
@@ -264,44 +266,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const transactions = groupedBySupplier[supplier].transactions;
         transactions.sort((a, b) => new Date(a.date) - new Date(b.date));
+// Ενημέρωση του στοιχείου των συνολικών καταθέσεων
 
-        let totalCredit = 0;
-        let totalRecorded = 0;
-        let totalDeposits = 0;
-        let currentBalance = 0;
+   let totalCredit = 0;
+let totalRecorded = 0;
+let totalDeposits = 0;
+let currentBalance = 0;
 
-        transactions.forEach(transaction => {
-            const creditAmount = transaction.type === 'credit' ? parseFloat(transaction.amount).toFixed(2) : '-';
-            const recordedAmount = transaction.type === 'regular' ? parseFloat(transaction.amount).toFixed(2) : '-';
-            const depositAmount = transaction.type === 'deposit' ? parseFloat(transaction.amount).toFixed(2) : '-';
+transactions.forEach(transaction => {
+    const creditAmount = transaction.type === 'credit' ? parseFloat(transaction.amount).toFixed(2) : '-';
+    const recordedAmount = transaction.type === 'regular' ? parseFloat(transaction.amount).toFixed(2) : '-';
+    const depositAmount = transaction.type === 'deposit' ? parseFloat(transaction.amount).toFixed(2) : '-';
 
-            if (transaction.type === 'credit') {
-                totalCredit += parseFloat(transaction.amount);
-                currentBalance += parseFloat(transaction.amount);
-            } else if (transaction.type === 'regular') {
-                totalRecorded += parseFloat(transaction.amount);
-            } else if (transaction.type === 'deposit') {
-                totalDeposits += parseFloat(transaction.amount);
-                currentBalance -= parseFloat(transaction.amount);
-            }
+    if (transaction.type === 'credit') {
+        totalCredit += parseFloat(transaction.amount);
+        currentBalance += parseFloat(transaction.amount);
+    } else if (transaction.type === 'regular') {
+        totalRecorded += parseFloat(transaction.amount);
+    } else if (transaction.type === 'deposit') {
+        totalDeposits += parseFloat(transaction.amount);
+        currentBalance -= parseFloat(transaction.amount);
+    }
 
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${transaction.date}</td>
-                <td>${transaction.invoiceNumber || '-'}</td>
-                <td>${creditAmount} €</td>
-                <td>${recordedAmount} €</td>
-                <td>${depositAmount} €</td>
-                <td>${currentBalance.toFixed(2)} €</td>
-            `;
-            transactionTableBody.appendChild(row);
-        });
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td>${transaction.date}</td>
+        <td>${transaction.invoiceNumber || '-'}</td>
+        <td>${creditAmount} €</td>
+        <td>${recordedAmount} €</td>
+        <td>${depositAmount} €</td>
+        <td>${currentBalance.toFixed(2)} €</td>
+    `;
+    transactionTableBody.appendChild(row);
+});
 
-        const totalPurchases = totalCredit + totalRecorded;
-        totalPurchasesElem.textContent = totalPurchases.toFixed(2) + ' €';
-        totalCreditElem.textContent = totalCredit.toFixed(2) + ' €';
-        totalRecordedElem.textContent = totalRecorded.toFixed(2) + ' €';
-        totalBalanceElem.textContent = currentBalance.toFixed(2) + ' €';
+// Ενημέρωση συνολικών τιμών
+totalPurchasesElem.textContent = (totalCredit + totalRecorded).toFixed(2) + ' €';
+totalCreditElem.textContent = totalCredit.toFixed(2) + ' €';
+totalRecordedElem.textContent = totalRecorded.toFixed(2) + ' €';
+totalBalanceElem.textContent = currentBalance.toFixed(2) + ' €';
+document.getElementById('total-deposits').textContent = totalDeposits.toFixed(2) + ' €';
+
 
         transactionModal.style.display = 'block';
     }
