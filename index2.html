@@ -319,28 +319,15 @@ document.getElementById('total-deposits').textContent = totalDeposits.toFixed(2)
         transactionModal.style.display = 'block';
     }
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Επιλέγουμε όλα τα modals και τα κουμπιά "close"
-    const modals = document.querySelectorAll('.modal1');
-    const closeButtons = document.querySelectorAll('.modal1 .close');
-
-    // Προσθέτουμε event listener σε κάθε κουμπί "close"
-    closeButtons.forEach((button, index) => {
-        button.addEventListener('click', () => {
-            modals[index].style.display = 'none';
-        });
+    closeModal.addEventListener('click', () => {
+        transactionModal.style.display = 'none';
     });
 
-    // Προσθέτουμε event listener στο window για να κλείνουν τα modals όταν κάνουμε click εκτός τους
     window.addEventListener('click', (event) => {
-        modals.forEach((modal) => {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
+        if (event.target === transactionModal) {
+            transactionModal.style.display = 'none';
+        }
     });
-});
-
 
     // Εξαγωγή σε PDF
     exportPdfButton.addEventListener('click', () => {
