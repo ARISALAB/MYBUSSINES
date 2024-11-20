@@ -318,54 +318,137 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Εξαγωγή σε PDF
     exportPdfButton.addEventListener('click', () => {
-        const supplier = supplierNameDisplay.textContent.replace('Συναλλαγές Προμηθευτή: ', '');
-        const transactions = groupedBySupplier[supplier].transactions;
-        let balance = 0;
+                const supplier = supplierNameDisplay.textContent.replace('Συναλλαγές Προμηθευτή: ', '');
+                const transactions = groupedBySupplier[supplier].transactions;
+                const totalCredit = groupedBySupplier[supplier].creditAmount;
+                const totalRecorded = groupedBySupplier[supplier].recordedAmount;
+                const totalDeposits = groupedBySupplier[supplier].deposits;
+                let balance = 0;
 
-        const tableBody = transactions.map(transaction => {
-            const creditAmount = transaction.type === 'credit' ? parseFloat(transaction.amount).toFixed(2) : '-';
-            const recordedAmount = transaction.type === 'regular' ? parseFloat(transaction.amount).toFixed(2) : '-';
-            const depositAmount = transaction.type === 'deposit' ? parseFloat(transaction.amount).toFixed(2) : '-';
+                const tableBody = transactions.map(transaction => {
+                    const creditAmount = transaction.type === 'credit' ? parseFloat(transaction.amount).toFixed(2) : '-';
+                    const recordedAmount = transaction.type === 'regular' ? parseFloat(transaction.amount).toFixed(2) : '-';
+                    const depositAmount = transaction.type === 'deposit' ? parseFloat(transaction.amount).toFixed(2) : '-';
+                    balance += transaction.type === 'credit' ? parseFloat(transaction.amount) : 0;
+                    balance -= transaction.type === 'deposit' ? parseFloat(transaction.amount) : 0;
+                    const balanceAmount = balance.toFixed(2);
+                    return [
+                        { text: transaction.date, alignment: 'center' }, 
+                        { text: transaction.invoiceNumber || '-', alignment: 'center' }, 
+                        { text: creditAmount, alignment: 'center' }, 
+                        { text: recordedAmount, alignment: 'center' }, 
+                        { text: depositAmount, alignment: 'center' }, 
+                        { text: balanceAmount, alignment: 'center' }
+                    ];
+                });
 
-            balance += transaction.type === 'credit' ? parseFloat(transaction.amount) : 0;
-            balance -= transaction.type === 'deposit' ? parseFloat(transaction.amount) : 0;
-
-            return [
-                { text: transaction.date, alignment: 'center' },
-                { text: transaction.invoiceNumber || '-', alignment: 'center' },
-                { text: creditAmount, alignment: 'center' },
-                { text: recordedAmount, alignment: 'center' },
-                { text: depositAmount, alignment: 'center' },
-                { text: balance.toFixed(2) + ' €', alignment: 'center' }
-            ];
-        });
-
-        const docDefinition = {
-            content: [
-                { text: `Συναλλαγές Προμηθευτή: ${supplier}`, style: 'header' },
-                {
-                    table: {
-                        headerRows: 1,
-                        widths: ['*', '*', '*', '*', '*', '*'],
-                        body: [
-                            [
-                                'Ημερομηνία',
-                                'Αριθμός Τιμολογίου',
-                                'Τιμολόγια Επί Πιστώσει (€)',
-                                'Τιμολόγια Πληρωμένα (€)',
-                                'Καταθέσεις (€)',
-                                'Υπόλοιπο (€)'
-                            ],
-                            ...tableBody
-                        ]
+                const docDefinition = {
+                    pageSize: 'A4',
+                    content: [
+                        { text: `Συναλλαγές Προμηθευτή: ${supplier}`, style: 'header' },
+                        {
+                            table: {
+                                headerRows: 1,
+                                widths: ['*', '*', '*', '*', '*', '*'],
+                                body: [
+                                    [
+                                        { text: 'Ημερομηνία', bold: true, color: 'white', alignment: 'center' }, 
+                                        { text: 'Αριθμός Τιμολογίου', bold: true, color: 'white', alignment: 'center' }, 
+                                        { text: 'Τιμολόγια Επί Πιστώσει (€)', bold: true, color: 'white', alignment: 'center' }, 
+                                        { text: 'Τιμολόγια Πληρωμένα (€)', bold: true, color: 'white', alignment: 'center' }, 
+                                        { text: 'Καταθέσεις (€)', bold: true, color: 'white', alignment: 'center' }, 
+                                        { text: 'Υπόλοιπο (€)', bold: true, color: 'white', alignment: 'center' }
+                                    ],
+                                    ...tableBody
+                                ]
+                            },
+                            layout: {
+                                fillColor: function (rowIndex) {
+                                    return rowIndex === 0 ? '#003366' : (rowIndex % 2 === 0 ? '#ffffff' : '#e6f2ff');
+                                },
+                                hLineColor: function () {
+                                    return '#004080';
+                                },
+                                vLineColor: function () {
+                                    return '#004080';
+                                },
+                                paddingLeft: function () {
+                                    return 10;
+                                },
+                                paddingRight: function () {
+                                    return 10;
+                                },
+                                paddingTop: function () {
+                                    return 8;
+                                },
+                                paddingBottom: function () {
+                                    return 8;
+                                }
+                            },
+                            margin: [0, 10, 0, 10]
+                        },
+                        {
+                            text: '\nΣυνολικά Στοιχεία:',
+                            style: 'subheader'
+                        },
+                        {
+                            table: {
+                                widths: ['*', '*'],
+                                body: [
+                                    ['Συνολικά Τιμολόγια Επί Πιστώσει', `${totalCredit.toFixed(2)} €`],
+                                    ['Συνολικά Καταγεγραμμένα', `${totalRecorded.toFixed(2)} €`],
+                                    ['Συνολικές Καταθέσεις', `${totalDeposits.toFixed(2)} €`],
+                                    ['Τελικό Υπόλοιπο', `${balance.toFixed(2)} €`]
+                                ]
+                            },
+                            layout: {
+                                fillColor: function (rowIndex) {
+                                    return rowIndex === 0 ? '#003366' : (rowIndex % 2 === 0 ? '#004080' : '#e6f2ff');
+                                },
+                                hLineColor: function () {
+                                    return '#004080';
+                                },
+                                vLineColor: function () {
+                                    return '#004080';
+                                },
+                                paddingLeft: function () {
+                                    return 10;
+                                },
+                                paddingRight: function () {
+                                    return 10;
+                                },
+                                paddingTop: function () {
+                                    return 8;
+                                },
+                                paddingBottom: function () {
+                                    return 8;
+                                }
+                            }
+                        }
+                    ],
+                    styles: {
+                        header: {
+                            fontSize: 18,
+                            bold: true,
+                            alignment: 'center',
+                            margin: [0, 20, 0, 10],
+                            color: '#003366'
+                        },
+                        subheader: {
+                            fontSize: 16,
+                            bold: true,
+                            margin: [0, 10, 0, 5],
+                            color: '#0066cc'
+                        }
+                    },
+                    defaultStyle: {
+                        columnGap: 20
                     }
-                }
-            ]
-        };
+                };
 
-        pdfMake.createPdf(docDefinition).download(`${supplier}_συναλλαγές.pdf`);
-    });
-});
+                pdfMake.createPdf(docDefinition).download(`${supplier}_συναλλαγές.pdf`);
+            });
+        });
 </script>
 
     <script>
