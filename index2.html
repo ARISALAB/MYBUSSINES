@@ -355,107 +355,110 @@ document.getElementById('total-deposits').textContent = totalDeposits.toFixed(2)
                     ];
                 });
 
-                const docDefinition = {
-                    pageSize: 'A4',
-                    content: [
-                        { text: `Συναλλαγές Προμηθευτή: ${supplier}`, style: 'header' },
-                        {
-                            table: {
-                                headerRows: 1,
-                                widths: ['*', '*', '*', '*', '*', '*'],
-                                body: [
-                                    [
-                                        { text: 'Ημερομηνία', bold: true, color: 'white', alignment: 'center' }, 
-                                        { text: 'Αριθμός Τιμολογίου', bold: true, color: 'white', alignment: 'center' }, 
-                                        { text: 'Επί Πιστώσει (€)', bold: true, color: 'white', alignment: 'center' }, 
-                                        { text: 'Μετρητά (€)', bold: true, color: 'white', alignment: 'center' }, 
-                                        { text: 'Καταθέσεις (€)', bold: true, color: 'white', alignment: 'center' }, 
-                                        { text: 'Υπόλοιπο (€)', bold: true, color: 'white', alignment: 'center' }
-                                    ],
-                                    ...tableBody
-                                ]
-                            },
-                            layout: {
-                                fillColor: function (rowIndex) {
-                                    return rowIndex === 0 ? '#003366' : (rowIndex % 2 === 0 ? '#ffffff' : '#e6f2ff');
-                                },
-                                hLineColor: function () {
-                                    return '#004080';
-                                },
-                                vLineColor: function () {
-                                    return '#004080';
-                                },
-                                paddingLeft: function () {
-                                    return 10;
-                                },
-                                paddingRight: function () {
-                                    return 10;
-                                },
-                                paddingTop: function () {
-                                    return 8;
-                                },
-                                paddingBottom: function () {
-                                    return 8;
-                                }
-                            },
-                            margin: [0, 10, 0, 10]
-                        },
-                        {
-                            text: '\nΣυνολικά Στοιχεία:',
-                            style: 'subheader'
-                        },
-                        {
-                            table: {
-    widths: ['*', '*'],
-    body: [
-        ['Συνολικά Τιμολόγια Επί Πιστώσει', `${totalCredit.toFixed(2)} €`],
-        ['Συνολικά Πληρωμένα Μετρητοίς', `${totalRecorded.toFixed(2)} €`],
-        ['Συνολικές Τραπεζικές Πληρωμές', `${totalDeposits.toFixed(2)} €`],
-        ['Τελικό Υπόλοιπο', `${balance.toFixed(2)} €`]
-    ]
-},
-layout: {
-    fillColor: function (rowIndex) {
-        return rowIndex === 0 ? '#0099cc' : (rowIndex % 2 === 0 ? '#b3ecff' : '#ffffff'); // Θαλασσί και άσπρο
+             const docDefinition = {
+    pageSize: 'A4',
+    content: [
+        { text: `Συναλλαγές Προμηθευτή: ${supplier}`, style: 'header' },
+        {
+            table: {
+                headerRows: 1,
+                widths: ['*', '*', '*', '*', '*', '*'],
+                body: [
+                    [
+                        { text: 'Ημερομηνία', bold: true, color: 'white', alignment: 'center' },
+                        { text: 'Αριθμός Τιμολογίου', bold: true, color: 'white', alignment: 'center' },
+                        { text: 'Επί Πιστώσει (€)', bold: true, color: 'white', alignment: 'center' },
+                        { text: 'Μετρητά (€)', bold: true, color: 'white', alignment: 'center' },
+                        { text: 'Καταθέσεις (€)', bold: true, color: 'white', alignment: 'center' },
+                        { text: 'Υπόλοιπο (€)', bold: true, color: 'white', alignment: 'center' }
+                    ],
+                    ...tableBody
+                ]
+            },
+            layout: {
+                fillColor: function (rowIndex) {
+                    return rowIndex === 0 ? '#0099cc' : (rowIndex % 2 === 0 ? '#b3ecff' : '#ffffff'); // Θαλασσί και άσπρο
+                },
+                hLineColor: function () {
+                    return '#0099cc'; // Θαλασσί
+                },
+                vLineColor: function () {
+                    return '#0099cc'; // Θαλασσί
+                },
+                paddingLeft: function () {
+                    return 10;
+                },
+                paddingRight: function () {
+                    return 10;
+                },
+                paddingTop: function () {
+                    return 8;
+                },
+                paddingBottom: function () {
+                    return 8;
+                }
+            },
+            margin: [0, 10, 0, 10]
+        },
+        {
+            text: '\nΣυνολικά Στοιχεία:',
+            style: 'subheader'
+        },
+        {
+            table: {
+                widths: ['*', '*'],
+                body: [
+                    ['Συνολικά Τιμολόγια Επί Πιστώσει', `${totalCredit.toFixed(2)} €`],
+                    ['Συνολικά Πληρωμένα Μετρητοίς', `${totalRecorded.toFixed(2)} €`],
+                    ['Συνολικές Τραπεζικές Πληρωμές', `${totalDeposits.toFixed(2)} €`],
+                    ['Τελικό Υπόλοιπο', `${balance.toFixed(2)} €`]
+                ]
+            },
+            layout: {
+                fillColor: function (rowIndex) {
+                    return rowIndex === 0 ? '#0099cc' : (rowIndex % 2 === 0 ? '#b3ecff' : '#ffffff'); // Θαλασσί και άσπρο
+                },
+                hLineColor: function () {
+                    return '#0099cc'; // Θαλασσί
+                },
+                vLineColor: function () {
+                    return '#0099cc'; // Θαλασσί
+                },
+                paddingLeft: function () {
+                    return 10;
+                },
+                paddingRight: function () {
+                    return 10;
+                },
+                paddingTop: function () {
+                    return 8;
+                },
+                paddingBottom: function () {
+                    return 8;
+                }
+            }
+        }
+    ],
+    styles: {
+        header: {
+            fontSize: 18,
+            bold: true,
+            alignment: 'center',
+            margin: [0, 20, 0, 10],
+            color: '#0099cc' // Θαλασσί
+        },
+        subheader: {
+            fontSize: 16,
+            bold: true,
+            margin: [0, 10, 0, 5],
+            color: '#66ccff' // Πιο ανοιχτό θαλασσί
+        }
     },
-    hLineColor: function () {
-        return '#0099cc'; // Θαλασσί
-    },
-    vLineColor: function () {
-        return '#0099cc'; // Θαλασσί
-    },
-    paddingLeft: function () {
-        return 10;
-    },
-    paddingRight: function () {
-        return 10;
-    },
-    paddingTop: function () {
-        return 8;
-    },
-    paddingBottom: function () {
-        return 8;
+    defaultStyle: {
+        columnGap: 20
     }
-}
-],
-styles: {
-    header: {
-        fontSize: 18,
-        bold: true,
-        alignment: 'center',
-        margin: [0, 20, 0, 10],
-        color: '#0099cc' // Θαλασσί
-    },
-    subheader: {
-        fontSize: 16,
-        bold: true,
-        margin: [0, 10, 0, 5],
-        color: '#66ccff' // Πιο ανοιχτό θαλασσί
-    }
-},
-defaultStyle: {
-    columnGap: 20
-}
+};
+
 
 
                 pdfMake.createPdf(docDefinition).download(`${supplier}_συναλλαγές.pdf`);
