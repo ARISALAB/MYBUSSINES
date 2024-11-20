@@ -319,15 +319,23 @@ document.getElementById('total-deposits').textContent = totalDeposits.toFixed(2)
         transactionModal.style.display = 'block';
     }
 
-    closeModal.addEventListener('click', () => {
+document.addEventListener('DOMContentLoaded', () => {
+    const transactionModal = document.getElementById('transaction-modal');
+    const closeModalButton = transactionModal.querySelector('.close');
+
+    // Κλείσιμο του modal όταν πατηθεί το κουμπί "close"
+    closeModalButton.addEventListener('click', () => {
         transactionModal.style.display = 'none';
     });
 
+    // Κλείσιμο του modal όταν γίνει click εκτός του περιεχομένου του
     window.addEventListener('click', (event) => {
         if (event.target === transactionModal) {
             transactionModal.style.display = 'none';
         }
     });
+});
+
 
     // Εξαγωγή σε PDF
     exportPdfButton.addEventListener('click', () => {
