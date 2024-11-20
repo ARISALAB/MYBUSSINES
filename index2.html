@@ -157,16 +157,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalCreditElem = document.getElementById('total-credit');
     const totalRecordedElem = document.getElementById('total-recorded');
     const totalBalanceElem = document.getElementById('total-balance');
+    const totalPurchasesElem = document.getElementById('total-purchases');
     const exportPdfButton = document.getElementById('export-pdf');
 
-    // Εξαγωγή συναλλαγών, τιμολογίων επί πιστώσει και καταθέσεων από το localStorage
+    // Εξαγωγή δεδομένων από το localStorage
     const payments = JSON.parse(localStorage.getItem('payments')) || {};
     const creditInvoices = JSON.parse(localStorage.getItem('credit-invoices')) || {};
     const bankPayments = JSON.parse(localStorage.getItem('bank-payments')) || {};
 
-    // Ομαδοποίηση συναλλαγών ανά προμηθευτή
     const groupedBySupplier = {};
 
+    // Ομαδοποίηση δεδομένων
     Object.keys(payments).forEach(date => {
         payments[date].forEach(transaction => {
             const supplier = transaction.supplier;
@@ -220,9 +221,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const sortedSuppliers = Object.keys(groupedBySupplier).sort();
 
-    // Συνάρτηση εμφάνισης προμηθευτών
+    // Εμφάνιση προμηθευτών
     function displaySuppliers(filter = '') {
-        supplierList.innerHTML = ''; // Καθαρισμός λίστας
+        supplierList.innerHTML = '';
 
         sortedSuppliers
             .filter(supplier => supplier.toLowerCase().includes(filter.toLowerCase()))
@@ -251,11 +252,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Αρχική εμφάνιση όλων των προμηθευτών
     displaySuppliers();
 
-    // Προσθήκη ακροατή στο πεδίο αναζήτησης
+    // Αναζήτηση προμηθευτών
     searchInput.addEventListener('input', (event) => {
         displaySuppliers(event.target.value);
     });
 
+    // Άνοιγμα modal
     function openModal(supplier) {
         supplierNameDisplay.textContent = `Συναλλαγές Προμηθευτή: ${supplier}`;
         transactionTableBody.innerHTML = '';
@@ -296,10 +298,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const totalPurchases = totalCredit + totalRecorded;
-        document.getElementById('total-purchases').textContent = totalPurchases.toFixed(2) + ' €';
-        document.getElementById('total-credit').textContent = totalCredit.toFixed(2) + ' €';
-        document.getElementById('total-recorded').textContent = totalRecorded.toFixed(2) + ' €';
-        document.getElementById('total-balance').textContent = currentBalance.toFixed(2) + ' €';
+        totalPurchasesElem.textContent = totalPurchases.toFixed(2) + ' €';
+        totalCreditElem.textContent = totalCredit.toFixed(2) + ' €';
+        totalRecordedElem.textContent = totalRecorded.toFixed(2) + ' €';
+        totalBalanceElem.textContent = currentBalance.toFixed(2) + ' €';
 
         transactionModal.style.display = 'block';
     }
@@ -313,144 +315,59 @@ document.addEventListener('DOMContentLoaded', () => {
             transactionModal.style.display = 'none';
         }
     });
+
+    // Εξαγωγή σε PDF
+    exportPdfButton.addEventListener('click', () => {
+        const supplier = supplierNameDisplay.textContent.replace('Συναλλαγές Προμηθευτή: ', '');
+        const transactions = groupedBySupplier[supplier].transactions;
+        let balance = 0;
+
+        const tableBody = transactions.map(transaction => {
+            const creditAmount = transaction.type === 'credit' ? parseFloat(transaction.amount).toFixed(2) : '-';
+            const recordedAmount = transaction.type === 'regular' ? parseFloat(transaction.amount).toFixed(2) : '-';
+            const depositAmount = transaction.type === 'deposit' ? parseFloat(transaction.amount).toFixed(2) : '-';
+
+            balance += transaction.type === 'credit' ? parseFloat(transaction.amount) : 0;
+            balance -= transaction.type === 'deposit' ? parseFloat(transaction.amount) : 0;
+
+            return [
+                { text: transaction.date, alignment: 'center' },
+                { text: transaction.invoiceNumber || '-', alignment: 'center' },
+                { text: creditAmount, alignment: 'center' },
+                { text: recordedAmount, alignment: 'center' },
+                { text: depositAmount, alignment: 'center' },
+                { text: balance.toFixed(2) + ' €', alignment: 'center' }
+            ];
+        });
+
+        const docDefinition = {
+            content: [
+                { text: `Συναλλαγές Προμηθευτή: ${supplier}`, style: 'header' },
+                {
+                    table: {
+                        headerRows: 1,
+                        widths: ['*', '*', '*', '*', '*', '*'],
+                        body: [
+                            [
+                                'Ημερομηνία',
+                                'Αριθμός Τιμολογίου',
+                                'Τιμολόγια Επί Πιστώσει (€)',
+                                'Τιμολόγια Πληρωμένα (€)',
+                                'Καταθέσεις (€)',
+                                'Υπόλοιπο (€)'
+                            ],
+                            ...tableBody
+                        ]
+                    }
+                }
+            ]
+        };
+
+        pdfMake.createPdf(docDefinition).download(`${supplier}_συναλλαγές.pdf`);
+    });
 });
 </script>
 
-<SCRIPT>
-    // Εξαγωγή σε PDF
-    exportPdfButton.addEventListener('click', () => {
-                const supplier = supplierNameDisplay.textContent.replace('Συναλλαγές Προμηθευτή: ', '');
-                const transactions = groupedBySupplier[supplier].transactions;
-                const totalCredit = groupedBySupplier[supplier].creditAmount;
-                const totalRecorded = groupedBySupplier[supplier].recordedAmount;
-                const totalDeposits = groupedBySupplier[supplier].deposits;
-                let balance = 0;
-
-                const tableBody = transactions.map(transaction => {
-                    const creditAmount = transaction.type === 'credit' ? parseFloat(transaction.amount).toFixed(2) : '-';
-                    const recordedAmount = transaction.type === 'regular' ? parseFloat(transaction.amount).toFixed(2) : '-';
-                    const depositAmount = transaction.type === 'deposit' ? parseFloat(transaction.amount).toFixed(2) : '-';
-                    balance += transaction.type === 'credit' ? parseFloat(transaction.amount) : 0;
-                    balance -= transaction.type === 'deposit' ? parseFloat(transaction.amount) : 0;
-                    const balanceAmount = balance.toFixed(2);
-                    return [
-                        { text: transaction.date, alignment: 'center' }, 
-                        { text: transaction.invoiceNumber || '-', alignment: 'center' }, 
-                        { text: creditAmount, alignment: 'center' }, 
-                        { text: recordedAmount, alignment: 'center' }, 
-                        { text: depositAmount, alignment: 'center' }, 
-                        { text: balanceAmount, alignment: 'center' }
-                    ];
-                });
-
-                const docDefinition = {
-                    pageSize: 'A4',
-                    content: [
-                        { text: `Συναλλαγές Προμηθευτή: ${supplier}`, style: 'header' },
-                        {
-                            table: {
-                                headerRows: 1,
-                                widths: ['*', '*', '*', '*', '*', '*'],
-                                body: [
-                                    [
-                                        { text: 'Ημερομηνία', bold: true, color: 'white', alignment: 'center' }, 
-                                        { text: 'Αριθμός Τιμολογίου', bold: true, color: 'white', alignment: 'center' }, 
-                                        { text: 'Τιμολόγια Επί Πιστώσει (€)', bold: true, color: 'white', alignment: 'center' }, 
-                                        { text: 'Τιμολόγια Πληρωμένα (€)', bold: true, color: 'white', alignment: 'center' }, 
-                                        { text: 'Καταθέσεις (€)', bold: true, color: 'white', alignment: 'center' }, 
-                                        { text: 'Υπόλοιπο (€)', bold: true, color: 'white', alignment: 'center' }
-                                    ],
-                                    ...tableBody
-                                ]
-                            },
-                            layout: {
-                                fillColor: function (rowIndex) {
-                                    return rowIndex === 0 ? '#003366' : (rowIndex % 2 === 0 ? '#ffffff' : '#e6f2ff');
-                                },
-                                hLineColor: function () {
-                                    return '#004080';
-                                },
-                                vLineColor: function () {
-                                    return '#004080';
-                                },
-                                paddingLeft: function () {
-                                    return 10;
-                                },
-                                paddingRight: function () {
-                                    return 10;
-                                },
-                                paddingTop: function () {
-                                    return 8;
-                                },
-                                paddingBottom: function () {
-                                    return 8;
-                                }
-                            },
-                            margin: [0, 10, 0, 10]
-                        },
-                        {
-                            text: '\nΣυνολικά Στοιχεία:',
-                            style: 'subheader'
-                        },
-                        {
-                            table: {
-                                widths: ['*', '*'],
-                                body: [
-                                    ['Συνολικά Τιμολόγια Επί Πιστώσει', `${totalCredit.toFixed(2)} €`],
-                                    ['Συνολικά Καταγεγραμμένα', `${totalRecorded.toFixed(2)} €`],
-                                    ['Συνολικές Καταθέσεις', `${totalDeposits.toFixed(2)} €`],
-                                    ['Τελικό Υπόλοιπο', `${balance.toFixed(2)} €`]
-                                ]
-                            },
-                            layout: {
-                                fillColor: function (rowIndex) {
-                                    return rowIndex === 0 ? '#003366' : (rowIndex % 2 === 0 ? '#004080' : '#e6f2ff');
-                                },
-                                hLineColor: function () {
-                                    return '#004080';
-                                },
-                                vLineColor: function () {
-                                    return '#004080';
-                                },
-                                paddingLeft: function () {
-                                    return 10;
-                                },
-                                paddingRight: function () {
-                                    return 10;
-                                },
-                                paddingTop: function () {
-                                    return 8;
-                                },
-                                paddingBottom: function () {
-                                    return 8;
-                                }
-                            }
-                        }
-                    ],
-                    styles: {
-                        header: {
-                            fontSize: 18,
-                            bold: true,
-                            alignment: 'center',
-                            margin: [0, 20, 0, 10],
-                            color: '#003366'
-                        },
-                        subheader: {
-                            fontSize: 16,
-                            bold: true,
-                            margin: [0, 10, 0, 5],
-                            color: '#0066cc'
-                        }
-                    },
-                    defaultStyle: {
-                        columnGap: 20
-                    }
-                };
-
-                pdfMake.createPdf(docDefinition).download(`${supplier}_συναλλαγές.pdf`);
-            });
-        
-    </script>
     <script>
         document.querySelector('.menu-toggle').addEventListener('click', function() {
             document.getElementById('menuModal').style.display = 'flex';
