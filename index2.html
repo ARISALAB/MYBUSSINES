@@ -320,19 +320,24 @@ document.getElementById('total-deposits').textContent = totalDeposits.toFixed(2)
     }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const transactionModal = document.getElementById('transaction-modal');
-    const closeModalButton = transactionModal.querySelector('.close');
+    // Επιλέγουμε όλα τα modals και τα κουμπιά "close"
+    const modals = document.querySelectorAll('.modal1');
+    const closeButtons = document.querySelectorAll('.modal1 .close');
 
-    // Κλείσιμο του modal όταν πατηθεί το κουμπί "close"
-    closeModalButton.addEventListener('click', () => {
-        transactionModal.style.display = 'none';
+    // Προσθέτουμε event listener σε κάθε κουμπί "close"
+    closeButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            modals[index].style.display = 'none';
+        });
     });
 
-    // Κλείσιμο του modal όταν γίνει click εκτός του περιεχομένου του
+    // Προσθέτουμε event listener στο window για να κλείνουν τα modals όταν κάνουμε click εκτός τους
     window.addEventListener('click', (event) => {
-        if (event.target === transactionModal) {
-            transactionModal.style.display = 'none';
-        }
+        modals.forEach((modal) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
     });
 });
 
