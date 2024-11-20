@@ -99,6 +99,9 @@
 
 
     <h1>Συναλλαγές Προμηθευτών</h1>
+
+    <input type="text" id="search-supplier" placeholder="Αναζήτηση Προμηθευτή..." />
+
     <ul class="supplier-list" id="supplier-list"></ul>
 
  <!-- Modal -->
@@ -135,6 +138,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const supplierList = document.getElementById('supplier-list');
+    const searchInput = document.getElementById('search-supplier');
     const transactionModal = document.getElementById('transaction-modal');
     const transactionTableBody = document.querySelector('#transaction-table tbody');
     const supplierNameDisplay = document.getElementById('supplier-name');
@@ -152,7 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ομαδοποίηση συναλλαγών ανά προμηθευτή
     const groupedBySupplier = {};
 
-    // Αρχικοποίηση προμηθευτών
     Object.keys(payments).forEach(date => {
         payments[date].forEach(transaction => {
             const supplier = transaction.supplier;
@@ -165,13 +168,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     balance: 0
                 };
             }
-            // Προσθήκη καταγεγραμμένων συναλλαγών
             groupedBySupplier[supplier].recordedAmount += parseFloat(transaction.amount);
             groupedBySupplier[supplier].transactions.push({ date, ...transaction, type: 'regular' });
         });
     });
 
-    // Προσθήκη τιμολογίων επί πιστώσει
     Object.keys(creditInvoices).forEach(date => {
         creditInvoices[date].forEach(invoice => {
             const supplier = invoice.supplier;
@@ -189,7 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Προσθήκη καταθέσεων
     Object.keys(bankPayments).forEach(date => {
         bankPayments[date].forEach(payment => {
             const supplier = payment.supplier;
@@ -207,102 +207,105 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Ταξινόμηση προμηθευτών αλφαβητικά
     const sortedSuppliers = Object.keys(groupedBySupplier).sort();
 
-  // Εμφάνιση προμηθευτών
-sortedSuppliers.forEach(supplier => {
-    const supplierData = groupedBySupplier[supplier];
-    const listItem = document.createElement('li');
-    listItem.className = 'supplier-item';
+    // Συνάρτηση εμφάνισης προμηθευτών
+    function displaySuppliers(filter = '') {
+        supplierList.innerHTML = ''; // Καθαρισμός λίστας
 
-    // Υπολογισμός υπολοίπου
-    const balance = supplierData.creditAmount - supplierData.deposits;
+        sortedSuppliers
+            .filter(supplier => supplier.toLowerCase().includes(filter.toLowerCase()))
+            .forEach(supplier => {
+                const supplierData = groupedBySupplier[supplier];
+                const listItem = document.createElement('li');
+                listItem.className = 'supplier-item';
 
-    // Υπολογισμός του συνολικού ποσού που είναι το άθροισμα των τιμολογίων επί πιστώσει και των πληρωμένων τιμολογίων
-    const total = supplierData.creditAmount + supplierData.recordedAmount; // Άθροισμα των τιμολογίων επί πιστώσει και των πληρωμένων τιμολογίων
+                const balance = supplierData.creditAmount - supplierData.deposits;
+                const total = supplierData.creditAmount + supplierData.recordedAmount;
 
-    listItem.innerHTML = `
-        <strong>${supplier}</strong><br>
-        Τιμολόγια Επί Πιστώσει: ${supplierData.creditAmount.toFixed(2)} €<br>
-        Τιμολόγια Πληρωμένα: ${supplierData.recordedAmount.toFixed(2)} €<br>
-        Καταθέσεις: ${supplierData.deposits.toFixed(2)} €<br>
-        Σύνολο: ${total.toFixed(2)} €<br> <!-- Εμφάνιση του σωστού συνόλου -->
-        Υπόλοιπο: ${balance.toFixed(2)} €
-    `;
+                listItem.innerHTML = `
+                    <strong>${supplier}</strong><br>
+                    Τιμολόγια Επί Πιστώσει: ${supplierData.creditAmount.toFixed(2)} €<br>
+                    Τιμολόγια Πληρωμένα: ${supplierData.recordedAmount.toFixed(2)} €<br>
+                    Καταθέσεις: ${supplierData.deposits.toFixed(2)} €<br>
+                    Σύνολο: ${total.toFixed(2)} €<br>
+                    Υπόλοιπο: ${balance.toFixed(2)} €
+                `;
 
-    listItem.addEventListener('click', () => openModal(supplier));
-    supplierList.appendChild(listItem);
-});
+                listItem.addEventListener('click', () => openModal(supplier));
+                supplierList.appendChild(listItem);
+            });
+    }
 
+    // Αρχική εμφάνιση όλων των προμηθευτών
+    displaySuppliers();
 
-
-    // Άνοιγμα modal με τις συναλλαγές του προμηθευτή
-function openModal(supplier) {
-    supplierNameDisplay.textContent = `Συναλλαγές Προμηθευτή: ${supplier}`;
-    transactionTableBody.innerHTML = '';
-
-    // Ταξινόμηση συναλλαγών κατά ημερομηνία (αύξουσα σειρά)
-    const transactions = groupedBySupplier[supplier].transactions;
-    transactions.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-    let totalCredit = 0;
-    let totalRecorded = 0;
-    let totalDeposits = 0;
-    let currentBalance = 0;
-
-    transactions.forEach(transaction => {
-        const creditAmount = transaction.type === 'credit' ? parseFloat(transaction.amount).toFixed(2) : '-';
-        const recordedAmount = transaction.type === 'regular' ? parseFloat(transaction.amount).toFixed(2) : '-';
-        const depositAmount = transaction.type === 'deposit' ? parseFloat(transaction.amount).toFixed(2) : '-';
-
-        // Υπολογισμός του υπολοίπου
-        if (transaction.type === 'credit') {
-            totalCredit += parseFloat(transaction.amount);
-            currentBalance += parseFloat(transaction.amount);
-        } else if (transaction.type === 'regular') {
-            totalRecorded += parseFloat(transaction.amount);
-        } else if (transaction.type === 'deposit') {
-            totalDeposits += parseFloat(transaction.amount);
-            currentBalance -= parseFloat(transaction.amount);
-        }
-
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${transaction.date}</td>
-            <td>${transaction.invoiceNumber || '-'}</td>
-            <td>${creditAmount} €</td>
-            <td>${recordedAmount} €</td>
-            <td>${depositAmount} €</td>
-            <td>${currentBalance.toFixed(2)} €</td>
-        `;
-        transactionTableBody.appendChild(row);
+    // Προσθήκη ακροατή στο πεδίο αναζήτησης
+    searchInput.addEventListener('input', (event) => {
+        displaySuppliers(event.target.value);
     });
 
-    // Υπολογισμός και εμφάνιση του συνολικού ποσού στο modal
-    const totalPurchases = totalCredit + totalRecorded; // Υπολογισμός του συνόλου αγορών
-    document.getElementById('total-purchases').textContent = totalPurchases.toFixed(2) + ' €';
-    document.getElementById('total-credit').textContent = totalCredit.toFixed(2) + ' €';
-    document.getElementById('total-recorded').textContent = totalRecorded.toFixed(2) + ' €';
-    document.getElementById('total-balance').textContent = currentBalance.toFixed(2) + ' €';
+    function openModal(supplier) {
+        supplierNameDisplay.textContent = `Συναλλαγές Προμηθευτή: ${supplier}`;
+        transactionTableBody.innerHTML = '';
 
-    transactionModal.style.display = 'block';
-}
+        const transactions = groupedBySupplier[supplier].transactions;
+        transactions.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    const closeModalButton = transactionModal.querySelector('.close'); // Κάνει αναφορά στο σωστό κουμπί κλεισίματος
+        let totalCredit = 0;
+        let totalRecorded = 0;
+        let totalDeposits = 0;
+        let currentBalance = 0;
 
-     // Κλείσιμο του modal με κλικ στο κουμπί κλεισίματος
-    closeModalButton.addEventListener('click', () => {
+        transactions.forEach(transaction => {
+            const creditAmount = transaction.type === 'credit' ? parseFloat(transaction.amount).toFixed(2) : '-';
+            const recordedAmount = transaction.type === 'regular' ? parseFloat(transaction.amount).toFixed(2) : '-';
+            const depositAmount = transaction.type === 'deposit' ? parseFloat(transaction.amount).toFixed(2) : '-';
+
+            if (transaction.type === 'credit') {
+                totalCredit += parseFloat(transaction.amount);
+                currentBalance += parseFloat(transaction.amount);
+            } else if (transaction.type === 'regular') {
+                totalRecorded += parseFloat(transaction.amount);
+            } else if (transaction.type === 'deposit') {
+                totalDeposits += parseFloat(transaction.amount);
+                currentBalance -= parseFloat(transaction.amount);
+            }
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${transaction.date}</td>
+                <td>${transaction.invoiceNumber || '-'}</td>
+                <td>${creditAmount} €</td>
+                <td>${recordedAmount} €</td>
+                <td>${depositAmount} €</td>
+                <td>${currentBalance.toFixed(2)} €</td>
+            `;
+            transactionTableBody.appendChild(row);
+        });
+
+        const totalPurchases = totalCredit + totalRecorded;
+        document.getElementById('total-purchases').textContent = totalPurchases.toFixed(2) + ' €';
+        document.getElementById('total-credit').textContent = totalCredit.toFixed(2) + ' €';
+        document.getElementById('total-recorded').textContent = totalRecorded.toFixed(2) + ' €';
+        document.getElementById('total-balance').textContent = currentBalance.toFixed(2) + ' €';
+
+        transactionModal.style.display = 'block';
+    }
+
+    closeModal.addEventListener('click', () => {
         transactionModal.style.display = 'none';
     });
 
-    // Κλείσιμο του modal με κλικ έξω από το modal
     window.addEventListener('click', (event) => {
         if (event.target === transactionModal) {
             transactionModal.style.display = 'none';
         }
     });
+});
+</script>
 
+<SCRIPT>
     // Εξαγωγή σε PDF
     exportPdfButton.addEventListener('click', () => {
                 const supplier = supplierNameDisplay.textContent.replace('Συναλλαγές Προμηθευτή: ', '');
