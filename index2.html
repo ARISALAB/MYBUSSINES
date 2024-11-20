@@ -223,33 +223,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const sortedSuppliers = Object.keys(groupedBySupplier).sort();
 
-    // Εμφάνιση προμηθευτών
-    function displaySuppliers(filter = '') {
-        supplierList.innerHTML = '';
+  function removeDiacritics(text) {
+    return text
+        .normalize('NFD') // Διαχωρίζει το γράμμα από τον τόνο
+        .replace(/[\u0300-\u036f]/g, '') // Αφαιρεί τους τόνους
+        .toLowerCase(); // Μετατροπή σε πεζά
+}
 
-        sortedSuppliers
-            .filter(supplier => supplier.toLowerCase().includes(filter.toLowerCase()))
-            .forEach(supplier => {
-                const supplierData = groupedBySupplier[supplier];
-                const listItem = document.createElement('li');
-                listItem.className = 'supplier-item';
+function displaySuppliers(filter = '') {
+    supplierList.innerHTML = ''; // Καθαρισμός λίστας
 
-                const balance = supplierData.creditAmount - supplierData.deposits;
-                const total = supplierData.creditAmount + supplierData.recordedAmount;
+    const normalizedFilter = removeDiacritics(filter);
 
-                listItem.innerHTML = `
-                    <strong>${supplier}</strong><br>
-                    Τιμολόγια Επί Πιστώσει: ${supplierData.creditAmount.toFixed(2)} €<br>
-                    Τιμολόγια Πληρωμένα: ${supplierData.recordedAmount.toFixed(2)} €<br>
-                    Καταθέσεις: ${supplierData.deposits.toFixed(2)} €<br>
-                    Σύνολο: ${total.toFixed(2)} €<br>
-                    Υπόλοιπο: ${balance.toFixed(2)} €
-                `;
+    sortedSuppliers
+        .filter(supplier => removeDiacritics(supplier).includes(normalizedFilter))
+        .forEach(supplier => {
+            const supplierData = groupedBySupplier[supplier];
+            const listItem = document.createElement('li');
+            listItem.className = 'supplier-item';
 
-                listItem.addEventListener('click', () => openModal(supplier));
-                supplierList.appendChild(listItem);
-            });
-    }
+            const balance = supplierData.creditAmount - supplierData.deposits;
+            const total = supplierData.creditAmount + supplierData.recordedAmount;
+
+            listItem.innerHTML = `
+                <strong>${supplier}</strong><br>
+                Τιμολόγια Επί Πιστώσει: ${supplierData.creditAmount.toFixed(2)} €<br>
+                Τιμολόγια Πληρωμένα: ${supplierData.recordedAmount.toFixed(2)} €<br>
+                Καταθέσεις: ${supplierData.deposits.toFixed(2)} €<br>
+                Σύνολο: ${total.toFixed(2)} €<br>
+                Υπόλοιπο: ${balance.toFixed(2)} €
+            `;
+
+            listItem.addEventListener('click', () => openModal(supplier));
+            supplierList.appendChild(listItem);
+        });
+}
 
     // Αρχική εμφάνιση όλων των προμηθευτών
     displaySuppliers();
