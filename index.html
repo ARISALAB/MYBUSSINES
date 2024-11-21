@@ -8,25 +8,27 @@
     <link rel="icon" href="11.png" type="image/png">
     <script src="https://www.paypal.com/sdk/js?client-id=AbP8aGEBpUSbe7x2frrXYzb502UdR7uL3CjpNb-Sp6lk7hy0j9sYRAJORgfzT01owV39NlnKlycB1mcj"></script>
     <style>
-        /* Γενικά Στυλ */
+/* Γενικά Στυλ */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
-/* Κουμπιά */
+.container {
+    text-align: center;
+    padding: 20px;
+}
+
 button {
     background-color: #28A745;
     color: white;
-    padding: 10px 20px;
     border: none;
-    border-radius: 5px;
+    padding: 10px 20px;
     cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
     transition: background-color 0.3s;
 }
 
@@ -34,12 +36,7 @@ button:hover {
     background-color: #218838;
 }
 
-/* Στυλ για PayPal */
-#paypal-button-container {
-    margin-top: 20px;
-}
-
-/* Εμφάνιση του User Info */
+/* Στυλ για τον χρήστη */
 #userInfo {
     display: flex;
     flex-direction: column;
@@ -63,12 +60,16 @@ button:hover {
     margin-top: 20px;
 }
 
-/* Εφαρμογή */
+/* Στυλ για PayPal */
+#paypal-button-container {
+    margin-top: 20px;
+}
+
 #appContent {
-    text-align: center;
     display: none;
 }
 
+        
     </style>
 </head>
 <body>
@@ -93,8 +94,9 @@ button:hover {
                 <button type="submit">Σύνδεση</button>
             </form>
             <button id="googleLogin">Σύνδεση με Google</button>
-            <button id="logout" style="display: none;">Αποσύνδεση</button>
         </div>
+
+        <button id="logout" style="display: none;">Αποσύνδεση</button>
 
         <div id="userInfo" style="display: none;">
             <img id="userPhoto" alt="User Photo" style="width: 50px; height: 50px; border-radius: 50%;">
@@ -167,6 +169,10 @@ button:hover {
             try {
                 await signOut(auth);
                 alert('Αποσυνδεθήκατε!');
+                document.getElementById('auth').style.display = 'block';
+                document.getElementById('paypal-container').style.display = 'none';
+                document.getElementById('logout').style.display = 'none';
+                document.getElementById('userInfo').style.display = 'none';
             } catch (error) {
                 alert('Σφάλμα: ' + error.message);
             }
