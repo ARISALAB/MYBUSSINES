@@ -3,241 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Myakorn Cashier</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Αρχική Σελίδα</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Σύνδεσμος στο αρχείο CSS -->
     <link rel="icon" href="11.png" type="image/png">
-    <script src="https://www.paypal.com/sdk/js?client-id=AbP8aGEBpUSbe7x2frrXYzb502UdR7uL3CjpNb-Sp6lk7hy0j9sYRAJORgfzT01owV39NlnKlycB1mcj"></script>
-    <style>
-        /* Γενικά Στυλ */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            text-align: center;
-            padding: 20px;
-        }
-
-        button {
-            background-color: #007BFF; /* Μπλε κουμπί */
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #0056b3; /* Σκούρο μπλε όταν το κουμπί είναι hover */
-        }
-
-        /* Στυλ για τον χρήστη */
-        #userInfo {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        #userPhoto {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-        }
-
-        #userName {
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        /* Αποσύνδεση */
-        #logout {
-            margin-top: 20px;
-        }
-
-        /* Στυλ για PayPal */
-        #paypal-button-container {
-            margin-top: 20px;
-        }
-
-        #appContent {
-            display: none;
-        }
-
-    </style>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
 <body>
-    <nav>
-        <img src="11.png" alt="Logo" class="logo">
-        <button class="menu-toggle">&#9776;<br>Menu</button>
-        <div class="menu-items">
-            <a href="index.html">Αρχική Σελίδα</a>
-        </div>
-    </nav>
 
-    <div class="container">
-        <h1>Myakorn Cashier</h1>
-        <p>Εγγραφείτε, συνδεθείτε και ξεκλειδώστε την εφαρμογή με πληρωμή μέσω PayPal!</p>
-
-        <!-- Εγγραφή/Σύνδεση -->
-        <div id="auth">
-            <h2>Σύνδεση</h2>
-            <form id="loginForm">
-                <input type="email" id="email" placeholder="Email" required>
-                <input type="password" id="password" placeholder="Κωδικός" required>
-                <button type="submit">Σύνδεση</button>
-            </form>
-            <button id="googleLogin">Σύνδεση με Google</button>
-        </div>
-
-        <button id="logout" style="display: none;">Αποσύνδεση</button>
-
-        <div id="userInfo" style="display: none;">
-            <img id="userPhoto" alt="User Photo" style="width: 50px; height: 50px; border-radius: 50%;">
-            <p id="userName"></p>
-        </div>
-
-        <!-- PayPal -->
-        <div id="paypal-container" style="display: none;">
-            <h2>Πληρωμή μέσω PayPal</h2>
-            <div id="paypal-button-container"></div>
-        </div>
+<!-- Μενού -->
+<nav>
+    <img src="11.png" alt="Logo" class="logo">
+    <button class="menu-toggle">&#9776;<br>Menu</button>
+    <div class="menu-items">
+        <a href="index.html">Αρχική Σελίδα</a>
+        <a href="#" onclick="openModal('loginModal')">Σύνδεση</a>
+        <a href="#" onclick="openModal('registerModal')">Εγγραφή</a>
+        <a href="#" onclick="openModal('paymentModal')">Πληρωμή με PayPal</a>
     </div>
+</nav>
 
-    <div id="appContent" style="display: none;">
-        <h2>Καλώς ήρθατε στην Εφαρμογή!</h2>
-        <p>Εδώ εμφανίζεται το περιεχόμενο της εφαρμογής σας μετά την πληρωμή.</p>
-        <button id="goToApp" style="display: none;" onclick="window.location.href='your-app-url.html'">Πήγαινε στην Εφαρμογή</button>
+<!-- Modal Εγγραφής -->
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('registerModal')">&times;</span>
+        <h2>Εγγραφή</h2>
+        <form action="register.php" method="POST">
+            <input type="text" name="username" placeholder="Όνομα Χρήστη" required><br>
+            <input type="email" name="email" placeholder="Ηλεκτρονικό Ταχυδρομείο" required><br>
+            <input type="password" name="password" placeholder="Κωδικός" required><br>
+            <button type="submit">Εγγραφή</button>
+        </form>
+        <p>Έχετε ήδη λογαριασμό; <a href="#" onclick="openModal('loginModal')">Συνδεθείτε εδώ</a></p>
     </div>
+</div>
 
-    <footer>
-        &copy; 2024 Myakorn Cashier - <a href="mailto:aris.alampourinos@gmail.com">Επικοινωνία</a>
-    </footer>
+<!-- Modal Σύνδεσης -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('loginModal')">&times;</span>
+        <h2>Σύνδεση</h2>
+        <form action="login.php" method="POST">
+            <input type="email" name="email" placeholder="Ηλεκτρονικό Ταχυδρομείο" required><br>
+            <input type="password" name="password" placeholder="Κωδικός" required><br>
+            <button type="submit">Σύνδεση</button>
+        </form>
+        <p>Δεν έχετε λογαριασμό; <a href="#" onclick="openModal('registerModal')">Εγγραφείτε εδώ</a></p>
+        <div class="g-signin2" data-onsuccess="onSignIn"></div> <!-- Google Sign-In -->
+    </div>
+</div>
 
-    <script type="module">
-        // Import Firebase modules
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-        import { getFirestore, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+<!-- Modal Πληρωμής με PayPal -->
+<div id="paymentModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('paymentModal')">&times;</span>
+        <h2>Πληρωμή με PayPal</h2>
+        <form action="payment.php" method="POST">
+            <input type="text" name="amount" placeholder="Ποσό" required><br>
+            <button type="submit">Πληρωμή</button>
+        </form>
+        <div id="paypal-button-container"></div> <!-- PayPal Button -->
+    </div>
+</div>
 
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyA0oLrWu04w1PUjFbcQh12sxC38Ub-7gJk",
-            authDomain: "myakorncashier.firebaseapp.com",
-            projectId: "myakorncashier",
-            storageBucket: "myakorncashier.firebasestorage.app",
-            messagingSenderId: "58579009346",
-            appId: "1:58579009346:web:5184a07b1ebf5aab4f92db",
-            measurementId: "G-7E6K6QQVZG"
-        };
+<!-- Κύριο Περιεχόμενο -->
+<div class="container">
+    <h1>Καλωσήρθατε στην Εφαρμογή Καταγραφής Συναλλαγών</h1>
+    <p>Επιλέξτε μια ενότητα για να ξεκινήσετε</p>
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+    <div class="image-grid">
+        <a href="index1.html">
+            <img src="1.jpg" alt="Καταγραφή Συναλλαγών">
+            <p><strong>Καταγραφή Συναλλαγών: </strong> Διαχειριστείτε και καταγράψτε τις συναλλαγές σας</p>
+        </a>
+        <!-- Προσθέστε άλλες συνδέσεις αν χρειάζεται -->
+    </div>
+</div>
 
-        // Login Form Submission
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                alert('Συνδεθήκατε επιτυχώς!');
-            } catch (error) {
-                alert('Σφάλμα: ' + error.message);
-            }
-        });
+<footer>
+    &copy; 2024 Εφαρμογή Καταγραφής Συναλλαγών - <a href="mailto:support@example.com">Επικοινωνία</a>
+</footer>
 
-        // Google Login
-        document.getElementById('googleLogin').addEventListener('click', async () => {
-            const provider = new GoogleAuthProvider();
-            try {
-                await signInWithPopup(auth, provider);
-                alert('Συνδεθήκατε με Google!');
-            } catch (error) {
-                alert('Σφάλμα: ' + error.message);
-            }
-        });
+<script>
+// Ανοιγμα και Κλείσιμο Modals
+function openModal(modalId) {
+    document.getElementById(modalId).style.display = 'block';
+}
 
-        // Logout
-        document.getElementById('logout').addEventListener('click', async () => {
-            try {
-                await signOut(auth);
-                alert('Αποσυνδεθήκατε!');
-                document.getElementById('auth').style.display = 'block';
-                document.getElementById('paypal-container').style.display = 'none';
-                document.getElementById('logout').style.display = 'none';
-                document.getElementById('userInfo').style.display = 'none';
-            } catch (error) {
-                alert('Σφάλμα: ' + error.message);
-            }
-        });
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const photo = user.photoURL || 'default-avatar.png'; 
-                const name = user.displayName || 'Χρήστης';
-                document.getElementById('userPhoto').src = photo;
-                document.getElementById('userName').textContent = `Καλώς ήρθατε, ${name}`;
-                document.getElementById('userInfo').style.display = 'block';
+// Κλείσιμο του Modal αν κάνετε κλικ έξω από αυτό
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+        closeModal(event.target.id);
+    }
+}
 
-                // Ελέγχουμε αν έχει πληρώσει ο χρήστης
-                const userRef = doc(db, "users", user.uid);
-                getDoc(userRef).then((docSnap) => {
-                    if (docSnap.exists()) {
-                        // Ο χρήστης έχει ήδη πληρώσει
-                        document.getElementById('paypal-container').style.display = 'none';
-                        document.getElementById('appContent').style.display = 'block';
-                        document.getElementById('goToApp').style.display = 'block';
-                    } else {
-                        // Ο χρήστης δεν έχει πληρώσει
-                        document.getElementById('auth').style.display = 'none';
-                        document.getElementById('paypal-container').style.display = 'block';
-                        document.getElementById('logout').style.display = 'block';
+// Google Sign-In
+function onSignIn(googleUser) {
+    var profile = googleUser.getBasicProfile();
+    alert("Συνδεθήκατε ως: " + profile.getName());
+}
+</script>
+
+<!-- PayPal Script -->
+<script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID"></script>
+<script>
+    paypal.Buttons({
+        createOrder: function(data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: '10.00'  // Ορισμός ποσού πληρωμής
                     }
-                });
-            } else {
-                document.getElementById('userInfo').style.display = 'none';
-                document.getElementById('auth').style.display = 'block';
-                document.getElementById('paypal-container').style.display = 'none';
-                document.getElementById('logout').style.display = 'none';
-            }
-        });
+                }]
+            });
+        },
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+                alert('Η πληρωμή σας έγινε με επιτυχία, ' + details.payer.name.given_name);
+            });
+        }
+    }).render('#paypal-button-container');  // Εμφάνιση του PayPal Button
+</script>
 
-        // Παράδειγμα PayPal Button
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            value: '9.99'
-                        }
-                    }]
-                });
-            },
-            onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    alert('Σας ευχαριστούμε για την πληρωμή!');
-                    const user = auth.currentUser;
-                    if (user) {
-                        // Αποθηκεύουμε την πληρωμή στο Firestore
-                        setDoc(doc(db, "users", user.uid), {
-                            paid: true
-                        }).then(() => {
-                            document.getElementById('appContent').style.display = 'block';
-                            document.getElementById('paypal-container').style.display = 'none';
-                            document.getElementById('goToApp').style.display = 'block';
-                        });
-                    }
-                });
-            }
-        }).render('#paypal-button-container');
-    </script>
 </body>
 </html>
