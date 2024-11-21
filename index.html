@@ -102,18 +102,31 @@
             }
         });
 
-        // Auth State Change
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById('auth').style.display = 'none';
-                document.getElementById('paypal-container').style.display = 'block';
-                document.getElementById('logout').style.display = 'block';
-            } else {
-                document.getElementById('auth').style.display = 'block';
-                document.getElementById('paypal-container').style.display = 'none';
-                document.getElementById('logout').style.display = 'none';
-            }
-        });
+    onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // Εμφάνιση φωτογραφίας και ονόματος χρήστη
+        const photo = user.photoURL || 'default-avatar.png'; // Default εικόνα αν δεν υπάρχει φωτογραφία
+        const name = user.displayName || 'Χρήστης';
+
+        document.getElementById('userPhoto').src = photo;
+        document.getElementById('userName').textContent = `Καλώς ήρθατε, ${name}`;
+        document.getElementById('userInfo').style.display = 'block';
+
+        // Εμφάνιση κουμπιού PayPal
+        document.getElementById('auth').style.display = 'none';
+        document.getElementById('paypal-container').style.display = 'block';
+        document.getElementById('logout').style.display = 'block';
+    } else {
+        // Απόκρυψη πληροφορίας χρήστη
+        document.getElementById('userInfo').style.display = 'none';
+
+        // Επαναφορά αρχικής κατάστασης
+        document.getElementById('auth').style.display = 'block';
+        document.getElementById('paypal-container').style.display = 'none';
+        document.getElementById('logout').style.display = 'none';
+    }
+});
+
 
         // PayPal Buttons
         paypal.Buttons({
