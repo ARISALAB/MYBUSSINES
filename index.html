@@ -161,29 +161,13 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
         });
 });
 
-// Δημιουργία πληρωμής με PayPal
-document.getElementById('paymentForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const amount = document.getElementById('paymentAmount').value;
-
-    // Αποθήκευση πληρωμής στη βάση δεδομένων
-    const userId = auth.currentUser.uid;
-    database.ref('payments/' + userId).push({
-        amount: amount,
-        date: new Date().toISOString()
-    }).then(() => {
-        alert('Η πληρωμή καταχωρήθηκε!');
-    });
-});
-
-// PayPal Button Setup
+// Ρύθμιση PayPal
 paypal.Buttons({
     createOrder: function(data, actions) {
         return actions.order.create({
             purchase_units: [{
                 amount: {
-                    value: '10.00'  // Ορισμός ποσού πληρωμής
+                    value: document.getElementById('paymentAmount').value
                 }
             }]
         });
