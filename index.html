@@ -6,7 +6,9 @@
     <title>Αρχική Σελίδα</title>
     <link rel="stylesheet" href="styles.css"> <!-- Σύνδεσμος στο αρχείο CSS -->
     <link rel="icon" href="11.png" type="image/png">
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
 </head>
 <body>
 
@@ -27,10 +29,10 @@
     <div class="modal-content">
         <span class="close" onclick="closeModal('registerModal')">&times;</span>
         <h2>Εγγραφή</h2>
-        <form action="register.php" method="POST">
-            <input type="text" name="username" placeholder="Όνομα Χρήστη" required><br>
-            <input type="email" name="email" placeholder="Ηλεκτρονικό Ταχυδρομείο" required><br>
-            <input type="password" name="password" placeholder="Κωδικός" required><br>
+        <form id="registerForm">
+            <input type="text" id="registerUsername" placeholder="Όνομα Χρήστη" required><br>
+            <input type="email" id="registerEmail" placeholder="Ηλεκτρονικό Ταχυδρομείο" required><br>
+            <input type="password" id="registerPassword" placeholder="Κωδικός" required><br>
             <button type="submit">Εγγραφή</button>
         </form>
         <p>Έχετε ήδη λογαριασμό; <a href="#" onclick="openModal('loginModal')">Συνδεθείτε εδώ</a></p>
@@ -42,13 +44,12 @@
     <div class="modal-content">
         <span class="close" onclick="closeModal('loginModal')">&times;</span>
         <h2>Σύνδεση</h2>
-        <form action="login.php" method="POST">
-            <input type="email" name="email" placeholder="Ηλεκτρονικό Ταχυδρομείο" required><br>
-            <input type="password" name="password" placeholder="Κωδικός" required><br>
+        <form id="loginForm">
+            <input type="email" id="loginEmail" placeholder="Ηλεκτρονικό Ταχυδρομείο" required><br>
+            <input type="password" id="loginPassword" placeholder="Κωδικός" required><br>
             <button type="submit">Σύνδεση</button>
         </form>
         <p>Δεν έχετε λογαριασμό; <a href="#" onclick="openModal('registerModal')">Εγγραφείτε εδώ</a></p>
-        <div class="g-signin2" data-onsuccess="onSignIn"></div> <!-- Google Sign-In -->
     </div>
 </div>
 
@@ -57,8 +58,8 @@
     <div class="modal-content">
         <span class="close" onclick="closeModal('paymentModal')">&times;</span>
         <h2>Πληρωμή με PayPal</h2>
-        <form action="payment.php" method="POST">
-            <input type="text" name="amount" placeholder="Ποσό" required><br>
+        <form id="paymentForm">
+            <input type="text" id="paymentAmount" placeholder="Ποσό" required><br>
             <button type="submit">Πληρωμή</button>
         </form>
         <div id="paypal-button-container"></div> <!-- PayPal Button -->
@@ -84,6 +85,22 @@
 </footer>
 
 <script>
+// Firebase Configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyA0oLrWu04w1PUjFbcQh12sxC38Ub-7gJk",
+    authDomain: "myakorncashier.firebaseapp.com",
+    projectId: "myakorncashier",
+    storageBucket: "myakorncashier.appspot.com",
+    messagingSenderId: "58579009346",
+    appId: "1:58579009346:web:5184a07b1ebf5aab4f92db",
+    measurementId: "G-7E6K6QQVZG"
+};
+
+// Initialize Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const database = firebase.database();
+
 // Ανοιγμα και Κλείσιμο Modals
 function openModal(modalId) {
     document.getElementById(modalId).style.display = 'block';
@@ -100,33 +117,82 @@ window.onclick = function(event) {
     }
 }
 
-// Google Sign-In
-function onSignIn(googleUser) {
-    var profile = googleUser.getBasicProfile();
-    alert("Συνδεθήκατε ως: " + profile.getName());
-}
-</script>
+// Εγγραφή Χρήστη στο Firebase
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-<!-- PayPal Script -->
-<script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID"></script>
-<script>
-    paypal.Buttons({
-        createOrder: function(data, actions) {
-            return actions.order.create({
-                purchase_units: [{
-                    amount: {
-                        value: '10.00'  // Ορισμός ποσού πληρωμής
-                    }
-                }]
-            });
-        },
-        onApprove: function(data, actions) {
-            return actions.order.capture().then(function(details) {
-                alert('Η πληρωμή σας έγινε με επιτυχία, ' + details.payer.name.given_name);
-            });
-        }
-    }).render('#paypal-button-container');  // Εμφάνιση του PayPal Button
-</script>
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
 
+    auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            const username = document.getElementById('registerUsername').value;
+
+            // Αποθήκευση επιπλέον στοιχείων στη βάση δεδομένων
+            database.ref('users/' + user.uid).set({
+                username: username,
+                email: email
+            }).then(() => {
+                alert('Εγγραφή Επιτυχής!');
+                closeModal('registerModal');
+            });
+        })
+        .catch((error) => {
+            alert(error.message);
+        });
+});
+
+// Σύνδεση Χρήστη στο Firebase
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            alert('Σύνδεση Επιτυχής!');
+            closeModal('loginModal');
+        })
+        .catch((error) => {
+            alert(error.message);
+        });
+});
+
+// Δημιουργία πληρωμής με PayPal
+document.getElementById('paymentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const amount = document.getElementById('paymentAmount').value;
+
+    // Αποθήκευση πληρωμής στη βάση δεδομένων
+    const userId = auth.currentUser.uid;
+    database.ref('payments/' + userId).push({
+        amount: amount,
+        date: new Date().toISOString()
+    }).then(() => {
+        alert('Η πληρωμή καταχωρήθηκε!');
+    });
+});
+
+// PayPal Button Setup
+paypal.Buttons({
+    createOrder: function(data, actions) {
+        return actions.order.create({
+            purchase_units: [{
+                amount: {
+                    value: '10.00'  // Ορισμός ποσού πληρωμής
+                }
+            }]
+        });
+    },
+    onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+            alert('Η πληρωμή πραγματοποιήθηκε με επιτυχία!');
+        });
+    }
+}).render('#paypal-button-container');
+</script>
 </body>
 </html>
