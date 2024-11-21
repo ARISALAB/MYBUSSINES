@@ -6,8 +6,6 @@
     <title>Myakorn Cashier</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="11.png" type="image/png">
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
     <script src="https://www.paypal.com/sdk/js?client-id=AbP8aGEBpUSbe7x2frrXYzb502UdR7uL3CjpNb-Sp6lk7hy0j9sYRAJORgfzT01owV39NlnKlycB1mcj"></script>
 </head>
 <body>
@@ -16,7 +14,6 @@
         <button class="menu-toggle">&#9776;<br>Menu</button>
         <div class="menu-items">
             <a href="index.html">Αρχική Σελίδα</a>
-            <!-- Περισσότερες ενότητες -->
         </div>
     </nav>
 
@@ -47,8 +44,12 @@
         &copy; 2024 Myakorn Cashier - <a href="mailto:aris.alampourinos@gmail.com">Επικοινωνία</a>
     </footer>
 
-    <script>
-        // Firebase Config
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyA0oLrWu04w1PUjFbcQh12sxC38Ub-7gJk",
             authDomain: "myakorncashier.firebaseapp.com",
@@ -59,8 +60,8 @@
         };
 
         // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
         // Login Form Submission
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -68,7 +69,7 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             try {
-                await auth.signInWithEmailAndPassword(email, password);
+                await signInWithEmailAndPassword(auth, email, password);
                 alert('Συνδεθήκατε επιτυχώς!');
             } catch (error) {
                 alert('Σφάλμα: ' + error.message);
@@ -77,9 +78,9 @@
 
         // Google Login
         document.getElementById('googleLogin').addEventListener('click', async () => {
-            const provider = new firebase.auth.GoogleAuthProvider();
+            const provider = new GoogleAuthProvider();
             try {
-                await auth.signInWithPopup(provider);
+                await signInWithPopup(auth, provider);
                 alert('Συνδεθήκατε με Google!');
             } catch (error) {
                 alert('Σφάλμα: ' + error.message);
@@ -88,12 +89,16 @@
 
         // Logout
         document.getElementById('logout').addEventListener('click', async () => {
-            await auth.signOut();
-            alert('Αποσυνδεθήκατε!');
+            try {
+                await signOut(auth);
+                alert('Αποσυνδεθήκατε!');
+            } catch (error) {
+                alert('Σφάλμα: ' + error.message);
+            }
         });
 
         // Auth State Change
-        auth.onAuthStateChanged((user) => {
+        onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('auth').style.display = 'none';
                 document.getElementById('paypal-container').style.display = 'block';
