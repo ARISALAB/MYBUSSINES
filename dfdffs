@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Αρχική Σελίδα</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Σύνδεσμος στο αρχείο CSS -->
+    <link rel="icon" href="11.png" type="image/png">
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+</head>
+<body>
+<nav>
+        <img src="11.png" alt="Logo" class="logo">
+        <button class="menu-toggle">
+            &#9776;<br>Menu
+        </button>
+        <div class="menu-items">
+            <a href="index.html">Αρχική Σελίδα</a>
+    
+            <div class="dropdown">
+                <a href="#">Συναλλαγές &#9662;</a>
+                <div class="dropdown-content">
+                    <a href="index1.html">Καταγραφή Εξόδων</a>
+                    <a href="index4.html">Τιμολόγια Επί Πιστώσει</a>
+                    <a href="index5.html">Πληρωμές Τράπεζας</a>
+                </div>
+            </div>
+    
+            <a href="index3.html">Καταγραφή Εσόδων</a>
+            <a href="index2.html">Καρτέλες Προμηθευτών</a>
+    
+            <div class="dropdown">
+                <a href="#">Αναφορές &#9662;</a>
+                <div class="dropdown-content">
+                    <a href="index7.html">Ημερήσια Αναφορά</a>
+                    <a href="index6.html">Εβδομαδιαία Αναφορά</a>
+                    <a href="index8.html">Μηνιαία Αναφορά</a>
+                    <a href="index9.html">Ετήσια Αναφορά</a>
+                </div>
+            </div>
+    
+            <div class="dropdown">
+                <a href="#">Προσωπικό &#9662;</a>
+                <div class="dropdown-content">
+                    <a href="employee-management.html">Καταγραφή Προσωπικού</a>
+                    <a href="salary.html">Καταγραφή Μισθοδοσίας</a>
+                    <a href="weekly-salary.html">Εβδομαδιαία Μισθοδοσία </a>
+                    <a href="salary-report.html">Αναφορά Μισθοδοσίας</a>
+                    
+
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div id="menuModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <a href="index.html">Αρχική Σελίδα</a>
+            
+            <div class="dropdown">
+                <a href="#">Συναλλαγές</a>
+                <div class="dropdown-content">
+                    <a href="index1.html">Καταγραφή Εξόδων</a>
+                    <a href="index4.html">Τιμολόγια Επί Πιστώσει</a>
+                    <a href="index5.html">Πληρωμές Τράπεζας</a>
+                </div>
+            </div>
+            
+            <a href="index3.html">Καταγραφή Εσόδων</a>
+            <a href="index2.html">Καρτέλες Προμηθευτών</a>
+            
+            <div class="dropdown">
+                <a href="#">Αναφορές</a>
+                <div class="dropdown-content">
+                    <a href="index7.html">Ημερήσια Αναφορά</a>
+                    <a href="index6.html">Εβδομαδιαία Αναφορά</a>
+                    <a href="index8.html">Μηνιαία Αναφορά</a>
+                    <a href="index9.html">Ετήσια Αναφορά</a>
+                </div>
+            </div>
+            
+            <!-- Νέα ενότητα για Προσωπικό -->
+            <div class="dropdown">
+                <a href="#">Προσωπικό &#9662;</a>
+                <div class="dropdown-content">
+                    <a href="employee-management.html">Καταγραφή Προσωπικού</a>
+                    <a href="salary.html">Καταγραφή Μισθοδοσίας</a>
+                    <a href="weekly-salary.html">Εβδομαδιαία Μισθοδοσία</a>
+                    <a href="salary-report.html">Αναφορά Μισθοδοσίας</a>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Καλωσήρθατε στην Εφαρμογή Καταγραφής Συναλλαγών</h1>
+        <p>Επιλέξτε μια ενότητα για να ξεκινήσετε</p>
+
+        <div class="image-grid">
+            <a href="index1.html">
+                <img src="1.jpg" alt="Καταγραφή Συναλλαγών">
+                <p><strong>Καταγραφή Συναλλαγών: </strong> Διαχειριστείτε και καταγράψτε τις συναλλαγές σας</p>
+            </a>
+            <a href="index3.html">
+                <img src="2.jpg" alt="Καταγραφή Εσόδων">
+                <p><strong>Καταγραφή Εσόδων: </strong> Καταγράψτε τα έσοδά σας εύκολα και γρήγορα</p>
+            </a>
+            <a href="index4.html">
+                <img src="3.jpg" alt="Τιμολόγια Επί Πιστώσει">
+                <p><strong>Τιμολόγια Επί Πιστώσει: </strong> Παρακολουθήστε τις οφειλές σας και τα τιμολόγια επί πιστώσει</p>
+            </a>
+            <a href="index5.html">
+                <img src="4.jpg" alt="Πληρωμές Τράπεζας">
+                <p><strong>Πληρωμές Τράπεζας: </strong> Διαχειριστείτε τις πληρωμές μέσω τραπεζικών λογαριασμών</p>
+            </a>
+            <a href="index2.html">
+                <img src="7.jpg" alt="Καρτέλες Προμηθευτών">
+                <p><strong>Καρτέλες Προμηθευτών: </strong> Παρακολουθήστε τις σχέσεις σας με τους προμηθευτές και διαχειριστείτε τις πληρωμές σας</p>
+            </a>
+            <a href="index7.html">
+                <img src="6.jpg" alt="Ημερήσια Αναφορά">
+                <p><strong>Ημερήσια Αναφορά: </strong> Λάβετε λεπτομερείς αναφορές για κάθε ημέρα και παραμείνετε ενημερωμένοι για την οικονομική σας κατάσταση</p>
+            </a>
+            <a href="index6.html">
+                <img src="9.jpg" alt="Εβδομαδιαία Αναφορά">
+                <p><strong>Εβδομαδιαία Αναφορά: </strong> Ανασκόπηση της εβδομάδας σας με αναλυτικές αναφορές και στατιστικά στοιχεία</p>
+            </a>
+            <a href="index8.html">
+                <img src="8.jpg" alt="Μηνιαία Αναφορά">
+                <p><strong>Μηνιαία Αναφορά: </strong> Παρακολουθήστε την πορεία σας σε μηνιαία βάση και προγραμματίστε τις μελλοντικές σας κινήσεις</p>
+            </a>
+            <a href="index9.html">
+                <img src="5.jpg" alt="Ετήσια Αναφορά">
+                <p><strong>Ετήσια Αναφορά: </strong> Ανασκοπήστε την οικονομική σας πορεία όλης της χρονιάς με αναλυτικά δεδομένα</p>
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2024 Εφαρμογή Καταγραφής Συναλλαγών - <a href="mailto:support@example.com">Επικοινωνία</a>
+    </footer>
+<script>
+document.querySelector('.menu-toggle').addEventListener('click', function() {
+    document.getElementById('menuModal').style.display = 'flex';
+});
+
+document.querySelector('.close').addEventListener('click', function() {
+    document.getElementById('menuModal').style.display = 'none';
+});
+
+window.onclick = function(event) {
+    if (event.target == document.getElementById('menuModal')) {
+        document.getElementById('menuModal').style.display = 'none';
+    }
+}
+
+// Κώδικας για την απόκρυψη του toggle menu όταν μεγαλώνει η οθόνη
+window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+        document.getElementById('menuModal').style.display = 'none';
+    }
+});
+
+</script>
+
+
+
+</body>
+</html>
