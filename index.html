@@ -48,7 +48,7 @@
     <div id="appContent" style="display: none;">
         <h2>Καλώς ήρθατε στην Εφαρμογή!</h2>
         <p>Εδώ εμφανίζεται το περιεχόμενο της εφαρμογής σας μετά την πληρωμή.</p>
-        <button id="goToApp" style="display: none;">Μετάβαση στην Εφαρμογή</button>
+        <button id="goToApp" style="display: none;" onclick="window.location.href='your-app-url.html'">Πήγαινε στην Εφαρμογή</button>
     </div>
 
     <footer>
@@ -112,7 +112,7 @@
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 // Εμφάνιση φωτογραφίας και ονόματος χρήστη
-                const photo = user.photoURL || 'default-avatar.png';
+                const photo = user.photoURL || 'default-avatar.png'; // Default εικόνα αν δεν υπάρχει φωτογραφία
                 const name = user.displayName || 'Χρήστης';
 
                 document.getElementById('userPhoto').src = photo;
