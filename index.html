@@ -3,172 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Αρχική Σελίδα</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Σύνδεσμος στο αρχείο CSS -->
+    <title>Myakorn Cashier</title>
+    <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="11.png" type="image/png">
-
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
-
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AbP8aGEBpUSbe7x2frrXYzb502UdR7uL3CjpNb-Sp6lk7hy0j9sYRAJORgfzT01owV39NlnKlycB1mcj"></script>
 </head>
 <body>
-<nav>
+    <nav>
         <img src="11.png" alt="Logo" class="logo">
-        <button class="menu-toggle">
-            &#9776;<br>Menu
-        </button>
+        <button class="menu-toggle">&#9776;<br>Menu</button>
         <div class="menu-items">
             <a href="index.html">Αρχική Σελίδα</a>
-    
-            <div class="dropdown">
-                <a href="#">Συναλλαγές &#9662;</a>
-                <div class="dropdown-content">
-                    <a href="index1.html">Καταγραφή Εξόδων</a>
-                    <a href="index4.html">Τιμολόγια Επί Πιστώσει</a>
-                    <a href="index5.html">Πληρωμές Τράπεζας</a>
-                </div>
-            </div>
-    
-            <a href="index3.html">Καταγραφή Εσόδων</a>
-            <a href="index2.html">Καρτέλες Προμηθευτών</a>
-    
-            <div class="dropdown">
-                <a href="#">Αναφορές &#9662;</a>
-                <div class="dropdown-content">
-                    <a href="index7.html">Ημερήσια Αναφορά</a>
-                    <a href="index6.html">Εβδομαδιαία Αναφορά</a>
-                    <a href="index8.html">Μηνιαία Αναφορά</a>
-                    <a href="index9.html">Ετήσια Αναφορά</a>
-                </div>
-            </div>
-    
-            <div class="dropdown">
-                <a href="#">Προσωπικό &#9662;</a>
-                <div class="dropdown-content">
-                    <a href="employee-management.html">Καταγραφή Προσωπικού</a>
-                    <a href="salary.html">Καταγραφή Μισθοδοσίας</a>
-                    <a href="weekly-salary.html">Εβδομαδιαία Μισθοδοσία </a>
-                    <a href="salary-report.html">Αναφορά Μισθοδοσίας</a>
-                    
-
-                </div>
-            </div>
+            <!-- Περισσότερες ενότητες -->
         </div>
     </nav>
-    
-
-    <div id="menuModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <a href="index.html">Αρχική Σελίδα</a>
-            
-            <div class="dropdown">
-                <a href="#">Συναλλαγές</a>
-                <div class="dropdown-content">
-                    <a href="index1.html">Καταγραφή Εξόδων</a>
-                    <a href="index4.html">Τιμολόγια Επί Πιστώσει</a>
-                    <a href="index5.html">Πληρωμές Τράπεζας</a>
-                </div>
-            </div>
-            
-            <a href="index3.html">Καταγραφή Εσόδων</a>
-            <a href="index2.html">Καρτέλες Προμηθευτών</a>
-            
-            <div class="dropdown">
-                <a href="#">Αναφορές</a>
-                <div class="dropdown-content">
-                    <a href="index7.html">Ημερήσια Αναφορά</a>
-                    <a href="index6.html">Εβδομαδιαία Αναφορά</a>
-                    <a href="index8.html">Μηνιαία Αναφορά</a>
-                    <a href="index9.html">Ετήσια Αναφορά</a>
-                </div>
-            </div>
-            
-            <!-- Νέα ενότητα για Προσωπικό -->
-            <div class="dropdown">
-                <a href="#">Προσωπικό &#9662;</a>
-                <div class="dropdown-content">
-                    <a href="employee-management.html">Καταγραφή Προσωπικού</a>
-                    <a href="salary.html">Καταγραφή Μισθοδοσίας</a>
-                    <a href="weekly-salary.html">Εβδομαδιαία Μισθοδοσία</a>
-                    <a href="salary-report.html">Αναφορά Μισθοδοσίας</a>
-                </div>
-            </div>
-            
-        </div>
-    </div>
 
     <div class="container">
-        <h1>Καλωσήρθατε στην Εφαρμογή Καταγραφής Συναλλαγών</h1>
-        <p>Επιλέξτε μια ενότητα για να ξεκινήσετε</p>
+        <h1>Myakorn Cashier</h1>
+        <p>Εγγραφείτε, συνδεθείτε και ξεκλειδώστε την εφαρμογή με πληρωμή μέσω PayPal!</p>
 
-        <div class="image-grid">
-            <a href="index1.html">
-                <img src="1.jpg" alt="Καταγραφή Συναλλαγών">
-                <p><strong>Καταγραφή Συναλλαγών: </strong> Διαχειριστείτε και καταγράψτε τις συναλλαγές σας</p>
-            </a>
-            <a href="index3.html">
-                <img src="2.jpg" alt="Καταγραφή Εσόδων">
-                <p><strong>Καταγραφή Εσόδων: </strong> Καταγράψτε τα έσοδά σας εύκολα και γρήγορα</p>
-            </a>
-            <a href="index4.html">
-                <img src="3.jpg" alt="Τιμολόγια Επί Πιστώσει">
-                <p><strong>Τιμολόγια Επί Πιστώσει: </strong> Παρακολουθήστε τις οφειλές σας και τα τιμολόγια επί πιστώσει</p>
-            </a>
-            <a href="index5.html">
-                <img src="4.jpg" alt="Πληρωμές Τράπεζας">
-                <p><strong>Πληρωμές Τράπεζας: </strong> Διαχειριστείτε τις πληρωμές μέσω τραπεζικών λογαριασμών</p>
-            </a>
-            <a href="index2.html">
-                <img src="7.jpg" alt="Καρτέλες Προμηθευτών">
-                <p><strong>Καρτέλες Προμηθευτών: </strong> Παρακολουθήστε τις σχέσεις σας με τους προμηθευτές και διαχειριστείτε τις πληρωμές σας</p>
-            </a>
-            <a href="index7.html">
-                <img src="6.jpg" alt="Ημερήσια Αναφορά">
-                <p><strong>Ημερήσια Αναφορά: </strong> Λάβετε λεπτομερείς αναφορές για κάθε ημέρα και παραμείνετε ενημερωμένοι για την οικονομική σας κατάσταση</p>
-            </a>
-            <a href="index6.html">
-                <img src="9.jpg" alt="Εβδομαδιαία Αναφορά">
-                <p><strong>Εβδομαδιαία Αναφορά: </strong> Ανασκόπηση της εβδομάδας σας με αναλυτικές αναφορές και στατιστικά στοιχεία</p>
-            </a>
-            <a href="index8.html">
-                <img src="8.jpg" alt="Μηνιαία Αναφορά">
-                <p><strong>Μηνιαία Αναφορά: </strong> Παρακολουθήστε την πορεία σας σε μηνιαία βάση και προγραμματίστε τις μελλοντικές σας κινήσεις</p>
-            </a>
-            <a href="index9.html">
-                <img src="5.jpg" alt="Ετήσια Αναφορά">
-                <p><strong>Ετήσια Αναφορά: </strong> Ανασκοπήστε την οικονομική σας πορεία όλης της χρονιάς με αναλυτικά δεδομένα</p>
-            </a>
+        <!-- Εγγραφή/Σύνδεση -->
+        <div id="auth">
+            <h2>Σύνδεση</h2>
+            <form id="loginForm">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Κωδικός" required>
+                <button type="submit">Σύνδεση</button>
+            </form>
+            <button id="googleLogin">Σύνδεση με Google</button>
+            <button id="logout" style="display: none;">Αποσύνδεση</button>
+        </div>
+
+        <!-- PayPal -->
+        <div id="paypal-container" style="display: none;">
+            <h2>Πληρωμή μέσω PayPal</h2>
+            <div id="paypal-button-container"></div>
         </div>
     </div>
 
     <footer>
-        &copy; 2024 Εφαρμογή Καταγραφής Συναλλαγών - <a href="mailto:support@example.com">Επικοινωνία</a>
+        &copy; 2024 Myakorn Cashier - <a href="mailto:aris.alampourinos@gmail.com">Επικοινωνία</a>
     </footer>
-<script>
-document.querySelector('.menu-toggle').addEventListener('click', function() {
-    document.getElementById('menuModal').style.display = 'flex';
-});
 
-document.querySelector('.close').addEventListener('click', function() {
-    document.getElementById('menuModal').style.display = 'none';
-});
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0oLrWu04w1PUjFbcQh12sxC38Ub-7gJk",
+            authDomain: "myakorncashier.firebaseapp.com",
+            projectId: "myakorncashier",
+            storageBucket: "myakorncashier.appspot.com",
+            messagingSenderId: "58579009346",
+            appId: "1:58579009346:web:abcd1234efgh5678"
+        };
 
-window.onclick = function(event) {
-    if (event.target == document.getElementById('menuModal')) {
-        document.getElementById('menuModal').style.display = 'none';
-    }
-}
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
-// Κώδικας για την απόκρυψη του toggle menu όταν μεγαλώνει η οθόνη
-window.addEventListener('resize', function() {
-    if (window.innerWidth > 768) {
-        document.getElementById('menuModal').style.display = 'none';
-    }
-});
+        // Login Form Submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                alert('Συνδεθήκατε επιτυχώς!');
+            } catch (error) {
+                alert('Σφάλμα: ' + error.message);
+            }
+        });
 
-</script>
+        // Google Login
+        document.getElementById('googleLogin').addEventListener('click', async () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            try {
+                await auth.signInWithPopup(provider);
+                alert('Συνδεθήκατε με Google!');
+            } catch (error) {
+                alert('Σφάλμα: ' + error.message);
+            }
+        });
 
+        // Logout
+        document.getElementById('logout').addEventListener('click', async () => {
+            await auth.signOut();
+            alert('Αποσυνδεθήκατε!');
+        });
 
+        // Auth State Change
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                document.getElementById('auth').style.display = 'none';
+                document.getElementById('paypal-container').style.display = 'block';
+                document.getElementById('logout').style.display = 'block';
+            } else {
+                document.getElementById('auth').style.display = 'block';
+                document.getElementById('paypal-container').style.display = 'none';
+                document.getElementById('logout').style.display = 'none';
+            }
+        });
 
+        // PayPal Buttons
+        paypal.Buttons({
+            createOrder: (data, actions) => {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '10.00' // Τιμή πληρωμής
+                        }
+                    }]
+                });
+            },
+            onApprove: (data, actions) => {
+                return actions.order.capture().then((details) => {
+                    alert('Η πληρωμή ολοκληρώθηκε από: ' + details.payer.name.given_name);
+                });
+            },
+            onError: (err) => {
+                console.error(err);
+                alert('Προέκυψε σφάλμα κατά την πληρωμή.');
+            }
+        }).render('#paypal-button-container');
+    </script>
 </body>
 </html>
