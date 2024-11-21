@@ -3,182 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Αρχική Σελίδα</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Σύνδεσμος στο αρχείο CSS -->
-    <link rel="icon" href="11.png" type="image/png">
-    <!-- Προσθήκη Firebase μέσω CDN -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <title>Εφαρμογή Συναλλαγών</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID"></script>
+    <style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    background: #333;
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav .menu-items button {
+    background: none;
+    border: none;
+    color: white;
+    margin-left: 15px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.container {
+    text-align: center;
+    padding: 50px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    text-align: center;
+    position: relative;
+}
+
+.modal .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+        
+    </style>
 </head>
 <body>
+    <nav>
+        <img src="11.png" alt="Logo" class="logo">
+        <button class="menu-toggle">&#9776;<br>Menu</button>
+        <div class="menu-items">
+            <button onclick="showModal('signupModal')">Εγγραφή</button>
+            <button onclick="showModal('loginModal')">Σύνδεση</button>
+            <button onclick="showModal('paymentModal')">Πληρωμή</button>
+        </div>
+    </nav>
 
-<!-- Μενού -->
-<nav>
-    <img src="11.png" alt="Logo" class="logo">
-    <button class="menu-toggle">&#9776;<br>Menu</button>
-    <div class="menu-items">
-        <a href="index.html">Αρχική Σελίδα</a>
-        <a href="#" onclick="openModal('loginModal')">Σύνδεση</a>
-        <a href="#" onclick="openModal('registerModal')">Εγγραφή</a>
-        <a href="#" onclick="openModal('paymentModal')">Πληρωμή με PayPal</a>
+    <div class="container">
+        <h1>Καλωσήρθατε στην Εφαρμογή Καταγραφής Συναλλαγών</h1>
+        <p>Επιλέξτε μια ενότητα για να ξεκινήσετε</p>
     </div>
-</nav>
 
-<!-- Modal Εγγραφής -->
-<div id="registerModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('registerModal')">&times;</span>
-        <h2>Εγγραφή</h2>
-        <form id="registerForm">
-            <input type="text" id="registerUsername" placeholder="Όνομα Χρήστη" required><br>
-            <input type="email" id="registerEmail" placeholder="Ηλεκτρονικό Ταχυδρομείο" required><br>
-            <input type="password" id="registerPassword" placeholder="Κωδικός" required><br>
-            <button type="submit">Εγγραφή</button>
-        </form>
-        <p>Έχετε ήδη λογαριασμό; <a href="#" onclick="openModal('loginModal')">Συνδεθείτε εδώ</a></p>
+    <!-- Modal Εγγραφής -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('signupModal')">&times;</span>
+            <h2>Εγγραφή</h2>
+            <form id="signupForm">
+                <label for="signupEmail">Email:</label>
+                <input type="email" id="signupEmail" name="email" required>
+                <label for="signupPassword">Κωδικός:</label>
+                <input type="password" id="signupPassword" name="password" required>
+                <button type="submit">Εγγραφή</button>
+            </form>
+            <p>Ή εγγραφείτε με:</p>
+            <div class="g-signin2" data-onsuccess="onGoogleSignIn"></div>
+        </div>
     </div>
-</div>
 
-<!-- Modal Σύνδεσης -->
-<div id="loginModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('loginModal')">&times;</span>
-        <h2>Σύνδεση</h2>
-        <form id="loginForm">
-            <input type="email" id="loginEmail" placeholder="Ηλεκτρονικό Ταχυδρομείο" required><br>
-            <input type="password" id="loginPassword" placeholder="Κωδικός" required><br>
-            <button type="submit">Σύνδεση</button>
-        </form>
-        <p>Δεν έχετε λογαριασμό; <a href="#" onclick="openModal('registerModal')">Εγγραφείτε εδώ</a></p>
+    <!-- Modal Σύνδεσης -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h2>Σύνδεση</h2>
+            <form id="loginForm">
+                <label for="loginEmail">Email:</label>
+                <input type="email" id="loginEmail" name="email" required>
+                <label for="loginPassword">Κωδικός:</label>
+                <input type="password" id="loginPassword" name="password" required>
+                <button type="submit">Σύνδεση</button>
+            </form>
+            <p>Ή συνδεθείτε με:</p>
+            <div class="g-signin2" data-onsuccess="onGoogleSignIn"></div>
+        </div>
     </div>
-</div>
 
-<!-- Modal Πληρωμής με PayPal -->
-<div id="paymentModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('paymentModal')">&times;</span>
-        <h2>Πληρωμή με PayPal</h2>
-        <form id="paymentForm">
-            <input type="text" id="paymentAmount" placeholder="Ποσό" required><br>
-            <button type="submit">Πληρωμή</button>
-        </form>
-        <div id="paypal-button-container"></div> <!-- PayPal Button -->
+    <!-- Modal Πληρωμής -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('paymentModal')">&times;</span>
+            <h2>Πληρωμή μέσω PayPal</h2>
+            <div id="paypal-button-container"></div>
+        </div>
     </div>
-</div>
 
-<!-- Κύριο Περιεχόμενο -->
-<div class="container">
-    <h1>Καλωσήρθατε στην Εφαρμογή Καταγραφής Συναλλαγών</h1>
-    <p>Επιλέξτε μια ενότητα για να ξεκινήσετε</p>
+    <footer>
+        &copy; 2024 Εφαρμογή Καταγραφής Συναλλαγών - <a href="mailto:support@example.com">Επικοινωνία</a>
+    </footer>
 
-    <div class="image-grid">
-        <a href="index1.html">
-            <img src="1.jpg" alt="Καταγραφή Συναλλαγών">
-            <p><strong>Καταγραφή Συναλλαγών: </strong> Διαχειριστείτε και καταγράψτε τις συναλλαγές σας</p>
-        </a>
-        <!-- Προσθέστε άλλες συνδέσεις αν χρειάζεται -->
-    </div>
-</div>
+    <script>
+        // Google Login
+        function onGoogleSignIn(googleUser) {
+            const profile = googleUser.getBasicProfile();
+            alert(`Καλωσήρθατε, ${profile.getName()}!`);
+        }
 
-<footer>
-    &copy; 2024 Εφαρμογή Καταγραφής Συναλλαγών - <a href="mailto:support@example.com">Επικοινωνία</a>
-</footer>
+        // Άνοιγμα Modal
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
 
-<script>
-// Firebase Configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyA0oLrWu04w1PUjFbcQh12sxC38Ub-7gJk",
-    authDomain: "myakorncashier.firebaseapp.com",
-    projectId: "myakorncashier",
-    storageBucket: "myakorncashier.appspot.com",
-    messagingSenderId: "58579009346",
-    appId: "1:58579009346:web:5184a07b1ebf5aab4f92db",
-    measurementId: "G-7E6K6QQVZG"
-};
+        // Κλείσιμο Modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
 
-// Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const database = firebase.database();
-
-// Ανοιγμα και Κλείσιμο Modals
-function openModal(modalId) {
-    document.getElementById(modalId).style.display = 'block';
-}
-
-function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
-}
-
-// Κλείσιμο του Modal αν κάνετε κλικ έξω από αυτό
-window.onclick = function(event) {
-    if (event.target.classList.contains('modal')) {
-        closeModal(event.target.id);
-    }
-}
-
-// Εγγραφή Χρήστη στο Firebase
-document.getElementById('registerForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const email = document.getElementById('registerEmail').value;
-    const password = document.getElementById('registerPassword').value;
-
-    auth.createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            const user = userCredential.user;
-            const username = document.getElementById('registerUsername').value;
-
-            // Αποθήκευση επιπλέον στοιχείων στη βάση δεδομένων
-            database.ref('users/' + user.uid).set({
-                username: username,
-                email: email
-            }).then(() => {
-                alert('Εγγραφή Επιτυχής!');
-                closeModal('registerModal');
-            });
-        })
-        .catch((error) => {
-            alert(error.message);
-        });
-});
-
-// Σύνδεση Χρήστη στο Firebase
-document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-
-    auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            alert('Σύνδεση Επιτυχής!');
-            closeModal('loginModal');
-        })
-        .catch((error) => {
-            alert(error.message);
-        });
-});
-
-// Ρύθμιση PayPal
-paypal.Buttons({
-    createOrder: function(data, actions) {
-        return actions.order.create({
-            purchase_units: [{
-                amount: {
-                    value: document.getElementById('paymentAmount').value
+        // Χειρισμός κλικ εκτός Modal για κλείσιμο
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
                 }
-            }]
-        });
-    },
-    onApprove: function(data, actions) {
-        return actions.order.capture().then(function(details) {
-            alert('Η πληρωμή πραγματοποιήθηκε με επιτυχία!');
-        });
-    }
-}).render('#paypal-button-container');
-</script>
+            });
+        };
 
+        // PayPal Πληρωμή
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '10.00' // Τιμή πληρωμής
+                        }
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    alert('Η πληρωμή ολοκληρώθηκε από: ' + details.payer.name.given_name);
+                });
+            }
+        }).render('#paypal-button-container');
+    </script>
 </body>
 </html>
