@@ -43,6 +43,10 @@
             <div id="paypal-button-container"></div>
         </div>
     </div>
+<div id="appContent" style="display: none;">
+    <h2>Καλώς ήρθατε στην Εφαρμογή!</h2>
+    <p>Εδώ εμφανίζεται το περιεχόμενο της εφαρμογής σας μετά την πληρωμή.</p>
+</div>
 
     <footer>
         &copy; 2024 Myakorn Cashier - <a href="mailto:aris.alampourinos@gmail.com">Επικοινωνία</a>
@@ -128,27 +132,31 @@
 });
 
 
-        // PayPal Buttons
-        paypal.Buttons({
-            createOrder: (data, actions) => {
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            value: '10.00' // Τιμή πληρωμής
-                        }
-                    }]
-                });
-            },
-            onApprove: (data, actions) => {
-                return actions.order.capture().then((details) => {
-                    alert('Η πληρωμή ολοκληρώθηκε από: ' + details.payer.name.given_name);
-                });
-            },
-            onError: (err) => {
-                console.error(err);
-                alert('Προέκυψε σφάλμα κατά την πληρωμή.');
-            }
-        }).render('#paypal-button-container');
+    paypal.Buttons({
+    createOrder: (data, actions) => {
+        return actions.order.create({
+            purchase_units: [{
+                amount: {
+                    value: '10.00' // Τιμή πληρωμής
+                }
+            }]
+        });
+    },
+    onApprove: (data, actions) => {
+        return actions.order.capture().then((details) => {
+            alert('Η πληρωμή ολοκληρώθηκε από: ' + details.payer.name.given_name);
+
+            // Ξεκλείδωμα Εφαρμογής
+            document.getElementById('paypal-container').style.display = 'none';
+            document.getElementById('appContent').style.display = 'block';
+        });
+    },
+    onError: (err) => {
+        console.error(err);
+        alert('Προέκυψε σφάλμα κατά την πληρωμή.');
+    }
+}).render('#paypal-button-container');
+
     </script>
 </body>
 </html>
