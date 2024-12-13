@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Εφαρμογή Καταγραφής Συναλλαγών</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Σύνδεσμος για το CSS -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AbP8aGEBpUSbe7x2frrXYzb502UdR7uL3CjpNb-Sp6lk7hy0j9sYRAJORgfzT01owV39NlnKlycB1mcj"></script>
+    <script type="module">
+        // Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0oLrWu04w1PUjFbcQh12sxC38Ub-7gJk",
+            authDomain: "myakorncashier.firebaseapp.com",
+            projectId: "myakorncashier",
+            storageBucket: "myakorncashier.appspot.com",
+            messagingSenderId: "58579009346",
+            appId: "1:58579009346:web:5184a07b1ebf5aab4f92db",
+            measurementId: "G-7E6K6QQVZG"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        // Εγγραφή / Σύνδεση
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                alert("Συνδεθήκατε επιτυχώς!");
+            } catch (error) {
+                if (error.code === 'auth/user-not-found') {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    alert("Εγγραφήκατε επιτυχώς!");
+                } else {
+                    alert(`Σφάλμα: ${error.message}`);
+                }
+            }
+        });
+
+        // Σύνδεση με Google
+        document.getElementById('googleSignIn').addEventListener('click', async () => {
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                const user = result.user;
+                alert(`Καλωσήρθατε, ${user.displayName}!`);
+            } catch (error) {
+                alert(`Σφάλμα: ${error.message}`);
+            }
+        });
+
+        // PayPal Πληρωμή
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '10.00' // Ορίστε την αξία της πληρωμής
+                        }
+                    }]
+                });
+            },
+            onApprove: async function(data, actions) {
+                return actions.order.capture().then(async (details) => {
+                    alert('Η πληρωμή ολοκληρώθηκε από τον ' + details.payer.name.given_name);
+
+                    // Αποθήκευση δεδομένων πληρωμής
+                    try {
+                        const user = auth.currentUser;
+                        if (user) {
+                            await addDoc(collection(db, "payments"), {
+                                userId: user.uid,
+                                amount: details.purchase_units[0].amount.value,
+                                currency: details.purchase_units[0].amount.currency_code,
+                                date: new Date().toISOString()
+                            });
+                        }
+                    } catch (error) {
+                        console.error("Σφάλμα κατά την αποθήκευση πληρωμής: ", error);
+                    }
+                });
+            }
+        }).render('#paypal-button-container');
+    </script>
+</head>
+<body>
+    <nav>
+        <h1>Εφαρμογή Καταγραφής Συναλλαγών</h1>
+    </nav>
+
+    <!-- Modal Εγγραφής/Σύνδεσης -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('authModal').style.display='none'">&times;</span>
+            <h2>Εγγραφή / Σύνδεση</h2>
+            <button id="googleSignIn">Σύνδεση με Google</button>
+            <p>Ή</p>
+            <form id="authForm">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Κωδικός" required>
+                <button type="submit">Σύνδεση / Εγγραφή</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- PayPal Πληρωμή -->
+    <div id="paymentSection">
+        <h2>Πληρωμή</h2>
+        <div id="paypal-button-container"></div>
+    </div>
+
+    <script>
+        // Εμφάνιση Modal για Εγγραφή/Σύνδεση
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('authModal').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
