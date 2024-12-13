@@ -2,7 +2,256 @@
 <html lang="el">
 <head>
     <meta charset="UTF-8">
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ημερολόγιο Ραντεβού</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .calendar-container {
+            max-width: 700px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .day {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 80px; /* Σταθερό ύψος για όλα τα κουτάκια */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            text-align: center;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .day[data-has-appointments="true"] {
+            background-color: #28a745; /* Πράσινο χρώμα */
+            color: white;
+        }
+        .day:hover {
+            background-color: #ddd;
+        }
+        .day.selected {
+            background-color: #007BFF !important; /* Μπλε χρώμα για την επιλεγμένη ημέρα */
+            color: white !important;
+        }
+        .empty-day {
+            background-color: transparent;
+            border: none;
+            cursor: default;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ημερολόγιο Ραντεβού</h1>
+    
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <button id="prev-month">Προηγούμενος</button>
+            <span id="current-month-year"></span>
+            <button id="next-month">Επόμενος</button>
+        </div>
+        <div id="calendar" class="calendar"></div>
+    </div>
+
+    <h2>Ραντεβού για την Ημερομηνία: <span id="selected-date">-</span></h2>
+    <form id="appointment-form">
+        <label for="appointment-time">Ώρα</label>
+        <input type="time" id="appointment-time" required>
+
+        <label for="first-name">Όνομα</label>
+        <input type="text" id="first-name" required>
+
+        <label for="last-name">Επώνυμο</label>
+        <input type="text" id="last-name" required>
+
+        <label for="phone">Τηλέφωνο</label>
+        <input type="tel" id="phone" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" required>
+
+        <input type="submit" value="Καταχώριση Ραντεβού">
+    </form>
+
+    <table id="appointments-table" border="1">
+        <thead>
+            <tr>
+                <th>Ώρα</th>
+                <th>Όνομα</th>
+                <th>Επώνυμο</th>
+                <th>Τηλέφωνο</th>
+                <th>Email</th>
+                <th>Ενέργειες</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const calendar = document.getElementById('calendar');
+            const currentMonthYear = document.getElementById('current-month-year');
+            const prevMonthButton = document.getElementById('prev-month');
+            const nextMonthButton = document.getElementById('next-month');
+            const appointmentsTable = document.getElementById('appointments-table').querySelector('tbody');
+            const appointmentForm = document.getElementById('appointment-form');
+            const selectedDateDisplay = document.getElementById('selected-date');
+
+            let appointments = JSON.parse(localStorage.getItem('appointments')) || {};
+            let currentMonth = new Date().getMonth();
+            let currentYear = new Date().getFullYear();
+            let selectedDate = null;
+
+            function saveAppointments() {
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+            }
+
+            function renderCalendar(month, year) {
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const monthNames = ['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος', 'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος'];
+                currentMonthYear.textContent = `${monthNames[month]} ${year}`;
+                calendar.innerHTML = '';
+
+                for (let i = 0; i < firstDay; i++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.className = 'day empty-day';
+                    calendar.appendChild(emptyDay);
+                }
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'day';
+
+                    const totalAppointments = appointments[dateStr] ? appointments[dateStr].length : 0;
+                    dayElement.textContent = `${day}\n(${totalAppointments})`;
+
+                    if (totalAppointments > 0) {
+                        dayElement.dataset.hasAppointments = "true"; // Για πράσινο χρώμα
+                    }
+
+                    dayElement.addEventListener('click', () => {
+                        document.querySelectorAll('.day').forEach(el => el.classList.remove('selected'));
+                        dayElement.classList.add('selected');
+                        selectedDate = dateStr;
+                        renderAppointments(dateStr);
+                    });
+
+                    calendar.appendChild(dayElement);
+                }
+            }
+
+            function renderAppointments(date) {
+                selectedDateDisplay.textContent = date || '-';
+                appointmentsTable.innerHTML = '';
+
+                if (appointments[date]) {
+                    appointments[date].forEach((appt, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${appt.time}</td>
+                            <td>${appt.firstName}</td>
+                            <td>${appt.lastName}</td>
+                            <td>${appt.phone}</td>
+                            <td>${appt.email}</td>
+                            <td>
+                                <button data-index="${index}" class="edit-btn">Επεξεργασία</button>
+                                <button data-index="${index}" class="delete-btn">Διαγραφή</button>
+                            </td>
+                        `;
+                        appointmentsTable.appendChild(row);
+                    });
+                }
+            }
+
+            function addAppointment(e) {
+                e.preventDefault();
+                if (!selectedDate) {
+                    alert('Επιλέξτε μια ημερομηνία.');
+                    return;
+                }
+                const time = appointmentForm.querySelector('#appointment-time').value;
+                const firstName = appointmentForm.querySelector('#first-name').value;
+                const lastName = appointmentForm.querySelector('#last-name').value;
+                const phone = appointmentForm.querySelector('#phone').value;
+                const email = appointmentForm.querySelector('#email').value;
+
+                if (!appointments[selectedDate]) {
+                    appointments[selectedDate] = [];
+                }
+
+                appointments[selectedDate].push({ time, firstName, lastName, phone, email });
+                saveAppointments();
+                renderAppointments(selectedDate);
+                renderCalendar(currentMonth, currentYear);
+                appointmentForm.reset();
+            }
+
+            function editAppointment(date, index) {
+                const appt = appointments[date][index];
+                appointmentForm.querySelector('#appointment-time').value = appt.time;
+                appointmentForm.querySelector('#first-name').value = appt.firstName;
+                appointmentForm.querySelector('#last-name').value = appt.lastName;
+                appointmentForm.querySelector('#phone').value = appt.phone;
+                appointmentForm.querySelector('#email').value = appt.email;
+                deleteAppointment(date, index);
+            }
+
+            function deleteAppointment(date, index) {
+                appointments[date].splice(index, 1);
+                if (appointments[date].length === 0) delete appointments[date];
+                saveAppointments();
+                renderAppointments(date);
+                renderCalendar(currentMonth, currentYear);
+            }
+
+            appointmentsTable.addEventListener('click', (e) => {
+                const index = e.target.getAttribute('data-index');
+                if (e.target.classList.contains('edit-btn')) editAppointment(selectedDate, index);
+                if (e.target.classList.contains('delete-btn')) deleteAppointment(selectedDate, index);
+            });
+
+            prevMonthButton.addEventListener('click', () => {
+                currentMonth = (currentMonth - 1 + 12) % 12;
+                if (currentMonth === 11) currentYear--;
+                renderCalendar(currentMonth, currentYear);
+            });
+
+            nextMonthButton.addEventListener('click', () => {
+                currentMonth = (currentMonth + 1) % 12;
+                if (currentMonth === 0) currentYear++;
+                renderCalendar(currentMonth, currentYear);
+            });
+
+            appointmentForm.addEventListener('submit', addAppointment);
+
+            renderCalendar(currentMonth, currentYear);
+        });
+    </script>
+</body>
+</html>
     <title>Ημερολόγιο Ραντεβού</title>
     <link rel="stylesheet" href="styles.css">
     <style>
