@@ -39,7 +39,7 @@
                 <th>Επώνυμο</th>
                 <th>Τηλέφωνο</th>
                 <th>Email</th>
-                <th>Διαγραφή</th>
+                <th>Ενέργειες</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -57,7 +57,7 @@
             const appointmentsTable = document.getElementById('appointments-table').querySelector('tbody');
             const selectedDateDisplay = document.getElementById('selected-date');
 
-            const appointments = JSON.parse(localStorage.getItem('appointments')) || {};
+            let appointments = JSON.parse(localStorage.getItem('appointments')) || {};
 
             function saveAppointments() {
                 localStorage.setItem('appointments', JSON.stringify(appointments));
@@ -68,6 +68,9 @@
                 appointmentsTable.innerHTML = '';
 
                 if (appointments[date]) {
+                    // Ταξινόμηση των ραντεβού με βάση την ώρα
+                    appointments[date].sort((a, b) => a.time.localeCompare(b.time));
+
                     appointments[date].forEach((appt, index) => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
@@ -76,7 +79,10 @@
                             <td>${appt.lastName}</td>
                             <td>${appt.phone}</td>
                             <td>${appt.email}</td>
-                            <td><button data-index="${index}" class="delete-btn">Διαγραφή</button></td>
+                            <td>
+                                <button data-index="${index}" class="edit-btn">Επεξεργασία</button>
+                                <button data-index="${index}" class="delete-btn">Διαγραφή</button>
+                            </td>
                         `;
                         appointmentsTable.appendChild(row);
                     });
@@ -116,6 +122,19 @@
                 appointmentDate.value = date;
             }
 
+            function editAppointment(date, index) {
+                const appointment = appointments[date][index];
+
+                appointmentDate.value = date;
+                appointmentTime.value = appointment.time;
+                firstName.value = appointment.firstName;
+                lastName.value = appointment.lastName;
+                phone.value = appointment.phone;
+                email.value = appointment.email;
+
+                deleteAppointment(date, index);
+            }
+
             function deleteAppointment(date, index) {
                 appointments[date].splice(index, 1);
 
@@ -128,10 +147,15 @@
             }
 
             appointmentsTable.addEventListener('click', (e) => {
+                const date = appointmentDate.value;
+                const index = e.target.getAttribute('data-index');
+
                 if (e.target.classList.contains('delete-btn')) {
-                    const date = appointmentDate.value;
-                    const index = e.target.getAttribute('data-index');
                     deleteAppointment(date, index);
+                }
+
+                if (e.target.classList.contains('edit-btn')) {
+                    editAppointment(date, index);
                 }
             });
 
