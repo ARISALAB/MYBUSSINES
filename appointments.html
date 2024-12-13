@@ -4,110 +4,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Καταγραφή Ραντεβού</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Σύνδεσμος στο αρχείο CSS -->
-    <link rel="icon" href="11.png" type="image/png">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-    <nav>
-        <img src="11.png" alt="Logo" class="logo">
-        <button class="menu-toggle">&#9776;<br>Menu</button>
-        <div class="menu-items">
-            <a href="index.html">Αρχική Σελίδα</a>
-            <a href="appointments.html">Καταγραφή Ραντεβού</a> <!-- Προσθήκη νέας επιλογής -->
-        </div>
-    </nav>
-
     <h1>Καταγραφή Ραντεβού</h1>
-
-    <!-- Επιλογή ημερομηνίας -->
-    <label for="appointment-date">Επιλέξτε Ημερομηνία:</label>
-    <input type="date" id="appointment-date" required>
-
-    <!-- Φόρμα για προσθήκη ραντεβού -->
     <form id="appointment-form">
-        <label for="customer-name">Όνομα Πελάτη</label>
-        <input type="text" id="customer-name" required>
+        <label for="appointment-date">Ημερομηνία</label>
+        <input type="date" id="appointment-date" required>
 
-        <label for="customer-surname">Επώνυμο Πελάτη</label>
-        <input type="text" id="customer-surname" required>
-
-        <label for="appointment-time">Ώρα Ραντεβού</label>
+        <label for="appointment-time">Ώρα</label>
         <input type="time" id="appointment-time" required>
 
-        <input type="submit" value="Προσθήκη Ραντεβού">
+        <label for="first-name">Όνομα</label>
+        <input type="text" id="first-name" required>
+
+        <label for="last-name">Επώνυμο</label>
+        <input type="text" id="last-name" required>
+
+        <label for="phone">Τηλέφωνο</label>
+        <input type="tel" id="phone" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" required>
+
+        <input type="submit" value="Καταχώριση Ραντεβού">
     </form>
 
-    <!-- Πίνακας για εμφάνιση των ραντεβού -->
-    <table id="appointments-table" style="display: none;">
+    <h2>Ραντεβού για την Ημερομηνία: <span id="selected-date">-</span></h2>
+    <table id="appointments-table" border="1">
         <thead>
             <tr>
+                <th>Ώρα</th>
                 <th>Όνομα</th>
                 <th>Επώνυμο</th>
-                <th>Ώρα Ραντεβού</th>
-                <th>Ενέργειες</th>
+                <th>Τηλέφωνο</th>
+                <th>Email</th>
+                <th>Διαγραφή</th>
             </tr>
         </thead>
-        <tbody id="appointments-list"></tbody>
+        <tbody></tbody>
     </table>
-
-    <footer>&copy; 2024 Καταγραφή Ραντεβού</footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const appointmentForm = document.getElementById('appointment-form');
-            const customerNameInput = document.getElementById('customer-name');
-            const customerSurnameInput = document.getElementById('customer-surname');
-            const appointmentTimeInput = document.getElementById('appointment-time');
-            const appointmentsList = document.getElementById('appointments-list');
-            const appointmentsTable = document.getElementById('appointments-table');
-            const appointmentDateInput = document.getElementById('appointment-date');
+            const appointmentDate = document.getElementById('appointment-date');
+            const appointmentTime = document.getElementById('appointment-time');
+            const firstName = document.getElementById('first-name');
+            const lastName = document.getElementById('last-name');
+            const phone = document.getElementById('phone');
+            const email = document.getElementById('email');
+            const appointmentsTable = document.getElementById('appointments-table').querySelector('tbody');
+            const selectedDateDisplay = document.getElementById('selected-date');
 
-            // Ανάκτηση των ραντεβού από το localStorage
             const appointments = JSON.parse(localStorage.getItem('appointments')) || {};
 
-            // Λειτουργία για την αποθήκευση των ραντεβού
             function saveAppointments() {
                 localStorage.setItem('appointments', JSON.stringify(appointments));
             }
 
-            // Απόδοση των ραντεβού για τη συγκεκριμένη ημερομηνία
-            function renderAppointmentsForDate(date) {
-                const appointmentsForDate = appointments[date] || [];
-                appointmentsList.innerHTML = '';
-                appointmentsForDate.sort((a, b) => a.time.localeCompare(b.time)); // Ταξινόμηση κατά ώρα
+            function renderAppointments(date) {
+                selectedDateDisplay.textContent = date || '-';
+                appointmentsTable.innerHTML = '';
 
-                appointmentsForDate.forEach((appointment, index) => {
-                    const appointmentItem = document.createElement('tr');
-                    appointmentItem.innerHTML = `
-                        <td>${appointment.name}</td>
-                        <td>${appointment.surname}</td>
-                        <td>${appointment.time}</td>
-                        <td>
-                            <button class="edit-btn" data-index="${index}">Επεξεργασία</button>
-                            <button class="delete-btn" data-index="${index}">Διαγραφή</button>
-                        </td>
-                    `;
-
-                    appointmentItem.querySelector('.edit-btn').addEventListener('click', (e) => editAppointment(date, e.target.dataset.index));
-                    appointmentItem.querySelector('.delete-btn').addEventListener('click', (e) => deleteAppointment(date, e.target.dataset.index));
-
-                    appointmentsList.appendChild(appointmentItem);
-                });
-
-                appointmentsTable.style.display = appointmentsForDate.length > 0 ? 'table' : 'none'; // Εμφάνιση πίνακα αν υπάρχουν ραντεβού
+                if (appointments[date]) {
+                    appointments[date].forEach((appt, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${appt.time}</td>
+                            <td>${appt.firstName}</td>
+                            <td>${appt.lastName}</td>
+                            <td>${appt.phone}</td>
+                            <td>${appt.email}</td>
+                            <td><button data-index="${index}" class="delete-btn">Διαγραφή</button></td>
+                        `;
+                        appointmentsTable.appendChild(row);
+                    });
+                }
             }
 
-            // Προσθήκη νέου ραντεβού
             function addAppointment(e) {
                 e.preventDefault();
 
-                const name = customerNameInput.value.trim();
-                const surname = customerSurnameInput.value.trim();
-                const time = appointmentTimeInput.value.trim();
-                const date = appointmentDateInput.value;
+                const date = appointmentDate.value;
+                const time = appointmentTime.value;
+                const fname = firstName.value.trim();
+                const lname = lastName.value.trim();
+                const phoneNumber = phone.value.trim();
+                const emailAddress = email.value.trim();
 
-                if (!name || !surname || !time || !date) {
+                if (!date || !time || !fname || !lname || !phoneNumber || !emailAddress) {
                     alert('Παρακαλώ συμπληρώστε όλα τα πεδία.');
                     return;
                 }
@@ -116,58 +102,49 @@
                     appointments[date] = [];
                 }
 
-                appointments[date].push({ name, surname, time });
+                appointments[date].push({
+                    time,
+                    firstName: fname,
+                    lastName: lname,
+                    phone: phoneNumber,
+                    email: emailAddress
+                });
+
                 saveAppointments();
-                renderAppointmentsForDate(date);
+                renderAppointments(date);
                 appointmentForm.reset();
+                appointmentDate.value = date;
             }
 
-            // Επεξεργασία ραντεβού
-            function editAppointment(date, index) {
-                const appointment = appointments[date][index];
-                customerNameInput.value = appointment.name;
-                customerSurnameInput.value = appointment.surname;
-                appointmentTimeInput.value = appointment.time;
-
-                deleteAppointment(date, index);
-            }
-
-            // Διαγραφή ραντεβού
             function deleteAppointment(date, index) {
                 appointments[date].splice(index, 1);
+
                 if (appointments[date].length === 0) {
                     delete appointments[date];
                 }
+
                 saveAppointments();
-                renderAppointmentsForDate(date);
+                renderAppointments(date);
             }
 
-            // Εκκίνηση της εφαρμογής
-            appointmentForm.addEventListener('submit', addAppointment);
-            appointmentDateInput.addEventListener('change', () => {
-                const selectedDate = appointmentDateInput.value;
-                renderAppointmentsForDate(selectedDate);
+            appointmentsTable.addEventListener('click', (e) => {
+                if (e.target.classList.contains('delete-btn')) {
+                    const date = appointmentDate.value;
+                    const index = e.target.getAttribute('data-index');
+                    deleteAppointment(date, index);
+                }
             });
 
-            // Εμφάνιση των ραντεβού για την αρχική ημερομηνία
-            renderAppointmentsForDate(appointmentDateInput.value);
-        });
-    </script>
+            appointmentDate.addEventListener('change', (e) => {
+                renderAppointments(e.target.value);
+            });
 
-    <script>
-        document.querySelector('.menu-toggle').addEventListener('click', function() {
-            document.getElementById('menuModal').style.display = 'flex';
-        });
+            appointmentForm.addEventListener('submit', addAppointment);
 
-        document.querySelector('.close').addEventListener('click', function() {
-            document.getElementById('menuModal').style.display = 'none';
+            const today = new Date().toISOString().split('T')[0];
+            appointmentDate.value = today;
+            renderAppointments(today);
         });
-        
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('menuModal')) {
-                document.getElementById('menuModal').style.display = 'none';
-            }
-        };
     </script>
 </body>
 </html>
