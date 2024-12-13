@@ -3,104 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Καταγραφή Ραντεβού</title>
+    <title>Ημερολόγιο Ραντεβού</title>
     <link rel="stylesheet" href="styles.css">
-      <link rel="icon" href="11.png" type="image/png">
-
-
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .calendar-container {
+            max-width: 700px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .day {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            text-align: center;
+            cursor: pointer;
+        }
+        .day:hover {
+            background-color: #ddd;
+        }
+        .day.selected {
+            background-color: #007BFF;
+            color: white;
+        }
+        .day .appointments-count {
+            margin-top: 5px;
+            font-size: 0.8em;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
-
-    <nav>
-        <img src="11.png" alt="Logo" class="logo">
-        <button class="menu-toggle">
-            &#9776;<br>Menu
-        </button>
-        <div class="menu-items">
-            <a href="index.html">Αρχική Σελίδα</a>
+    <h1>Ημερολόγιο Ραντεβού</h1>
     
-            <div class="dropdown">
-                <a href="#">Συναλλαγές &#9662;</a>
-                <div class="dropdown-content">
-                    <a href="index1.html">Καταγραφή Εξόδων</a>
-                    <a href="index4.html">Τιμολόγια Επί Πιστώσει</a>
-                    <a href="index5.html">Πληρωμές Τράπεζας</a>
-                </div>
-            </div>
-    
-            <a href="index3.html">Καταγραφή Εσόδων</a>
-            <a href="index2.html">Καρτέλες Προμηθευτών</a>
-    
-            <div class="dropdown">
-                <a href="#">Αναφορές &#9662;</a>
-                <div class="dropdown-content">
-                    <a href="index7.html">Ημερήσια Αναφορά</a>
-                    <a href="index6.html">Εβδομαδιαία Αναφορά</a>
-                    <a href="index8.html">Μηνιαία Αναφορά</a>
-                    <a href="index9.html">Ετήσια Αναφορά</a>
-                </div>
-            </div>
-    
-            <div class="dropdown">
-                <a href="#">Προσωπικό &#9662;</a>
-                <div class="dropdown-content">
-                    <a href="employee-management.html">Καταγραφή Προσωπικού</a>
-                    <a href="salary.html">Καταγραφή Μισθοδοσίας</a>
-                    <a href="weekly-salary.html">Εβδομαδιαία Μισθοδοσία </a>
-                    <a href="salary-report.html">Αναφορά Μισθοδοσίας</a>
-                    
-
-                </div>
-            </div>
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <button id="prev-month">Προηγούμενος</button>
+            <span id="current-month-year"></span>
+            <button id="next-month">Επόμενος</button>
         </div>
-    </nav>
-    
-
-    <div id="menuModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <a href="index.html">Αρχική Σελίδα</a>
-            
-            <div class="dropdown">
-                <a href="#">Συναλλαγές</a>
-                <div class="dropdown-content">
-                    <a href="index1.html">Καταγραφή Εξόδων</a>
-                    <a href="index4.html">Τιμολόγια Επί Πιστώσει</a>
-                    <a href="index5.html">Πληρωμές Τράπεζας</a>
-                </div>
-            </div>
-            
-            <a href="index3.html">Καταγραφή Εσόδων</a>
-            <a href="index2.html">Καρτέλες Προμηθευτών</a>
-            
-            <div class="dropdown">
-                <a href="#">Αναφορές</a>
-                <div class="dropdown-content">
-                    <a href="index7.html">Ημερήσια Αναφορά</a>
-                    <a href="index6.html">Εβδομαδιαία Αναφορά</a>
-                    <a href="index8.html">Μηνιαία Αναφορά</a>
-                    <a href="index9.html">Ετήσια Αναφορά</a>
-                </div>
-            </div>
-            
-            <!-- Νέα ενότητα για Προσωπικό -->
-            <div class="dropdown">
-                <a href="#">Προσωπικό &#9662;</a>
-                <div class="dropdown-content">
-                    <a href="employee-management.html">Καταγραφή Προσωπικού</a>
-                    <a href="salary.html">Καταγραφή Μισθοδοσίας</a>
-                    <a href="weekly-salary.html">Εβδομαδιαία Μισθοδοσία</a>
-                    <a href="salary-report.html">Αναφορά Μισθοδοσίας</a>
-                </div>
-            </div>
-            
-        </div>
+        <div id="calendar" class="calendar"></div>
     </div>
-    <h1>Καταγραφή Ραντεβού</h1>
-    <form id="appointment-form">
-        <label for="appointment-date">Ημερομηνία</label>
-        <input type="date" id="appointment-date" required>
 
+    <h2>Ραντεβού για την Ημερομηνία: <span id="selected-date">-</span></h2>
+    <form id="appointment-form">
         <label for="appointment-time">Ώρα</label>
         <input type="time" id="appointment-time" required>
 
@@ -119,7 +81,6 @@
         <input type="submit" value="Καταχώριση Ραντεβού">
     </form>
 
-    <h2>Ραντεβού για την Ημερομηνία: <span id="selected-date">-</span></h2>
     <table id="appointments-table" border="1">
         <thead>
             <tr>
@@ -136,20 +97,56 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const appointmentForm = document.getElementById('appointment-form');
-            const appointmentDate = document.getElementById('appointment-date');
-            const appointmentTime = document.getElementById('appointment-time');
-            const firstName = document.getElementById('first-name');
-            const lastName = document.getElementById('last-name');
-            const phone = document.getElementById('phone');
-            const email = document.getElementById('email');
+            const calendar = document.getElementById('calendar');
+            const currentMonthYear = document.getElementById('current-month-year');
+            const prevMonthButton = document.getElementById('prev-month');
+            const nextMonthButton = document.getElementById('next-month');
             const appointmentsTable = document.getElementById('appointments-table').querySelector('tbody');
+            const appointmentForm = document.getElementById('appointment-form');
             const selectedDateDisplay = document.getElementById('selected-date');
 
             let appointments = JSON.parse(localStorage.getItem('appointments')) || {};
+            let currentMonth = new Date().getMonth();
+            let currentYear = new Date().getFullYear();
 
             function saveAppointments() {
                 localStorage.setItem('appointments', JSON.stringify(appointments));
+            }
+
+            function renderCalendar(month, year) {
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const monthNames = ['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος', 'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος'];
+                currentMonthYear.textContent = `${monthNames[month]} ${year}`;
+                calendar.innerHTML = '';
+
+                for (let i = 0; i < firstDay; i++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.className = 'day';
+                    calendar.appendChild(emptyDay);
+                }
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'day';
+                    dayElement.textContent = day;
+
+                    if (appointments[dateStr]) {
+                        const countSpan = document.createElement('span');
+                        countSpan.className = 'appointments-count';
+                        countSpan.textContent = `${appointments[dateStr].length} ραντεβού`;
+                        dayElement.appendChild(countSpan);
+                    }
+
+                    dayElement.addEventListener('click', () => {
+                        document.querySelectorAll('.day').forEach(el => el.classList.remove('selected'));
+                        dayElement.classList.add('selected');
+                        renderAppointments(dateStr);
+                    });
+
+                    calendar.appendChild(dayElement);
+                }
             }
 
             function renderAppointments(date) {
@@ -157,9 +154,6 @@
                 appointmentsTable.innerHTML = '';
 
                 if (appointments[date]) {
-                    // Ταξινόμηση των ραντεβού με βάση την ώρα
-                    appointments[date].sort((a, b) => a.time.localeCompare(b.time));
-
                     appointments[date].forEach((appt, index) => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
@@ -169,7 +163,6 @@
                             <td>${appt.phone}</td>
                             <td>${appt.email}</td>
                             <td>
-                                <button data-index="${index}" class="edit-btn">Επεξεργασία</button>
                                 <button data-index="${index}" class="delete-btn">Διαγραφή</button>
                             </td>
                         `;
@@ -180,84 +173,39 @@
 
             function addAppointment(e) {
                 e.preventDefault();
+                const selectedDate = selectedDateDisplay.textContent;
+                const time = appointmentForm.querySelector('#appointment-time').value;
+                const firstName = appointmentForm.querySelector('#first-name').value;
+                const lastName = appointmentForm.querySelector('#last-name').value;
+                const phone = appointmentForm.querySelector('#phone').value;
+                const email = appointmentForm.querySelector('#email').value;
 
-                const date = appointmentDate.value;
-                const time = appointmentTime.value;
-                const fname = firstName.value.trim();
-                const lname = lastName.value.trim();
-                const phoneNumber = phone.value.trim();
-                const emailAddress = email.value.trim();
-
-                if (!date || !time || !fname || !lname || !phoneNumber || !emailAddress) {
-                    alert('Παρακαλώ συμπληρώστε όλα τα πεδία.');
-                    return;
+                if (!appointments[selectedDate]) {
+                    appointments[selectedDate] = [];
                 }
 
-                if (!appointments[date]) {
-                    appointments[date] = [];
-                }
-
-                appointments[date].push({
-                    time,
-                    firstName: fname,
-                    lastName: lname,
-                    phone: phoneNumber,
-                    email: emailAddress
-                });
-
+                appointments[selectedDate].push({ time, firstName, lastName, phone, email });
                 saveAppointments();
-                renderAppointments(date);
+                renderAppointments(selectedDate);
+                renderCalendar(currentMonth, currentYear);
                 appointmentForm.reset();
-                appointmentDate.value = date;
             }
 
-            function editAppointment(date, index) {
-                const appointment = appointments[date][index];
-
-                appointmentDate.value = date;
-                appointmentTime.value = appointment.time;
-                firstName.value = appointment.firstName;
-                lastName.value = appointment.lastName;
-                phone.value = appointment.phone;
-                email.value = appointment.email;
-
-                deleteAppointment(date, index);
-            }
-
-            function deleteAppointment(date, index) {
-                appointments[date].splice(index, 1);
-
-                if (appointments[date].length === 0) {
-                    delete appointments[date];
-                }
-
-                saveAppointments();
-                renderAppointments(date);
-            }
-
-            appointmentsTable.addEventListener('click', (e) => {
-                const date = appointmentDate.value;
-                const index = e.target.getAttribute('data-index');
-
-                if (e.target.classList.contains('delete-btn')) {
-                    deleteAppointment(date, index);
-                }
-
-                if (e.target.classList.contains('edit-btn')) {
-                    editAppointment(date, index);
-                }
+            prevMonthButton.addEventListener('click', () => {
+                currentMonth = (currentMonth - 1 + 12) % 12;
+                if (currentMonth === 11) currentYear -= 1;
+                renderCalendar(currentMonth, currentYear);
             });
 
-            appointmentDate.addEventListener('change', (e) => {
-                renderAppointments(e.target.value);
+            nextMonthButton.addEventListener('click', () => {
+                currentMonth = (currentMonth + 1) % 12;
+                if (currentMonth === 0) currentYear += 1;
+                renderCalendar(currentMonth, currentYear);
             });
 
             appointmentForm.addEventListener('submit', addAppointment);
 
-            // Κατά την αρχική φόρτωση, εμφάνιση των ραντεβού για τη σημερινή ημερομηνία
-            const today = new Date().toISOString().split('T')[0];
-            appointmentDate.value = today;
-            renderAppointments(today);
+            renderCalendar(currentMonth, currentYear);
         });
     </script>
 </body>
