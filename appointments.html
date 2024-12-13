@@ -250,42 +250,45 @@
             }
 
             function renderCalendar(month, year) {
-                const firstDay = new Date(year, month, 1).getDay();
-                const daysInMonth = new Date(year, month + 1, 0).getDate();
-                const monthNames = ['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος', 'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος'];
-                currentMonthYear.textContent = `${monthNames[month]} ${year}`;
-                calendar.innerHTML = '';
+    const firstDay = new Date(year, month, 1).getDay();
+    // Εάν η πρώτη μέρα είναι Κυριακή (0), μετακινούμε τη μέρα αυτή στη Δευτέρα
+    const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const monthNames = ['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος', 'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος'];
+    currentMonthYear.textContent = `${monthNames[month]} ${year}`;
+    calendar.innerHTML = '';
 
-                // Προσθήκη κενών για την αρχή του μήνα
-                for (let i = 0; i < firstDay; i++) {
-                    const emptyDay = document.createElement('div');
-                    emptyDay.className = 'day empty-day';
-                    calendar.appendChild(emptyDay);
-                }
+    // Προσθήκη κενών για την αρχή του μήνα
+    for (let i = 0; i < adjustedFirstDay; i++) {
+        const emptyDay = document.createElement('div');
+        emptyDay.className = 'day empty-day';
+        calendar.appendChild(emptyDay);
+    }
 
-                // Δημιουργία ημερών του μήνα
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                    const dayElement = document.createElement('div');
-                    dayElement.className = 'day';
+    // Δημιουργία ημερών του μήνα
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dayElement = document.createElement('div');
+        dayElement.className = 'day';
 
-                    const totalAppointments = appointments[dateStr] ? appointments[dateStr].length : 0;
-                    dayElement.innerHTML = `<span class="date-number">${day}</span> <span>(${totalAppointments})</span>`;
+        const totalAppointments = appointments[dateStr] ? appointments[dateStr].length : 0;
+        dayElement.innerHTML = `<span class="date-number">${day}</span> <span>(${totalAppointments})</span>`;
 
-                    if (totalAppointments > 0) {
-                        dayElement.dataset.hasAppointments = "true"; // Για πράσινο χρώμα
-                    }
+        if (totalAppointments > 0) {
+            dayElement.dataset.hasAppointments = "true"; // Για πράσινο χρώμα
+        }
 
-                    dayElement.addEventListener('click', () => {
-                        document.querySelectorAll('.day').forEach(el => el.classList.remove('selected'));
-                        dayElement.classList.add('selected');
-                        selectedDate = dateStr;
-                        renderAppointments(dateStr);
-                    });
+        dayElement.addEventListener('click', () => {
+            document.querySelectorAll('.day').forEach(el => el.classList.remove('selected'));
+            dayElement.classList.add('selected');
+            selectedDate = dateStr;
+            renderAppointments(dateStr);
+        });
 
-                    calendar.appendChild(dayElement);
-                }
-            }
+        calendar.appendChild(dayElement);
+    }
+}
+
 
             function renderAppointments(date) {
                 selectedDateDisplay.textContent = date || '-';
