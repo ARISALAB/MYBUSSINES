@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Καταγραφή Ραντεβού</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Σύνδεσμος στο αρχείο CSS -->
+    <link rel="icon" href="11.png" type="image/png">
+</head>
+<body>
+
+    <nav>
+        <img src="11.png" alt="Logo" class="logo">
+        <button class="menu-toggle">&#9776;<br>Menu</button>
+        <div class="menu-items">
+            <a href="index.html">Αρχική Σελίδα</a>
+            <a href="appointments.html">Καταγραφή Ραντεβού</a> <!-- Προσθήκη νέας επιλογής -->
+        </div>
+    </nav>
+
+    <h1>Καταγραφή Ραντεβού</h1>
+    <form id="appointment-form">
+        <label for="customer-name">Όνομα Πελάτη</label>
+        <input type="text" id="customer-name" required>
+
+        <label for="customer-surname">Επώνυμο Πελάτη</label>
+        <input type="text" id="customer-surname" required>
+
+        <label for="appointment-time">Ώρα Ραντεβού</label>
+        <input type="time" id="appointment-time" required>
+
+        <input type="submit" value="Προσθήκη Ραντεβού">
+    </form>
+
+    <ul id="appointments-list"></ul>
+
+    <footer>&copy; 2024 Καταγραφή Ραντεβού</footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const appointmentForm = document.getElementById('appointment-form');
+            const customerNameInput = document.getElementById('customer-name');
+            const customerSurnameInput = document.getElementById('customer-surname');
+            const appointmentTimeInput = document.getElementById('appointment-time');
+            const appointmentsList = document.getElementById('appointments-list');
+
+            // Ανάκτηση των ραντεβού από το localStorage
+            const appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+
+            // Λειτουργία για την αποθήκευση των ραντεβού
+            function saveAppointments() {
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+            }
+
+            // Απόδοση των ραντεβού στη λίστα
+            function renderAppointments() {
+                appointmentsList.innerHTML = '';
+                appointments.forEach((appointment, index) => {
+                    const appointmentItem = document.createElement('li');
+                    appointmentItem.classList.add('appointment-item');
+                    appointmentItem.innerHTML = `
+                        <div>
+                            <strong>Όνομα:</strong> <span>${appointment.name}</span>
+                        </div>
+                        <div>
+                            <strong>Επώνυμο:</strong> <span>${appointment.surname}</span>
+                        </div>
+                        <div>
+                            <strong>Ώρα Ραντεβού:</strong> <span>${appointment.time}</span>
+                        </div>
+                        <div>
+                            <button class="edit-btn">Επεξεργασία</button>
+                            <button class="delete-btn">Διαγραφή</button>
+                        </div>
+                    `;
+                    
+                    appointmentItem.querySelector('.edit-btn').addEventListener('click', () => editAppointment(index));
+                    appointmentItem.querySelector('.delete-btn').addEventListener('click', () => deleteAppointment(index));
+
+                    appointmentsList.appendChild(appointmentItem);
+                });
+            }
+
+            // Προσθήκη νέου ραντεβού
+            function addAppointment(e) {
+                e.preventDefault();
+
+                const name = customerNameInput.value.trim();
+                const surname = customerSurnameInput.value.trim();
+                const time = appointmentTimeInput.value.trim();
+
+                if (!name || !surname || !time) {
+                    alert('Παρακαλώ συμπληρώστε όλα τα πεδία.');
+                    return;
+                }
+
+                appointments.push({ name, surname, time });
+                saveAppointments();
+                renderAppointments();
+                appointmentForm.reset();
+            }
+
+            // Επεξεργασία ραντεβού
+            function editAppointment(index) {
+                const appointment = appointments[index];
+                customerNameInput.value = appointment.name;
+                customerSurnameInput.value = appointment.surname;
+                appointmentTimeInput.value = appointment.time;
+
+                deleteAppointment(index);
+            }
+
+            // Διαγραφή ραντεβού
+            function deleteAppointment(index) {
+                appointments.splice(index, 1);
+                saveAppointments();
+                renderAppointments();
+            }
+
+            // Εκκίνηση της εφαρμογής
+            appointmentForm.addEventListener('submit', addAppointment);
+            renderAppointments();
+        });
+    </script>
+
+    <script>
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.getElementById('menuModal').style.display = 'flex';
+        });
+
+        document.querySelector('.close').addEventListener('click', function() {
+            document.getElementById('menuModal').style.display = 'none';
+        });
+        
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('menuModal')) {
+                document.getElementById('menuModal').style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
