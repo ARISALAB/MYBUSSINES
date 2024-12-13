@@ -28,17 +28,17 @@
             margin-top: 10px;
         }
         .day {
-            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 80px; /* Σταθερό ύψος για όλα τα κουτάκια */
             border: 1px solid #ccc;
             border-radius: 5px;
             background-color: #f9f9f9;
-            text-align: left;
+            text-align: center;
+            font-size: 14px;
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            height: 120px; /* Σταθερό μέγιστο μέγεθος */
-            overflow: hidden;
         }
         .day:hover {
             background-color: #ddd;
@@ -47,26 +47,10 @@
             background-color: #007BFF;
             color: white;
         }
-        .day .date-number {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .day .appointments-count {
-            font-size: 0.9em;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-        .day .appointments-list {
-            font-size: 0.8em;
-            color: #555;
-            list-style: none;
-            padding: 0;
-            max-height: 60px;
-            overflow-y: auto;
-        }
-        .day .appointments-list li {
-            margin: 2px 0;
+        .empty-day {
+            background-color: transparent;
+            border: none;
+            cursor: default;
         }
     </style>
 </head>
@@ -144,7 +128,7 @@
 
                 for (let i = 0; i < firstDay; i++) {
                     const emptyDay = document.createElement('div');
-                    emptyDay.className = 'day';
+                    emptyDay.className = 'day empty-day';
                     calendar.appendChild(emptyDay);
                 }
 
@@ -152,25 +136,9 @@
                     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                     const dayElement = document.createElement('div');
                     dayElement.className = 'day';
-                    dayElement.innerHTML = `<span class="date-number">${day}</span>`;
 
-                    if (appointments[dateStr]) {
-                        const countSpan = document.createElement('div');
-                        countSpan.className = 'appointments-count';
-                        countSpan.textContent = `${appointments[dateStr].length} ραντεβού`;
-                        dayElement.appendChild(countSpan);
-
-                        const list = document.createElement('ul');
-                        list.className = 'appointments-list';
-
-                        appointments[dateStr].forEach(appt => {
-                            const item = document.createElement('li');
-                            item.textContent = `${appt.time} - ${appt.firstName}`;
-                            list.appendChild(item);
-                        });
-
-                        dayElement.appendChild(list);
-                    }
+                    const totalAppointments = appointments[dateStr] ? appointments[dateStr].length : 0;
+                    dayElement.textContent = `${day}\n(${totalAppointments})`;
 
                     dayElement.addEventListener('click', () => {
                         document.querySelectorAll('.day').forEach(el => el.classList.remove('selected'));
