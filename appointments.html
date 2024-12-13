@@ -32,8 +32,10 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             background-color: #f9f9f9;
-            text-align: center;
+            text-align: left;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
         }
         .day:hover {
             background-color: #ddd;
@@ -42,10 +44,21 @@
             background-color: #007BFF;
             color: white;
         }
-        .day .appointments-count {
+        .day .date-number {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .day .appointments-list {
             margin-top: 5px;
             font-size: 0.8em;
             color: #555;
+            list-style: none;
+            padding: 0;
+            max-height: 50px;
+            overflow-y: auto;
+        }
+        .day .appointments-list li {
+            margin: 2px 0;
         }
     </style>
 </head>
@@ -108,6 +121,7 @@
             let appointments = JSON.parse(localStorage.getItem('appointments')) || {};
             let currentMonth = new Date().getMonth();
             let currentYear = new Date().getFullYear();
+            let selectedDate = null;
 
             function saveAppointments() {
                 localStorage.setItem('appointments', JSON.stringify(appointments));
@@ -130,18 +144,25 @@
                     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                     const dayElement = document.createElement('div');
                     dayElement.className = 'day';
-                    dayElement.textContent = day;
+                    dayElement.innerHTML = `<span class="date-number">${day}</span>`;
 
                     if (appointments[dateStr]) {
-                        const countSpan = document.createElement('span');
-                        countSpan.className = 'appointments-count';
-                        countSpan.textContent = `${appointments[dateStr].length} ραντεβού`;
-                        dayElement.appendChild(countSpan);
+                        const list = document.createElement('ul');
+                        list.className = 'appointments-list';
+
+                        appointments[dateStr].forEach(appt => {
+                            const item = document.createElement('li');
+                            item.textContent = `${appt.time} - ${appt.firstName}`;
+                            list.appendChild(item);
+                        });
+
+                        dayElement.appendChild(list);
                     }
 
                     dayElement.addEventListener('click', () => {
                         document.querySelectorAll('.day').forEach(el => el.classList.remove('selected'));
                         dayElement.classList.add('selected');
+                        selectedDate = dateStr;
                         renderAppointments(dateStr);
                     });
 
@@ -163,6 +184,7 @@
                             <td>${appt.phone}</td>
                             <td>${appt.email}</td>
                             <td>
+                                <button data-index="${index}" class="edit-btn">Επεξεργασία</button>
                                 <button data-index="${index}" class="delete-btn">Διαγραφή</button>
                             </td>
                         `;
@@ -173,7 +195,10 @@
 
             function addAppointment(e) {
                 e.preventDefault();
-                const selectedDate = selectedDateDisplay.textContent;
+                if (!selectedDate) {
+                    alert('Επιλέξτε μια ημερομηνία.');
+                    return;
+                }
                 const time = appointmentForm.querySelector('#appointment-time').value;
                 const firstName = appointmentForm.querySelector('#first-name').value;
                 const lastName = appointmentForm.querySelector('#last-name').value;
@@ -191,15 +216,39 @@
                 appointmentForm.reset();
             }
 
+            function editAppointment(date, index) {
+                const appt = appointments[date][index];
+                appointmentForm.querySelector('#appointment-time').value = appt.time;
+                appointmentForm.querySelector('#first-name').value = appt.firstName;
+                appointmentForm.querySelector('#last-name').value = appt.lastName;
+                appointmentForm.querySelector('#phone').value = appt.phone;
+                appointmentForm.querySelector('#email').value = appt.email;
+                deleteAppointment(date, index);
+            }
+
+            function deleteAppointment(date, index) {
+                appointments[date].splice(index, 1);
+                if (appointments[date].length === 0) delete appointments[date];
+                saveAppointments();
+                renderAppointments(date);
+                renderCalendar(currentMonth, currentYear);
+            }
+
+            appointmentsTable.addEventListener('click', (e) => {
+                const index = e.target.getAttribute('data-index');
+                if (e.target.classList.contains('edit-btn')) editAppointment(selectedDate, index);
+                if (e.target.classList.contains('delete-btn')) deleteAppointment(selectedDate, index);
+            });
+
             prevMonthButton.addEventListener('click', () => {
                 currentMonth = (currentMonth - 1 + 12) % 12;
-                if (currentMonth === 11) currentYear -= 1;
+                if (currentMonth === 11) currentYear--;
                 renderCalendar(currentMonth, currentYear);
             });
 
             nextMonthButton.addEventListener('click', () => {
                 currentMonth = (currentMonth + 1) % 12;
-                if (currentMonth === 0) currentYear += 1;
+                if (currentMonth === 0) currentYear++;
                 renderCalendar(currentMonth, currentYear);
             });
 
