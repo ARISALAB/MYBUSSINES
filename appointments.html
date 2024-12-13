@@ -21,10 +21,10 @@
     <h1>Καταγραφή Ραντεβού</h1>
 
     <!-- Επιλογή ημερομηνίας -->
-    <label for="appointment-date">Επιλέξτε Ημερομηνία</label>
+    <label for="appointment-date">Επιλέξτε Ημερομηνία:</label>
     <input type="date" id="appointment-date" required>
 
-    <!-- Φόρμα καταγραφής ραντεβού -->
+    <!-- Φόρμα για προσθήκη ραντεβού -->
     <form id="appointment-form">
         <label for="customer-name">Όνομα Πελάτη</label>
         <input type="text" id="customer-name" required>
@@ -38,9 +38,18 @@
         <input type="submit" value="Προσθήκη Ραντεβού">
     </form>
 
-    <!-- Πίνακας με τα ραντεβού για την επιλεγμένη ημερομηνία -->
-    <h2>Ραντεβού για την επιλεγμένη ημερομηνία</h2>
-    <ul id="appointments-list"></ul>
+    <!-- Πίνακας για εμφάνιση των ραντεβού -->
+    <table id="appointments-table" style="display: none;">
+        <thead>
+            <tr>
+                <th>Όνομα</th>
+                <th>Επώνυμο</th>
+                <th>Ώρα Ραντεβού</th>
+                <th>Ενέργειες</th>
+            </tr>
+        </thead>
+        <tbody id="appointments-list"></tbody>
+    </table>
 
     <footer>&copy; 2024 Καταγραφή Ραντεβού</footer>
 
@@ -50,8 +59,9 @@
             const customerNameInput = document.getElementById('customer-name');
             const customerSurnameInput = document.getElementById('customer-surname');
             const appointmentTimeInput = document.getElementById('appointment-time');
-            const appointmentDateInput = document.getElementById('appointment-date');
             const appointmentsList = document.getElementById('appointments-list');
+            const appointmentsTable = document.getElementById('appointments-table');
+            const appointmentDateInput = document.getElementById('appointment-date');
 
             // Ανάκτηση των ραντεβού από το localStorage
             const appointments = JSON.parse(localStorage.getItem('appointments')) || {};
@@ -61,37 +71,31 @@
                 localStorage.setItem('appointments', JSON.stringify(appointments));
             }
 
-            // Απόδοση των ραντεβού για την επιλεγμένη ημερομηνία
-            function renderAppointments(date) {
-                if (!appointments[date]) {
-                    appointments[date] = [];
-                }
-
+            // Απόδοση των ραντεβού για τη συγκεκριμένη ημερομηνία
+            function renderAppointmentsForDate(date) {
+                const appointmentsForDate = appointments[date] || [];
                 appointmentsList.innerHTML = '';
-                appointments[date].forEach((appointment, index) => {
-                    const appointmentItem = document.createElement('li');
-                    appointmentItem.classList.add('appointment-item');
+                appointmentsForDate.sort((a, b) => a.time.localeCompare(b.time)); // Ταξινόμηση κατά ώρα
+
+                appointmentsForDate.forEach((appointment, index) => {
+                    const appointmentItem = document.createElement('tr');
                     appointmentItem.innerHTML = `
-                        <div>
-                            <strong>Όνομα:</strong> <span>${appointment.name}</span>
-                        </div>
-                        <div>
-                            <strong>Επώνυμο:</strong> <span>${appointment.surname}</span>
-                        </div>
-                        <div>
-                            <strong>Ώρα Ραντεβού:</strong> <span>${appointment.time}</span>
-                        </div>
-                        <div>
-                            <button class="edit-btn">Επεξεργασία</button>
-                            <button class="delete-btn">Διαγραφή</button>
-                        </div>
+                        <td>${appointment.name}</td>
+                        <td>${appointment.surname}</td>
+                        <td>${appointment.time}</td>
+                        <td>
+                            <button class="edit-btn" data-index="${index}">Επεξεργασία</button>
+                            <button class="delete-btn" data-index="${index}">Διαγραφή</button>
+                        </td>
                     `;
 
-                    appointmentItem.querySelector('.edit-btn').addEventListener('click', () => editAppointment(date, index));
-                    appointmentItem.querySelector('.delete-btn').addEventListener('click', () => deleteAppointment(date, index));
+                    appointmentItem.querySelector('.edit-btn').addEventListener('click', (e) => editAppointment(date, e.target.dataset.index));
+                    appointmentItem.querySelector('.delete-btn').addEventListener('click', (e) => deleteAppointment(date, e.target.dataset.index));
 
                     appointmentsList.appendChild(appointmentItem);
                 });
+
+                appointmentsTable.style.display = appointmentsForDate.length > 0 ? 'table' : 'none'; // Εμφάνιση πίνακα αν υπάρχουν ραντεβού
             }
 
             // Προσθήκη νέου ραντεβού
@@ -101,7 +105,7 @@
                 const name = customerNameInput.value.trim();
                 const surname = customerSurnameInput.value.trim();
                 const time = appointmentTimeInput.value.trim();
-                const date = appointmentDateInput.value.trim();
+                const date = appointmentDateInput.value;
 
                 if (!name || !surname || !time || !date) {
                     alert('Παρακαλώ συμπληρώστε όλα τα πεδία.');
@@ -114,7 +118,7 @@
 
                 appointments[date].push({ name, surname, time });
                 saveAppointments();
-                renderAppointments(date);
+                renderAppointmentsForDate(date);
                 appointmentForm.reset();
             }
 
@@ -124,7 +128,6 @@
                 customerNameInput.value = appointment.name;
                 customerSurnameInput.value = appointment.surname;
                 appointmentTimeInput.value = appointment.time;
-                appointmentDateInput.value = date;
 
                 deleteAppointment(date, index);
             }
@@ -136,21 +139,18 @@
                     delete appointments[date];
                 }
                 saveAppointments();
-                renderAppointments(date);
+                renderAppointmentsForDate(date);
             }
 
             // Εκκίνηση της εφαρμογής
             appointmentForm.addEventListener('submit', addAppointment);
-
-            // Ενημέρωση της λίστας ραντεβού όταν επιλέγεται ημερομηνία
-            appointmentDateInput.addEventListener('change', (e) => {
-                const selectedDate = e.target.value;
-                renderAppointments(selectedDate);
+            appointmentDateInput.addEventListener('change', () => {
+                const selectedDate = appointmentDateInput.value;
+                renderAppointmentsForDate(selectedDate);
             });
 
-            // Απόδοση ραντεβού για την αρχική επιλεγμένη ημερομηνία
-            const initialDate = appointmentDateInput.value || new Date().toISOString().split('T')[0];
-            renderAppointments(initialDate);
+            // Εμφάνιση των ραντεβού για την αρχική ημερομηνία
+            renderAppointmentsForDate(appointmentDateInput.value);
         });
     </script>
 
