@@ -165,6 +165,7 @@
 
             appointmentForm.addEventListener('submit', addAppointment);
 
+            // Κατά την αρχική φόρτωση, εμφάνιση των ραντεβού για τη σημερινή ημερομηνία
             const today = new Date().toISOString().split('T')[0];
             appointmentDate.value = today;
             renderAppointments(today);
