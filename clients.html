@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ημερολόγιο Ραντεβού</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        h1 {
+            color: #343a40;
+            margin: 20px 0;
+        }
+
+        /* Πεδίο Αναζήτησης */
+        .search-container {
+            margin: 20px;
+        }
+
+        .search-container input {
+            padding: 10px;
+            width: 300px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        /* Κεντραρισμένες καρτέλες πελατών */
+        #clients-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .client-card {
+            background-color: #007bff;  /* Χρώμα μπλε */
+            color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px;
+            width: 180px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Σκίαση */
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .client-card:hover {
+            background-color: #0056b3;  /* Σκούρο μπλε όταν τοποθετείς το δείκτη */
+            transform: scale(1.05);
+        }
+
+        .client-card .client-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .client-card .appointments-count {
+            font-size: 14px;
+            margin-top: 5px;
+            color: #e0e0e0;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .modal-header {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #343a40;
+        }
+
+        .modal table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .modal table, .modal th, .modal td {
+            border: 1px solid #ccc;
+        }
+
+        .modal th, .modal td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        .modal-footer {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .modal-footer button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal-footer button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ημερολόγιο Ραντεβού</h1>
+
+    <!-- Πεδίο Αναζήτησης -->
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Αναζήτηση Πελάτη..." onkeyup="searchClient()">
+    </div>
+
+    <!-- Πελάτες (Καρτέλες) -->
+    <div id="clients-container">
+        <!-- Οι καρτέλες πελατών θα προστεθούν εδώ δυναμικά -->
+    </div>
+
+    <!-- Modal για τα ραντεβού του πελάτη -->
+    <div id="appointments-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Ραντεβού Πελάτη</h2>
+            </div>
+            <div id="client-info">
+                <!-- Στοιχεία πελάτη -->
+            </div>
+            <table id="appointments-table-modal">
+                <thead>
+                    <tr>
+                        <th>Ώρα</th>
+                        <th>Ημερομηνία</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="modal-footer">
+                <button id="close-modal">Κλείσιμο</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const clientsContainer = document.getElementById('clients-container');
+            const appointmentsModal = document.getElementById('appointments-modal');
+            const closeModalButton = document.getElementById('close-modal');
+            const appointmentsTableModal = document.getElementById('appointments-table-modal').querySelector('tbody');
+            const clientInfoDiv = document.getElementById('client-info');
+            const searchInput = document.getElementById('search-input');
+
+            let appointments = JSON.parse(localStorage.getItem('appointments')) || {};
+
+            // Δημιουργία καρτελών πελατών
+            function renderClients() {
+                clientsContainer.innerHTML = '';
+                const clients = {};
+
+                // Συγκεντρώνουμε τους πελάτες και τα ραντεβού τους
+                Object.keys(appointments).forEach(date => {
+                    appointments[date].forEach(appt => {
+                        const clientName = `${appt.firstName} ${appt.lastName}`;
+                        if (!clients[clientName]) {
+                            clients[clientName] = [];
+                        }
+                        clients[clientName].push({ date, time: appt.time, firstName: appt.firstName, lastName: appt.lastName, phone: appt.phone, email: appt.email });
+                    });
+                });
+
+                // Ταξινόμηση πελατών αλφαβητικά με βάση το επίθετο
+                const sortedClients = Object.keys(clients).sort((a, b) => {
+                    const lastNameA = a.split(' ')[1];
+                    const lastNameB = b.split(' ')[1];
+                    return lastNameA.localeCompare(lastNameB);
+                });
+
+                // Δημιουργία καρτελών πελατών
+                sortedClients.forEach(clientName => {
+                    const card = document.createElement('div');
+                    card.classList.add('client-card');
+                    const clientAppointments = clients[clientName];
+                    card.innerHTML = `
+                        <div class="client-name">${clientName}</div>
+                        <div class="appointments-count">${clientAppointments.length} ραντεβού</div>
+                    `;
+
+                    // Προσθήκη event listener για το click
+                    card.addEventListener('click', () => {
+                        openAppointmentsModal(clientName, clientAppointments); // Δίνουμε όλα τα ραντεβού του πελάτη
+                    });
+
+                    clientsContainer.appendChild(card);
+                });
+            }
+
+            // Άνοιγμα του modal με τα ραντεβού του πελάτη
+            function openAppointmentsModal(clientName, clientAppointments) {
+                // Εμφανίζουμε τα στοιχεία του πελάτη στο modal
+                const firstAppointment = clientAppointments[0];
+                clientInfoDiv.innerHTML = `
+                    <p><strong>Όνομα:</strong> ${firstAppointment.firstName} ${firstAppointment.lastName}</p>
+                    <p><strong>Τηλέφωνο:</strong> ${firstAppointment.phone}</p>
+                    <p><strong>Ηλεκτρονικό Ταχυδρομείο:</strong> ${firstAppointment.email}</p>
+                `;
+
+                appointmentsTableModal.innerHTML = '';
+                clientAppointments.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                // Προσθήκη ραντεβού στον πίνακα του modal
+                clientAppointments.forEach(appt => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${appt.time}</td>
+                        <td>${new Date(appt.date).toLocaleDateString('el-GR')}</td> <!-- Ημερομηνία -->
+                    `;
+                    appointmentsTableModal.appendChild(row);
+                });
+
+                appointmentsModal.style.display = 'flex';
+            }
+
+            // Κλείσιμο του modal
+            closeModalButton.addEventListener('click', () => {
+                appointmentsModal.style.display = 'none';
+            });
+
+            // Αναζήτηση Πελάτη
+            function searchClient() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const clientCards = document.querySelectorAll('.client-card');
+                clientCards.forEach(card => {
+                    const clientName = card.querySelector('.client-name').textContent.toLowerCase();
+                    if (clientName.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+
+            renderClients(); // Αρχική απόδοση των πελατών
+        });
+    </script>
+</body>
+</html>
