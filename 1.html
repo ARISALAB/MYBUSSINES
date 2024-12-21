@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <title>Δημιουργία Πελάτη</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #343A40; /* Σκούρο γκρι για το κείμενο */
+        }
+
+        h2, h3 {
+            color: #343A40;
+            text-align: center;
+        }
+
+        .center-text {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #007BFF; /* Μπλε χρώμα για τα links */
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #0056B3; /* Σκούρο μπλε όταν γίνεται hover */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007BFF; /* Μπλε χρώμα για το header */
+            color: white;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #007BFF; /* Μπλε χρώμα για τα buttons */
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #0056B3; /* Σκούρο μπλε όταν γίνεται hover */
+        }
+
+        .input-field {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box; /* Για να εξασφαλίσουμε ότι το padding δεν ξεφεύγει */
+        }
+        #startButton {
+    background-color: #dc3545; /* Κόκκινο χρώμα */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#startButton i {
+    margin-right: 8px; /* Απόσταση ανάμεσα στο μικρόφωνο και το κείμενο */
+}
+
+        .input-field:focus {
+            outline: none;
+            border-color: #007BFF; /* Highlight border με μπλε όταν είναι ενεργό */
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-container {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="center-text">
+        <a href="1.html">Δημιουργία Ραντεβού</a>
+        <a href="appointments.html">Δημιουργία Ραντεβού</a>
+        <h2>Δημιουργία Πελάτη</h2>
+    </div>
+
+    <div class="form-container">
+        <form id="customer-form">
+            <input type="text" id="first-name" class="input-field" placeholder="Όνομα" required>
+            <input type="text" id="last-name" class="input-field" placeholder="Επώνυμο" required>
+            <input type="text" id="phone" class="input-field" placeholder="Τηλέφωνο" required>
+            <button id="startButton">
+                <i class="fa fa-microphone"></i> Εκκίνηση Εγγραφής
+            </button>
+                        <button type="submit" class="button">Αποθήκευση Πελάτη</button>
+        </form>
+    </div>
+
+    <div class="center-text">
+        <h3>Λίστα Πελατών</h3>
+    </div>
+
+    <div class="table-container">
+        <table id="customers-table">
+            <thead>
+                <tr>
+                    <th>Όνομα</th>
+                    <th>Επώνυμο</th>
+                    <th>Τηλέφωνο</th>
+                    <th>Ενέργειες</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Οι πελάτες θα προστεθούν εδώ -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", loadCustomers);
+
+        // Φόρτωση πελατών από το LocalStorage
+        function loadCustomers() {
+            const customers = JSON.parse(localStorage.getItem('customers')) || [];
+            const tableBody = document.querySelector("#customers-table tbody");
+            tableBody.innerHTML = ''; // Καθαρισμός πίνακα
+
+            // Ταξινόμηση των πελατών με βάση το επώνυμο
+            customers.sort((a, b) => a.lastName.localeCompare(b.lastName));
+
+            customers.forEach(customer => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${customer.firstName}</td>
+                    <td>${customer.lastName}</td>
+                    <td>${customer.phone}</td>
+                    <td>
+                        <button class="button" onclick="editCustomer(${customer.id})">Επεξεργασία</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Αποθήκευση νέου πελάτη
+        document.getElementById('customer-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const firstName = document.getElementById('first-name').value;
+            const lastName = document.getElementById('last-name').value;
+            const phone = document.getElementById('phone').value;
+
+            if (!firstName || !lastName || !phone) {
+                alert("Παρακαλώ συμπληρώστε όλα τα πεδία.");
+                return;
+            }
+
+            const newCustomer = {
+                id: Date.now(),
+                firstName: firstName,
+                lastName: lastName,
+                phone: phone
+            };
+
+            const customers = JSON.parse(localStorage.getItem('customers')) || [];
+            customers.push(newCustomer);
+            localStorage.setItem('customers', JSON.stringify(customers));
+
+            loadCustomers(); // Επαναφόρτωση της λίστας πελατών
+        });
+
+        // Επεξεργασία πελάτη
+        function editCustomer(customerId) {
+            const customers = JSON.parse(localStorage.getItem('customers')) || [];
+            const customer = customers.find(c => c.id === customerId);
+            if (customer) {
+                const firstName = prompt("Εισάγετε το νέο όνομα", customer.firstName);
+                const lastName = prompt("Εισάγετε το νέο επώνυμο", customer.lastName);
+                const phone = prompt("Εισάγετε το νέο τηλέφωνο", customer.phone);
+
+                if (firstName && lastName && phone) {
+                    customer.firstName = firstName;
+                    customer.lastName = lastName;
+                    customer.phone = phone;
+                    localStorage.setItem('customers', JSON.stringify(customers));
+                    loadCustomers(); // Επαναφόρτωση της λίστας πελατών
+                }
+            }
+        }
+
+   // Συνάρτηση για να κάνουμε το πρώτο γράμμα κάθε λέξης κεφαλαίο
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
+
+// Προσθήκη φωνητικής αναγνώρισης
+if ('webkitSpeechRecognition' in window) {
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = 'el-GR'; // Γλώσσα: Ελληνικά
+    recognition.interimResults = false; // Μόνο τελικά αποτελέσματα
+
+    const startButton = document.getElementById('startButton');
+    const firstNameInput = document.getElementById('first-name');
+    const lastNameInput = document.getElementById('last-name');
+    const phoneInput = document.getElementById('phone');
+
+    // Εκκίνηση αναγνώρισης
+    startButton.addEventListener('click', function () {
+        recognition.start();
+        startButton.disabled = true;
+        startButton.textContent = "Ηχογράφηση σε εξέλιξη...";
+    });
+
+    recognition.onresult = function (event) {
+        const transcript = event.results[0][0].transcript.trim();
+        const words = transcript.split(' ');
+
+        // Εισαγωγή δεδομένων στα πεδία
+        if (words.length > 0) {
+            firstNameInput.value = capitalizeFirstLetter(words[0]) || ''; // Κεφαλαίο πρώτο γράμμα για το όνομα
+        }
+        if (words.length > 1) {
+            lastNameInput.value = capitalizeFirstLetter(words[1]) || ''; // Κεφαλαίο πρώτο γράμμα για το επώνυμο
+        }
+        if (words.length > 2) {
+            phoneInput.value = words.slice(2).join(' ') || ''; // Συγκέντρωση όλων των λέξεων που απομένουν για το τηλέφωνο
+        }
+
+        startButton.disabled = false;
+        startButton.textContent = "Εκκίνηση Εγγραφής";
+    };
+
+    recognition.onerror = function (event) {
+        alert("Σφάλμα στην αναγνώριση φωνής: " + event.error);
+        startButton.disabled = false;
+        startButton.textContent = "Εκκίνηση Εγγραφής";
+    };
+} else {
+    alert("Η φωνητική αναγνώριση δεν υποστηρίζεται από τον περιηγητή σας.");
+}
+
+    </script>
+
+</body>
+</html>
