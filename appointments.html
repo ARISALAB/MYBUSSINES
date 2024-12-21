@@ -3,186 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ημερολόγιο Ραντεβού</title>
-    <link rel="stylesheet" href="styles.css">
-        <link rel="icon" href="11.png" type="image/png">
-
+    <title>Κλείσιμο Ραντεβού</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        /* Στυλ για τον πίνακα */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        /* Γενικό στυλ για τα κελιά του πίνακα */
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #007BFF; /* Μπλε περίγραμμα για όλα τα κελιά */
+        }
+
+        /* Στυλ για την επικεφαλίδα του πίνακα */
+        th {
+            background-color: #007BFF; /* Μπλε φόντο για την επικεφαλίδα */
+            color: white; /* Λευκό κείμενο για την επικεφαλίδα */
+        }
+
+        /* Εναλλαγή χρωμάτων σειρών */
+        tr:nth-child(odd) {
+            background-color: #f2f2f2; /* Ανοιχτό γκρι για τις μονές σειρές */
+        }
+
+        tr:nth-child(even) {
+            background-color: #e6f7ff; /* Ανοιχτό μπλε για τις ζυγές σειρές */
+        }
+
+        /* Στυλ για τα κουμπιά */
+        .button {
+            padding: 10px 20px;
+            background-color: #007BFF; /* Μπλε χρώμα */
+            color: white; /* Λευκό κείμενο */
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #0056b3; /* Σκούρο μπλε όταν περνάει το ποντίκι */
+        }
+
+        /* Στυλ για την επιλεγμένη ημερομηνία (κουτάκι) */
+        .selected {
+            background-color: #007BFF; /* Μπλε χρώμα */
+            color: white; /* Λευκό κείμενο */
+            border: 1px solid #0056b3; /* Σκούρο μπλε περίγραμμα */
+        }
+
+        .input-field {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
         .calendar-container {
-            max-width: 700px;
-            margin: 20px auto;
-            text-align: center;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 20px;
         }
-        .calendar-header {
+        /* Στυλ για τα κουτιά ημερών (day boxes) */
+        .day-box {
+            display: inline-block;
+            width: 60px; /* Πλάτος */
+            height: 60px; /* Ύψος */
+            margin: 5px;
+            text-align: center;
+            line-height: 60px; /* Κεντράρισμα του κειμένου κάθετα */
+            background-color: #dcdcdc; /* Γκρι φόντο */
+            font-size: 18px; /* Μέγεθος κειμένου */
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 0; /* Τετραγωνισμένο περίγραμμα */
+            border: none; /* Χωρίς περίγραμμα */
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Προσθήκη σκιάς */
+        }
+        .center-text {
+  text-align: center;
+  margin-top: 20px; /* Προσαρμόστε το αν χρειάζεται */
+}
+
+/* Στυλ για την επιλογή πελάτη */
+.select-field {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #007BFF;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 300px; /* Περιορισμός πλάτους */
+    margin-bottom: 10px;
+}
+
+/* Στυλ για την ώρα */
+.input-field[type="time"] {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #007BFF;
+    border-radius: 5px;
+    width: auto; /* Αυτόματο μέγεθος */
+    max-width: 150px; /* Περιορισμός πλάτους */
+    margin-bottom: 10px;
+}
+
+        .day-box:hover {
+            background-color: #007BFF; /* Μπλε φόντο κατά το hover */
+            color: white; /* Λευκό κείμενο όταν περνάει το ποντίκι */
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3); /* Εντονότερη σκιά κατά το hover */
+        }
+
+        .day-box.has-appointments {
+            background-color: #28A745; /* Πράσινο χρώμα αν υπάρχουν ραντεβού */
+            color: white; /* Λευκό κείμενο για κουτιά με ραντεβού */
+        }
+
+        .month-buttons {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            margin-bottom: 10px;
         }
+
+        .selected {
+            background-color: #007BFF; /* Μπλε χρώμα */
+            color: white; /* Λευκό κείμενο */
+            border: 1px solid #0056b3; /* Κάποιες λεπτομέρειες στο πλαίσιο */
+        }
+
+        /* Νέα στυλ για τις ημέρες της εβδομάδας */
         .weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-            margin-top: 10px;
+            gap: 5px;
             font-weight: bold;
+            margin-bottom: 10px;
         }
+/* Στυλ για τον αριθμό των ραντεβού κάτω από την ημερομηνία */
+.appointment-count {
+    font-size: 12px;
+    color: white;
+    padding: 5px;
+    margin-top: 5px;
+    display: inline-block;
+}
+#selected-date-message {
+    font-size: 20px;
+    font-weight: bold;
+    color: #007BFF; /* Μπλε χρώμα για το μήνυμα */
+    margin-top: 20px;
+}
+
         .weekday {
             text-align: center;
-        }
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .day {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 80px; /* Σταθερό ύψος για όλα τα κουτάκια */
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            text-align: center;
-            font-size: 14px;
-            cursor: pointer;
-            flex-direction: column;
-        }
-        .day[data-has-appointments="true"] {
-            background-color: #28a745; /* Πράσινο χρώμα */
+            background-color: #007BFF;
             color: white;
+            padding: 10px;
         }
-        .day .date-number {
-            font-weight: bold; /* Έντονος αριθμός */
-            margin-bottom: 5px;
-        }
-        .day:hover {
-            background-color: #ddd;
-        }
-        .day.selected {
-            background-color: #007BFF !important; /* Μπλε χρώμα για την επιλεγμένη ημέρα */
-            color: white !important;
-        }
-        .empty-day {
-            background-color: transparent;
-            border: none;
-            cursor: default;
-        }
+/* Στυλ για το dropdown με τα αποτελέσματα αναζήτησης */
+.dropdown-results {
+    position: absolute;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: white;
+    display: none;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+}
+
+.dropdown-item:hover {
+    background-color: #007BFF;
+    color: white;
+}
+
     </style>
 </head>
 <body>
-    <nav>
-        <img src="11.png" alt="Logo" class="logo">
-        <button class="menu-toggle">
-            &#9776;<br>Menu
-        </button>
-        <div class="menu-items">
-            <a href="index.html">Αρχική Σελίδα</a>
-    
-            <div class="dropdown">
-                <a href="#">Συναλλαγές &#9662;</a>
-                <div class="dropdown-content">
-                    <a href="index1.html">Καταγραφή Εξόδων</a>
-                    <a href="index4.html">Τιμολόγια Επί Πιστώσει</a>
-                    <a href="index5.html">Πληρωμές Τράπεζας</a>
-                </div>
-            </div>
-            
-                <div class="dropdown">
-                <a href="#">Ραντεβού &#9662;</a>
-                <div class="dropdown-content">
-                    <a href="appointments.html">Καταγραφή Ραντεβού</a>
-                    <a href="clients.html">Πελάτες</a>
-                </div>
-            </div>
+    <a href="1.html">Δημιουργία Ραντεβού</a>
+    <a href="appointments.html">Δημιουργία Ραντεβού</a>
+    <a href="2.html">Δημιουργία Ραντεβού</a>
 
-            <a href="index3.html">Καταγραφή Εσόδων</a>
-            <a href="index2.html">Καρτέλες Προμηθευτών</a>
-    
-            <div class="dropdown">
-                <a href="#">Αναφορές &#9662;</a>
-                <div class="dropdown-content">
-                    <a href="index7.html">Ημερήσια Αναφορά</a>
-                    <a href="index6.html">Εβδομαδιαία Αναφορά</a>
-                    <a href="index8.html">Μηνιαία Αναφορά</a>
-                    <a href="index9.html">Ετήσια Αναφορά</a>
-                </div>
-            </div>
-    
-            <div class="dropdown">
-                <a href="#">Προσωπικό &#9662;</a>
-                <div class="dropdown-content">
-                    <a href="employee-management.html">Καταγραφή Προσωπικού</a>
-                    <a href="salary.html">Καταγραφή Μισθοδοσίας</a>
-                    <a href="weekly-salary.html">Εβδομαδιαία Μισθοδοσία </a>
-                    <a href="salary-report.html">Αναφορά Μισθοδοσίας</a>
-                    
+    <h2>Κλείσιμο Ραντεβού</h2>
 
-                </div>
-            </div>
-        </div>
-    </nav>
-    
-
-    <div id="menuModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <a href="index.html">Αρχική Σελίδα</a>
-            
-            <div class="dropdown">
-                <a href="#">Συναλλαγές</a>
-                <div class="dropdown-content">
-                    <a href="index1.html">Καταγραφή Εξόδων</a>
-                    <a href="index4.html">Τιμολόγια Επί Πιστώσει</a>
-                    <a href="index5.html">Πληρωμές Τράπεζας</a>
-                </div>
-            </div>
-
-                <div class="dropdown">
-                <a href="#">Ραντεβού &#9662;</a>
-                <div class="dropdown-content">
-                    <a href="appointments.html">Καταγραφή Ραντεβού</a>
-                    <a href="clients.html">Πελάτες</a>
-                </div>
-            </div>
-            <a href="index3.html">Καταγραφή Εσόδων</a>
-            <a href="index2.html">Καρτέλες Προμηθευτών</a>
-            
-            <div class="dropdown">
-                <a href="#">Αναφορές</a>
-                <div class="dropdown-content">
-                    <a href="index7.html">Ημερήσια Αναφορά</a>
-                    <a href="index6.html">Εβδομαδιαία Αναφορά</a>
-                    <a href="index8.html">Μηνιαία Αναφορά</a>
-                    <a href="index9.html">Ετήσια Αναφορά</a>
-                </div>
-            </div>
-            
-            <!-- Νέα ενότητα για Προσωπικό -->
-            <div class="dropdown">
-                <a href="#">Προσωπικό &#9662;</a>
-                <div class="dropdown-content">
-                    <a href="employee-management.html">Καταγραφή Προσωπικού</a>
-                    <a href="salary.html">Καταγραφή Μισθοδοσίας</a>
-                    <a href="weekly-salary.html">Εβδομαδιαία Μισθοδοσία</a>
-                    <a href="salary-report.html">Αναφορά Μισθοδοσίας</a>
-                </div>
-            </div>
-            
-        </div>
-    </div>
-    <h1>Ημερολόγιο Ραντεβού</h1>
-    
-    <div class="calendar-container">
-        <div class="calendar-header">
-            <button id="prev-month">Προηγούμενος</button>
-            <span id="current-month-year"></span>
-            <button id="next-month">Επόμενος</button>
+    <form id="appointment-form">
+       
+        <div class="month-buttons">
+            <button type="button" class="button" id="prev-month">Προηγούμενος Μήνας</button>
+            <span id="month-label"></span>
+            <button type="button" class="button" id="next-month">Επόμενος Μήνας</button>
         </div>
         <div class="weekdays">
             <div class="weekday">Δευτέρα</div>
@@ -193,189 +220,332 @@
             <div class="weekday">Σάββατο</div>
             <div class="weekday">Κυριακή</div>
         </div>
-        <div id="calendar" class="calendar"></div>
-    </div>
-
-    <h2>Ραντεβού για την Ημερομηνία: <span id="selected-date">-</span></h2>
-    <form id="appointment-form">
-        <label for="appointment-time">Ώρα</label>
-        <input type="time" id="appointment-time" required>
-
-        <label for="first-name">Όνομα</label>
-        <input type="text" id="first-name" required>
-
-        <label for="last-name">Επώνυμο</label>
-        <input type="text" id="last-name" required>
-
-        <label for="phone">Τηλέφωνο</label>
-        <input type="tel" id="phone" required>
-
-        <label for="email">Email</label>
-        <input type="email" id="email" required>
-
-        <input type="submit" value="Καταχώριση Ραντεβού">
+        <div id="calendar" class="calendar-container">
+            <!-- Κουτιά ημερών θα προστεθούν εδώ -->
+        </div>
+        <input type="text" id="customer-search" class="input-field" placeholder="Αναζήτηση Πελάτη..." oninput="filterCustomers()">
+        <div id="customer-results" class="dropdown-results"></div>
+        
+         <select id="customer-select" class="select-field" required>
+            <option value="">Επιλέξτε Πελάτη</option>
+            <!-- Οι πελάτες θα προστεθούν εδώ -->
+        </select>
+        <input type="time" id="appointment-time" class="input-field" required>
+        <button type="submit" class="button">Κλείσιμο Ραντεβού</button>
     </form>
 
-    <table id="appointments-table" border="1">
+    <div class="center-text">
+        <h3 id="selected-date-message">Ραντεβού για </h3>
+        <h3>Λίστα Ραντεβού</h3>
+      </div>
+      
+
+    <table id="appointments-table">
         <thead>
             <tr>
-                <th>Ώρα</th>
-                <th>Όνομα</th>
-                <th>Επώνυμο</th>
-                <th>Τηλέφωνο</th>
-                <th>Email</th>
+                <th>Όνομα Πελάτη</th>
+                <th>Ημερομηνία Ραντεβού</th>
+                <th>Ώρα Ραντεβού</th>
                 <th>Ενέργειες</th>
             </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+            <!-- Τα ραντεβού θα προστεθούν εδώ -->
+        </tbody>
     </table>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const calendar = document.getElementById('calendar');
-            const currentMonthYear = document.getElementById('current-month-year');
-            const prevMonthButton = document.getElementById('prev-month');
-            const nextMonthButton = document.getElementById('next-month');
-            const appointmentsTable = document.getElementById('appointments-table').querySelector('tbody');
-            const appointmentForm = document.getElementById('appointment-form');
-            const selectedDateDisplay = document.getElementById('selected-date');
+        document.addEventListener("DOMContentLoaded", loadCustomersAndAppointments);
+        let selectedDate = new Date(); // Αρχική ημερομηνία: σήμερα
+    
+        // Φόρτωση των πελατών και ραντεβού
+        function loadCustomersAndAppointments() {
+            const customers = JSON.parse(localStorage.getItem('customers')) || [];
+            const customerSelect = document.getElementById('customer-select');
+            customerSelect.innerHTML = '<option value="">Επιλέξτε Πελάτη</option>'; // Καθαρισμός
+    
+            customers.forEach(customer => {
+                const option = document.createElement('option');
+                option.value = customer.id;
+                option.textContent = `${customer.firstName} ${customer.lastName}`;
+                customerSelect.appendChild(option);
+            });
+    
+            // Φόρτωση ραντεβού όταν επιλέγεται ημερομηνία
+            loadCalendar();
+            loadAppointments(); // Αρχική φόρτωση
+        }
+    
+        function loadCalendar() {
+    const calendarContainer = document.getElementById('calendar');
+    const monthLabel = document.getElementById('month-label');
+    const year = selectedDate.getFullYear();
+    const month = selectedDate.getMonth();
 
-            let appointments = JSON.parse(localStorage.getItem('appointments')) || {};
-            let currentMonth = new Date().getMonth();
-            let currentYear = new Date().getFullYear();
-            let selectedDate = null;
+    // Ενημέρωση του τίτλου του μήνα
+    monthLabel.textContent = `${getMonthName(month)} ${year}`;
 
-            function saveAppointments() {
-                localStorage.setItem('appointments', JSON.stringify(appointments));
-            }
+    // Λήψη της πρώτης ημέρας του μήνα
+    const firstDay = getFirstDayOfMonth(selectedDate);
+    const lastDate = new Date(year, month + 1, 0);
+    const daysInMonth = lastDate.getDate();
 
-            function renderCalendar(month, year) {
-    const firstDay = new Date(year, month, 1).getDay();
-    // Εάν η πρώτη μέρα είναι Κυριακή (0), μετακινούμε τη μέρα αυτή στη Δευτέρα
-    const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const monthNames = ['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος', 'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος'];
-    currentMonthYear.textContent = `${monthNames[month]} ${year}`;
-    calendar.innerHTML = '';
+    // Καθαρισμός του ημερολογίου
+    calendarContainer.innerHTML = '';
 
-    // Προσθήκη κενών για την αρχή του μήνα
-    for (let i = 0; i < adjustedFirstDay; i++) {
-        const emptyDay = document.createElement('div');
-        emptyDay.className = 'day empty-day';
-        calendar.appendChild(emptyDay);
+    // Λήψη των ραντεβού του μήνα
+    const appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+    const appointmentsByDate = {};
+
+    // Ομαδοποιούμε τα ραντεβού κατά ημερομηνία
+    appointments.forEach(appointment => {
+        const appointmentDate = new Date(appointment.date);
+        const dateKey = `${appointmentDate.getFullYear()}-${appointmentDate.getMonth()}-${appointmentDate.getDate()}`;
+        if (!appointmentsByDate[dateKey]) {
+            appointmentsByDate[dateKey] = [];
+        }
+        appointmentsByDate[dateKey].push(appointment);
+    });
+
+    // Προσθήκη των κενών κενών για τις ημέρες πριν την πρώτη ημέρα του μήνα
+    for (let i = 0; i < firstDay; i++) {
+        const emptyBox = document.createElement('div');
+        emptyBox.className = 'day-box';
+        calendarContainer.appendChild(emptyBox);
     }
 
-    // Δημιουργία ημερών του μήνα
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        const dayElement = document.createElement('div');
-        dayElement.className = 'day';
+    // Προσθήκη των κουτιών για κάθε μέρα του μήνα
+    for (let i = 1; i <= daysInMonth; i++) {
+        const dayBox = document.createElement('div');
+        dayBox.className = 'day-box';
+        dayBox.textContent = i;
 
-        const totalAppointments = appointments[dateStr] ? appointments[dateStr].length : 0;
-        dayElement.innerHTML = `<span class="date-number">${day}</span> <span>(${totalAppointments})</span>`;
-
-        if (totalAppointments > 0) {
-            dayElement.dataset.hasAppointments = "true"; // Για πράσινο χρώμα
+        // Ελέγχουμε αν υπάρχει ραντεβού για αυτή την ημερομηνία
+        const dateKey = `${year}-${month}-${i}`;
+        let appointmentCount = 0;
+        if (appointmentsByDate[dateKey]) {
+            appointmentCount = appointmentsByDate[dateKey].length;
+            dayBox.classList.add('has-appointments');
         }
 
-        dayElement.addEventListener('click', () => {
-            document.querySelectorAll('.day').forEach(el => el.classList.remove('selected'));
-            dayElement.classList.add('selected');
-            selectedDate = dateStr;
-            renderAppointments(dateStr);
-        });
+        // Προσθήκη αριθμού ραντεβού κάτω από την ημερομηνία
+        const appointmentCountElement = document.createElement('div');
+        appointmentCountElement.className = 'appointment-count';
+        appointmentCountElement.textContent = appointmentCount;
+        dayBox.appendChild(appointmentCountElement);
 
-        calendar.appendChild(dayElement);
+        dayBox.addEventListener('click', () => selectDate(i));
+        calendarContainer.appendChild(dayBox);
     }
 }
 
-
-            function renderAppointments(date) {
-                selectedDateDisplay.textContent = date || '-';
-                appointmentsTable.innerHTML = '';
-
-                if (appointments[date]) {
-                    appointments[date].forEach((appt, index) => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${appt.time}</td>
-                            <td>${appt.firstName}</td>
-                            <td>${appt.lastName}</td>
-                            <td>${appt.phone}</td>
-                            <td>${appt.email}</td>
-                            <td>
-                                <button data-index="${index}" class="edit-btn">Επεξεργασία</button>
-                                <button data-index="${index}" class="delete-btn">Διαγραφή</button>
-                            </td>
-                        `;
-                        appointmentsTable.appendChild(row);
-                    });
-                }
+        // Επιλογή ημερομηνίας
+        function selectDate(day) {
+            selectedDate.setDate(day);
+            loadCalendar();
+            loadAppointments();
+    
+            // Αφαίρεση της κλάσης 'selected' από όλα τα κουτιά
+            const allDayBoxes = document.querySelectorAll('.day-box');
+            allDayBoxes.forEach(box => box.classList.remove('selected'));
+    
+            // Προσθήκη της κλάσης 'selected' στο κουτί της επιλεγμένης ημερομηνίας
+            const selectedDayBox = document.querySelector(`.day-box:nth-child(${day + getFirstDayOfMonth(selectedDate)})`);
+            if (selectedDayBox) {
+                selectedDayBox.classList.add('selected');
             }
-
-            function addAppointment(e) {
-                e.preventDefault();
-                if (!selectedDate) {
-                    alert('Επιλέξτε μια ημερομηνία.');
-                    return;
-                }
-                const time = appointmentForm.querySelector('#appointment-time').value;
-                const firstName = appointmentForm.querySelector('#first-name').value;
-                const lastName = appointmentForm.querySelector('#last-name').value;
-                const phone = appointmentForm.querySelector('#phone').value;
-                const email = appointmentForm.querySelector('#email').value;
-
-                if (!appointments[selectedDate]) {
-                    appointments[selectedDate] = [];
-                }
-
-                appointments[selectedDate].push({ time, firstName, lastName, phone, email });
-                saveAppointments();
-                renderAppointments(selectedDate);
-                renderCalendar(currentMonth, currentYear);
-                appointmentForm.reset();
-            }
-
-            function editAppointment(date, index) {
-                const appt = appointments[date][index];
-                appointmentForm.querySelector('#appointment-time').value = appt.time;
-                appointmentForm.querySelector('#first-name').value = appt.firstName;
-                appointmentForm.querySelector('#last-name').value = appt.lastName;
-                appointmentForm.querySelector('#phone').value = appt.phone;
-                appointmentForm.querySelector('#email').value = appt.email;
-                deleteAppointment(date, index);
-            }
-
-            function deleteAppointment(date, index) {
-                appointments[date].splice(index, 1);
-                if (appointments[date].length === 0) delete appointments[date];
-                saveAppointments();
-                renderAppointments(date);
-                renderCalendar(currentMonth, currentYear);
-            }
-
-            appointmentsTable.addEventListener('click', (e) => {
-                const index = e.target.getAttribute('data-index');
-                if (e.target.classList.contains('edit-btn')) editAppointment(selectedDate, index);
-                if (e.target.classList.contains('delete-btn')) deleteAppointment(selectedDate, index);
+        }
+    
+        // Λήψη της πρώτης ημέρας του μήνα με την Δευτέρα ως την πρώτη μέρα της εβδομάδας
+        function getFirstDayOfMonth(date) {
+            const firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+            return firstDay === 0 ? 6 : firstDay - 1; // Κυριακή (0) γίνεται Σάββατο (6), Δευτέρα (1) παραμένει Δευτέρα
+        }
+    
+        // Λήψη του ονόματος του μήνα
+        function getMonthName(month) {
+            const months = [
+                "Ιανουάριος", "Φεβρουάριος", "Μάρτιος", "Απρίλιος", "Μάιος", "Ιούνιος",
+                "Ιούλιος", "Αύγουστος", "Σεπτέμβριος", "Οκτώβριος", "Νοέμβριος", "Δεκέμβριος"
+            ];
+            return months[month];
+        }
+    
+        // Φόρτωση των ραντεβού για την επιλεγμένη ημερομηνία
+        function loadAppointments() {
+            const appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+            const customers = JSON.parse(localStorage.getItem('customers')) || [];
+            const tableBody = document.querySelector("#appointments-table tbody");
+    
+            tableBody.innerHTML = ''; // Καθαρισμός πίνακα
+    
+            const selectedDateString = selectedDate.toISOString().split('T')[0]; // Μορφή YYYY-MM-DD
+    
+            // Φιλτράρισμα ραντεβού για την επιλεγμένη ημερομηνία
+            const filteredAppointments = appointments.filter(appointment => {
+                const appointmentDate = new Date(appointment.date);
+                return (
+                    appointmentDate.getFullYear() === selectedDate.getFullYear() &&
+                    appointmentDate.getMonth() === selectedDate.getMonth() &&
+                    appointmentDate.getDate() === selectedDate.getDate()
+                );
             });
-
-            prevMonthButton.addEventListener('click', () => {
-                currentMonth = (currentMonth - 1 + 12) % 12;
-                if (currentMonth === 11) currentYear--;
-                renderCalendar(currentMonth, currentYear);
+    
+            filteredAppointments.forEach(appointment => {
+                const customer = customers.find(c => c.id === appointment.customerId);
+                if (customer) {
+                    const appointmentDate = new Date(appointment.date);
+                    const formattedDate = `${appointmentDate.getDate().toString().padStart(2, '0')}-${(appointmentDate.getMonth() + 1).toString().padStart(2, '0')}-${appointmentDate.getFullYear()}`;
+                    const formattedTime = `${appointmentDate.getHours().toString().padStart(2, '0')}:${appointmentDate.getMinutes().toString().padStart(2, '0')}`;
+    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${customer.firstName} ${customer.lastName}</td>
+                        <td>${formattedDate}</td>
+                        <td>${formattedTime}</td>
+                        <td><button class="button" onclick="deleteAppointment(${appointment.id})">Διαγραφή</button></td>
+                    `;
+                    tableBody.appendChild(row);
+                }
             });
-
-            nextMonthButton.addEventListener('click', () => {
-                currentMonth = (currentMonth + 1) % 12;
-                if (currentMonth === 0) currentYear++;
-                renderCalendar(currentMonth, currentYear);
-            });
-
-            appointmentForm.addEventListener('submit', addAppointment);
-
-            renderCalendar(currentMonth, currentYear);
+        }
+    
+        // Διαγραφή ραντεβού
+        function deleteAppointment(appointmentId) {
+            const appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+            const filteredAppointments = appointments.filter(a => a.id !== appointmentId);
+            localStorage.setItem('appointments', JSON.stringify(filteredAppointments));
+            loadAppointments(); // Ανανεώνουμε την προβολή
+        }
+    
+        // Δημιουργία ραντεβού
+        document.getElementById('appointment-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const customerId = document.getElementById('customer-select').value;
+            const appointmentTime = document.getElementById('appointment-time').value;
+    
+            if (!customerId || !appointmentTime) {
+                alert("Παρακαλώ συμπληρώστε όλα τα πεδία.");
+                return;
+            }
+    
+            const customers = JSON.parse(localStorage.getItem('customers')) || [];
+            const customer = customers.find(c => c.id == customerId);
+            if (customer) {
+                const selectedTime = appointmentTime.split(':');
+                const newAppointment = {
+                    id: Date.now(),
+                    customerId: customer.id,
+                    date: new Date(selectedDate.setHours(selectedTime[0], selectedTime[1], 0, 0)).toISOString()
+                };
+    
+                const appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+                appointments.push(newAppointment);
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+                loadAppointments();
+            }
         });
+    
+        // Πλοήγηση μήνα
+        document.getElementById('prev-month').addEventListener('click', function() {
+            selectedDate.setMonth(selectedDate.getMonth() - 1);
+            loadCalendar();
+            loadAppointments();
+        });
+    
+        document.getElementById('next-month').addEventListener('click', function() {
+            selectedDate.setMonth(selectedDate.getMonth() + 1);
+            loadCalendar();
+            loadAppointments();
+        });
+        // Αναζήτηση πελατών
+document.getElementById('customer-search').addEventListener('input', function () {
+    const query = this.value.toLowerCase();
+    const customerSelect = document.getElementById('customer-select');
+    const options = customerSelect.querySelectorAll('option');
+
+    options.forEach(option => {
+        if (option.value === "") return; // Παράκαμψη της πρώτης επιλογής
+        const text = option.textContent.toLowerCase();
+        option.style.display = text.includes(query) ? "block" : "none";
+    });
+});
+// Συνάρτηση για φιλτράρισμα πελατών κατά την πληκτρολόγηση
+function filterCustomers() {
+    const searchTerm = document.getElementById('customer-search').value.toLowerCase();
+    const customerResults = document.getElementById('customer-results');
+    const customers = JSON.parse(localStorage.getItem('customers')) || [];
+    
+    // Φιλτράρισμα πελατών σύμφωνα με την αναζήτηση
+    const filteredCustomers = customers.filter(customer => 
+        (`${customer.firstName} ${customer.lastName}`).toLowerCase().includes(searchTerm)
+    );
+
+    // Εμφάνιση των αποτελεσμάτων
+    customerResults.innerHTML = '';  // Καθαρισμός προηγούμενων αποτελεσμάτων
+    if (filteredCustomers.length > 0) {
+        customerResults.style.display = 'block';
+        filteredCustomers.forEach(customer => {
+            const div = document.createElement('div');
+            div.className = 'dropdown-item';
+            div.textContent = `${customer.firstName} ${customer.lastName}`;
+            div.onclick = () => selectCustomer(customer);
+            customerResults.appendChild(div);
+        });
+    } else {
+        customerResults.style.display = 'none';
+    }
+}
+
+// Συνάρτηση για επιλογή πελάτη
+function selectCustomer(customer) {
+    // Βάζουμε το όνομα του πελάτη στο input
+    document.getElementById('customer-search').value = `${customer.firstName} ${customer.lastName}`;
+    
+    // Κλείνουμε το dropdown μετά την επιλογή
+    document.getElementById('customer-results').style.display = 'none';
+}
+
+// Συνάρτηση για το κλείσιμο του dropdown όταν γίνεται κλικ έξω
+document.addEventListener('click', function(event) {
+    const searchInput = document.getElementById('customer-search');
+    const dropdown = document.getElementById('customer-results');
+    
+    // Ελέγχουμε αν το κλικ δεν έγινε μέσα στο input ή το dropdown
+    if (!searchInput.contains(event.target) && !dropdown.contains(event.target)) {
+        dropdown.style.display = 'none';  // Κλείνουμε το dropdown
+    }
+});
+// Επιλογή ημερομηνίας
+function selectDate(day) {
+    selectedDate.setDate(day);
+    loadCalendar();
+    loadAppointments();
+
+    // Ενημέρωση του μηνύματος για την επιλεγμένη ημερομηνία
+    const selectedDateMessage = document.getElementById('selected-date-message');
+    const dayName = getDayName(selectedDate.getDay()); // Λήψη του ονόματος της ημέρας
+    const formattedDate = `${dayName} ${selectedDate.getDate()} ${getMonthName(selectedDate.getMonth())} ${selectedDate.getFullYear()}`;
+    selectedDateMessage.textContent = `Ραντεβού για ${formattedDate}`;
+
+    // Αφαίρεση της κλάσης 'selected' από όλα τα κουτιά
+    const allDayBoxes = document.querySelectorAll('.day-box');
+    allDayBoxes.forEach(box => box.classList.remove('selected'));
+
+    // Προσθήκη της κλάσης 'selected' στο κουτί της επιλεγμένης ημερομηνίας
+    const selectedDayBox = document.querySelector(`.day-box:nth-child(${day + getFirstDayOfMonth(selectedDate)})`);
+    if (selectedDayBox) {
+        selectedDayBox.classList.add('selected');
+    }
+}
+
+// Λήψη του ονόματος της ημέρας
+function getDayName(dayIndex) {
+    const days = ["Κυριακή", "Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο"];
+    return days[dayIndex];
+}
+
     </script>
+    
 </body>
 </html>
