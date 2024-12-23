@@ -297,10 +297,14 @@
     let appointments = [];
     try {
         const storedAppointments = localStorage.getItem('appointments');
-        appointments = storedAppointments ? JSON.parse(storedAppointments) : [];
-        if (!Array.isArray(appointments)) {
-            console.warn('Το appointments δεν είναι πίνακας. Θα επαναφέρουμε έναν κενό πίνακα.');
-            appointments = Object.values(appointments).flat(); // Μετατροπή σε πίνακα
+        if (storedAppointments) {
+            const parsedAppointments = JSON.parse(storedAppointments);
+            if (Array.isArray(parsedAppointments)) {
+                appointments = parsedAppointments; // Είναι ήδη πίνακας
+            } else if (typeof parsedAppointments === 'object') {
+                // Μετατροπή του αντικειμένου σε πίνακα
+                appointments = Object.values(parsedAppointments).flat();
+            }
         }
     } catch (error) {
         console.error('Σφάλμα κατά την ανάγνωση του appointments:', error);
@@ -446,31 +450,49 @@
     
         // Δημιουργία ραντεβού
         document.getElementById('appointment-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const customerId = document.getElementById('customer-select').value;
-            const appointmentTime = document.getElementById('appointment-time').value;
-    
-            if (!customerId || !appointmentTime) {
-                alert("Παρακαλώ συμπληρώστε όλα τα πεδία.");
-                return;
+    event.preventDefault();
+    const customerId = document.getElementById('customer-select').value;
+    const appointmentTime = document.getElementById('appointment-time').value;
+
+    if (!customerId || !appointmentTime) {
+        alert("Παρακαλώ συμπληρώστε όλα τα πεδία.");
+        return;
+    }
+
+    const customers = JSON.parse(localStorage.getItem('customers')) || [];
+    const customer = customers.find(c => c.id == customerId);
+    if (customer) {
+        const selectedTime = appointmentTime.split(':');
+        const newAppointment = {
+            id: Date.now(),
+            customerId: customer.id,
+            date: new Date(selectedDate.setHours(selectedTime[0], selectedTime[1], 0, 0)).toISOString()
+        };
+
+        let appointments = [];
+        try {
+            const storedAppointments = localStorage.getItem('appointments');
+            if (storedAppointments) {
+                const parsedAppointments = JSON.parse(storedAppointments);
+                if (Array.isArray(parsedAppointments)) {
+                    appointments = parsedAppointments; // Είναι ήδη πίνακας
+                } else if (typeof parsedAppointments === 'object') {
+                    appointments = Object.values(parsedAppointments).flat(); // Μετατροπή σε πίνακα
+                }
             }
-    
-            const customers = JSON.parse(localStorage.getItem('customers')) || [];
-            const customer = customers.find(c => c.id == customerId);
-            if (customer) {
-                const selectedTime = appointmentTime.split(':');
-                const newAppointment = {
-                    id: Date.now(),
-                    customerId: customer.id,
-                    date: new Date(selectedDate.setHours(selectedTime[0], selectedTime[1], 0, 0)).toISOString()
-                };
-    
-                const appointments = JSON.parse(localStorage.getItem('appointments')) || [];
-                appointments.push(newAppointment);
-                localStorage.setItem('appointments', JSON.stringify(appointments));
-                loadAppointments();
-            }
-        });
+        } catch (error) {
+            console.error('Σφάλμα κατά την ανάγνωση του appointments:', error);
+        }
+
+        // Προσθήκη του νέου ραντεβού
+        appointments.push(newAppointment);
+
+        // Αποθήκευση στο Local Storage
+        localStorage.setItem('appointments', JSON.stringify(appointments));
+        loadAppointments(); // Επαναφόρτωση της λίστας ραντεβού
+    }
+});
+
     
         // Πλοήγηση μήνα
         document.getElementById('prev-month').addEventListener('click', function() {
