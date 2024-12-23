@@ -198,7 +198,7 @@
     </style>
 </head>
 <body>
-    <a href="clients.html">Δημιουργία Ραντεβού</a>
+    <a href="1.html">Δημιουργία Ραντεβού</a>
     <a href="appointments.html">Δημιουργία Ραντεβού</a>
     <a href="2.html">Δημιουργία Ραντεβού</a>
 
@@ -260,23 +260,23 @@
     
         // Φόρτωση των πελατών και ραντεβού
         function loadCustomersAndAppointments() {
-            const customers = JSON.parse(localStorage.getItem('customers')) || [];
-            const customerSelect = document.getElementById('customer-select');
-            customerSelect.innerHTML = '<option value="">Επιλέξτε Πελάτη</option>'; // Καθαρισμός
-    
-            customers.forEach(customer => {
-                const option = document.createElement('option');
-                option.value = customer.id;
-                option.textContent = `${customer.firstName} ${customer.lastName}`;
-                customerSelect.appendChild(option);
-            });
+    const customers = JSON.parse(localStorage.getItem('customers')) || [];
+    const customerSelect = document.getElementById('customer-select');
+    customerSelect.innerHTML = '<option value="">Επιλέξτε Πελάτη</option>'; // Καθαρισμός
+
+    customers.forEach(customer => {
+        const option = document.createElement('option');
+        option.value = customer.id;
+        option.textContent = `${customer.firstName} ${customer.lastName}`;
+        customerSelect.appendChild(option);
+    });
     
             // Φόρτωση ραντεβού όταν επιλέγεται ημερομηνία
             loadCalendar();
             loadAppointments(); // Αρχική φόρτωση
         }
     
-      function loadCalendar() {
+        function loadCalendar() {
     const calendarContainer = document.getElementById('calendar');
     const monthLabel = document.getElementById('month-label');
     const year = selectedDate.getFullYear();
@@ -294,13 +294,7 @@
     calendarContainer.innerHTML = '';
 
     // Λήψη των ραντεβού του μήνα
-    let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
-    
-    // Εξασφαλίζουμε ότι τα appointments είναι πίνακας
-    if (!Array.isArray(appointments)) {
-        appointments = [];
-    }
-
+    const appointments = JSON.parse(localStorage.getItem('appointments')) || [];
     const appointmentsByDate = {};
 
     // Ομαδοποιούμε τα ραντεβού κατά ημερομηνία
@@ -313,33 +307,37 @@
         appointmentsByDate[dateKey].push(appointment);
     });
 
-    // Προσθήκη των κενών για τις ημέρες πριν την πρώτη ημέρα του μήνα
+    // Προσθήκη των κενών κενών για τις ημέρες πριν την πρώτη ημέρα του μήνα
     for (let i = 0; i < firstDay; i++) {
         const emptyBox = document.createElement('div');
-        emptyBox.classList.add('day-box');
+        emptyBox.className = 'day-box';
         calendarContainer.appendChild(emptyBox);
     }
 
-    // Δημιουργία των κουτιών των ημερών του μήνα
-    for (let day = 1; day <= daysInMonth; day++) {
+    // Προσθήκη των κουτιών για κάθε μέρα του μήνα
+    for (let i = 1; i <= daysInMonth; i++) {
         const dayBox = document.createElement('div');
-        dayBox.classList.add('day-box');
-        dayBox.textContent = day;
+        dayBox.className = 'day-box';
+        dayBox.textContent = i;
 
-        const dateKey = `${year}-${month}-${day}`;
+        // Ελέγχουμε αν υπάρχει ραντεβού για αυτή την ημερομηνία
+        const dateKey = `${year}-${month}-${i}`;
+        let appointmentCount = 0;
         if (appointmentsByDate[dateKey]) {
+            appointmentCount = appointmentsByDate[dateKey].length;
             dayBox.classList.add('has-appointments');
-            const appointmentCount = appointmentsByDate[dateKey].length;
-            const appointmentCountDiv = document.createElement('div');
-            appointmentCountDiv.classList.add('appointment-count');
-            appointmentCountDiv.textContent = `${appointmentCount} Ραντεβού`;
-            dayBox.appendChild(appointmentCountDiv);
         }
 
+        // Προσθήκη αριθμού ραντεβού κάτω από την ημερομηνία
+        const appointmentCountElement = document.createElement('div');
+        appointmentCountElement.className = 'appointment-count';
+        appointmentCountElement.textContent = appointmentCount;
+        dayBox.appendChild(appointmentCountElement);
+
+        dayBox.addEventListener('click', () => selectDate(i));
         calendarContainer.appendChild(dayBox);
     }
 }
-
 
         // Επιλογή ημερομηνίας
         function selectDate(day) {
