@@ -7,12 +7,12 @@
 
     <title>Δημιουργία Πελάτη</title>
     <style>
-        body {
+            body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
             background-color: #f4f4f9;
-            color: #343A40; /* Σκούρο γκρι για το κείμενο */
+            color: #343A40;
         }
 
         h2, h3 {
@@ -30,12 +30,12 @@
             text-align: center;
             margin-bottom: 20px;
             font-size: 16px;
-            color: #007BFF; /* Μπλε χρώμα για τα links */
+            color: #007BFF;
             text-decoration: none;
         }
 
         a:hover {
-            color: #0056B3; /* Σκούρο μπλε όταν γίνεται hover */
+            color: #0056B3;
         }
 
         table {
@@ -53,13 +53,13 @@
         }
 
         th {
-            background-color: #007BFF; /* Μπλε χρώμα για το header */
+            background-color: #007BFF;
             color: white;
         }
 
         .button {
             padding: 10px 20px;
-            background-color: #007BFF; /* Μπλε χρώμα για τα buttons */
+            background-color: #007BFF;
             color: white;
             border: none;
             cursor: pointer;
@@ -68,7 +68,7 @@
         }
 
         .button:hover {
-            background-color: #0056B3; /* Σκούρο μπλε όταν γίνεται hover */
+            background-color: #0056B3;
         }
 
         .input-field {
@@ -77,28 +77,29 @@
             width: 100%;
             border: 1px solid #ddd;
             border-radius: 5px;
-            box-sizing: border-box; /* Για να εξασφαλίσουμε ότι το padding δεν ξεφεύγει */
+            box-sizing: border-box;
         }
-        #startButton {
-    background-color: #dc3545; /* Κόκκινο χρώμα */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
 
-#startButton i {
-    margin-right: 8px; /* Απόσταση ανάμεσα στο μικρόφωνο και το κείμενο */
-}
+        #startButton {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        #startButton i {
+            margin-right: 8px;
+        }
 
         .input-field:focus {
             outline: none;
-            border-color: #007BFF; /* Highlight border με μπλε όταν είναι ενεργό */
+            border-color: #007BFF;
         }
 
         .form-container {
@@ -112,7 +113,43 @@
 
         .table-container {
             max-width: 100%;
-            overflow-x: auto;
+            overflow-x: auto; /* Προσθήκη κύλισης οριζόντια */
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h2, h3 {
+                font-size: 18px; /* Μικρότερη γραμματοσειρά για μικρότερες οθόνες */
+            }
+
+            a {
+                font-size: 14px;
+            }
+
+            .form-container {
+                padding: 15px;
+            }
+
+            .button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+
+            #startButton {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+
+            table {
+                font-size: 14px; /* Μικρότερη γραμματοσειρά για τον πίνακα */
+            }
+
+            th, td {
+                padding: 8px;
+            }
         }
     </style>
 </head>
