@@ -293,11 +293,23 @@
     // Καθαρισμός του ημερολογίου
     calendarContainer.innerHTML = '';
 
-    // Λήψη των ραντεβού του μήνα
-    const appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+    // Ανάγνωση και έλεγχος των ραντεβού
+    let appointments = [];
+    try {
+        const storedAppointments = localStorage.getItem('appointments');
+        appointments = storedAppointments ? JSON.parse(storedAppointments) : [];
+        if (!Array.isArray(appointments)) {
+            console.error('Το appointments δεν είναι πίνακας:', appointments);
+            appointments = [];
+        }
+    } catch (error) {
+        console.error('Σφάλμα κατά την ανάγνωση του appointments:', error);
+        appointments = [];
+    }
+
     const appointmentsByDate = {};
 
-    // Ομαδοποιούμε τα ραντεβού κατά ημερομηνία
+    // Ομαδοποίηση ραντεβού ανά ημερομηνία
     appointments.forEach(appointment => {
         const appointmentDate = new Date(appointment.date);
         const dateKey = `${appointmentDate.getFullYear()}-${appointmentDate.getMonth()}-${appointmentDate.getDate()}`;
@@ -307,7 +319,7 @@
         appointmentsByDate[dateKey].push(appointment);
     });
 
-    // Προσθήκη των κενών κενών για τις ημέρες πριν την πρώτη ημέρα του μήνα
+    // Προσθήκη των κενών για τις ημέρες πριν την πρώτη ημέρα του μήνα
     for (let i = 0; i < firstDay; i++) {
         const emptyBox = document.createElement('div');
         emptyBox.className = 'day-box';
@@ -338,6 +350,7 @@
         calendarContainer.appendChild(dayBox);
     }
 }
+
 
         // Επιλογή ημερομηνίας
         function selectDate(day) {
