@@ -11,40 +11,22 @@
             padding: 20px;
             background-color: #f4f4f9;
         }
-        /* Στυλ για τον πίνακα */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+
+        h2, h3 {
+            text-align: center;
         }
 
-        /* Γενικό στυλ για τα κελιά του πίνακα */
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #007BFF; /* Μπλε περίγραμμα για όλα τα κελιά */
+        /* Κουμπιά για εναλλαγή μήνα */
+        .month-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
         }
 
-        /* Στυλ για την επικεφαλίδα του πίνακα */
-        th {
-            background-color: #007BFF; /* Μπλε φόντο για την επικεφαλίδα */
-            color: white; /* Λευκό κείμενο για την επικεφαλίδα */
-        }
-
-        /* Εναλλαγή χρωμάτων σειρών */
-        tr:nth-child(odd) {
-            background-color: #f2f2f2; /* Ανοιχτό γκρι για τις μονές σειρές */
-        }
-
-        tr:nth-child(even) {
-            background-color: #e6f7ff; /* Ανοιχτό μπλε για τις ζυγές σειρές */
-        }
-
-        /* Στυλ για τα κουμπιά */
         .button {
             padding: 10px 20px;
-            background-color: #007BFF; /* Μπλε χρώμα */
-            color: white; /* Λευκό κείμενο */
+            background-color: #007BFF;
+            color: white;
             border: none;
             cursor: pointer;
             border-radius: 5px;
@@ -52,149 +34,154 @@
         }
 
         .button:hover {
-            background-color: #0056b3; /* Σκούρο μπλε όταν περνάει το ποντίκι */
+            background-color: #0056b3;
         }
 
-        /* Στυλ για την επιλεγμένη ημερομηνία (κουτάκι) */
-        .selected {
-            background-color: #007BFF; /* Μπλε χρώμα */
-            color: white; /* Λευκό κείμενο */
-            border: 1px solid #0056b3; /* Σκούρο μπλε περίγραμμα */
-        }
-
-        .input-field {
-            padding: 10px;
-            margin-bottom: 10px;
-            width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
+        /* Ημερολόγιο */
         .calendar-container {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 5px;
             margin-top: 20px;
         }
-        /* Στυλ για τα κουτιά ημερών (day boxes) */
+
         .day-box {
             display: inline-block;
-            width: 60px; /* Πλάτος */
-            height: 60px; /* Ύψος */
-            margin: 5px;
+            width: 100%;
+            max-width: 60px;
+            height: 60px;
             text-align: center;
-            line-height: 60px; /* Κεντράρισμα του κειμένου κάθετα */
-            background-color: #dcdcdc; /* Γκρι φόντο */
-            font-size: 18px; /* Μέγεθος κειμένου */
+            line-height: 60px;
+            background-color: #dcdcdc;
+            font-size: 14px;
             cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
-            border-radius: 0; /* Τετραγωνισμένο περίγραμμα */
-            border: none; /* Χωρίς περίγραμμα */
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Προσθήκη σκιάς */
         }
-        .center-text {
-  text-align: center;
-  margin-top: 20px; /* Προσαρμόστε το αν χρειάζεται */
-}
-
-/* Στυλ για την επιλογή πελάτη */
-.select-field {
-    padding: 8px;
-    font-size: 14px;
-    border: 1px solid #007BFF;
-    border-radius: 5px;
-    width: 100%;
-    max-width: 300px; /* Περιορισμός πλάτους */
-    margin-bottom: 10px;
-}
-
-/* Στυλ για την ώρα */
-.input-field[type="time"] {
-    padding: 8px;
-    font-size: 14px;
-    border: 1px solid #007BFF;
-    border-radius: 5px;
-    width: auto; /* Αυτόματο μέγεθος */
-    max-width: 150px; /* Περιορισμός πλάτους */
-    margin-bottom: 10px;
-}
 
         .day-box:hover {
-            background-color: #007BFF; /* Μπλε φόντο κατά το hover */
-            color: white; /* Λευκό κείμενο όταν περνάει το ποντίκι */
-            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3); /* Εντονότερη σκιά κατά το hover */
+            background-color: #007BFF;
+            color: white;
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
         }
 
         .day-box.has-appointments {
-            background-color: #28A745; /* Πράσινο χρώμα αν υπάρχουν ραντεβού */
-            color: white; /* Λευκό κείμενο για κουτιά με ραντεβού */
+            background-color: #28A745;
+            color: white;
         }
 
-        .month-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .selected {
-            background-color: #007BFF; /* Μπλε χρώμα */
-            color: white; /* Λευκό κείμενο */
-            border: 1px solid #0056b3; /* Κάποιες λεπτομέρειες στο πλαίσιο */
-        }
-
-        /* Νέα στυλ για τις ημέρες της εβδομάδας */
         .weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
+            text-align: center;
             font-weight: bold;
             margin-bottom: 10px;
         }
-/* Στυλ για τον αριθμό των ραντεβού κάτω από την ημερομηνία */
-.appointment-count {
-    font-size: 12px;
-    color: white;
-    padding: 5px;
-    margin-top: 5px;
-    display: inline-block;
-}
-#selected-date-message {
-    font-size: 20px;
-    font-weight: bold;
-    color: #007BFF; /* Μπλε χρώμα για το μήνυμα */
-    margin-top: 20px;
-}
 
+        /* Επικεφαλίδα εβδομάδας */
         .weekday {
             text-align: center;
             background-color: #007BFF;
             color: white;
             padding: 10px;
         }
-/* Στυλ για το dropdown με τα αποτελέσματα αναζήτησης */
-.dropdown-results {
-    position: absolute;
-    width: 100%;
-    max-height: 200px;
-    overflow-y: auto;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: white;
-    display: none;
-    z-index: 10;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
 
-.dropdown-item {
-    padding: 10px;
-    cursor: pointer;
-    background-color: #f9f9f9;
-}
+        /* Εισαγωγές και dropdown */
+        .input-field {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
 
-.dropdown-item:hover {
-    background-color: #007BFF;
-    color: white;
-}
+        .select-field {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #007BFF;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 10px;
+        }
 
+        .input-field[type="time"] {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #007BFF;
+            border-radius: 5px;
+            width: auto;
+            max-width: 150px;
+        }
+
+        .table-container {
+            max-width: 100%;
+            overflow-x: auto; /* Προσθήκη κύλισης */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #007BFF;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        /* Εναλλαγή χρωμάτων στον πίνακα */
+        tr:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #e6f7ff;
+        }
+
+        /* Responsive Στυλ */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h2, h3 {
+                font-size: 18px;
+            }
+
+            .day-box {
+                max-width: 50px;
+                height: 50px;
+                line-height: 50px;
+                font-size: 12px;
+            }
+
+            .button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+
+            .input-field,
+            .select-field {
+                font-size: 14px;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
     </style>
 </head>
 <body>
