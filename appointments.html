@@ -265,27 +265,6 @@
         text-align: center;
     }
 }
-.days {
-  display: flex;
-  gap: 10px;
-}
-
-.day {
-  font-size: 16px;
-}
-
-/* Στυλ για μικρότερες οθόνες */
-@media (max-width: 600px) {
-  .day {
-    font-size: 14px;
-    /* Απόκρυψη των επιπλέον γραμμάτων */
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    width: 1ch;
-    text-align: center;
-  }
-}
 
     </style>
 </head>
@@ -679,32 +658,11 @@ function selectDate(day) {
     }
 }
 
-
-function adjustDays() {
-  const days = document.querySelectorAll('.day');
-  const isSmallScreen = window.innerWidth <= 600;
-
-  days.forEach(day => {
-    if (isSmallScreen) {
-      day.textContent = day.textContent.charAt(0); // Κρατά μόνο το πρώτο γράμμα
-    } else {
-      const fullNames = {
-        'Δ': 'Δευτέρα',
-        'Τ': 'Τρίτη',
-        'Τ': 'Τετάρτη',
-        'Π': 'Πέμπτη',
-        'Π': 'Παρασκευή',
-      };
-      day.textContent = fullNames[day.textContent] || day.textContent; // Επιστρέφει στο πλήρες όνομα
-    }
-  });
+// Λήψη του ονόματος της ημέρας
+function getDayName(dayIndex) {
+    const days = ["Κυριακή", "Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο"];
+    return days[dayIndex];
 }
-
-// Καλεί τη συνάρτηση όταν αλλάζει το μέγεθος της οθόνης
-window.addEventListener('resize', adjustDays);
-
-// Αρχική εκτέλεση
-adjustDays();
 
     </script>
     
