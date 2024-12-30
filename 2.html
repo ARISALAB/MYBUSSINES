@@ -5,131 +5,176 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Πελάτες και Ραντεβού</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f9;
-        }
+   body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f9;
+}
 
-        h2 {
-            text-align: center;
-        }
+h2 {
+    text-align: center;
+}
 
-        .tabs {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 20px;
-        }
 
-        .tab {
-            background-color: #007BFF;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px;
-            transition: background-color 0.3s;
-        }
+/* Στυλ για τη λίστα των ραντεβού */
+.appointment-list {
+    margin-top: 20px;
+}
 
-        .tab:hover {
-            background-color: #0056b3;
-        }
+.appointment-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s;
+}
 
-        .tab-content {
-            display: none;
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #ffffff;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
+.appointment-item:last-child {
+    border-bottom: none;
+}
 
-        .tab-content.active {
-            display: block;
-        }
+.appointment-item:hover {
+    background-color: #f1f1f1;
+}
 
-        .appointment-list {
-            margin-top: 20px;
-        }
+/* Στυλ για τα κουμπιά */
+.button {
+    padding: 10px 20px;
+    background-color: #28A745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
 
-        .appointment-item {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
+.button:hover {
+    background-color: #218838;
+}
 
-        .appointment-item:last-child {
-            border-bottom: none;
-        }
+/* Στυλ για το Modal */
+#appointmentModal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 100px;
+}
 
-        .button {
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
+.modal-content {
+    background-color: #fff;
+    margin: auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 60%;
+    max-width: 800px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    animation: modalFadeIn 0.3s ease-in-out;
+}
 
-        .button:hover {
-            background-color: #0056b3;
-        }
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-        /* Modal Styling */
-        #appointmentModal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
+.close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
 
-        .modal-content {
-            background-color: #fff;
-            margin: 15% auto;
-            padding: 20px;
-            border-radius: 5px;
-            width: 80%;
-        }
+.close:hover,
+.close:focus {
+    color: black;
+}
 
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
+h3 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 20px;
+}
 
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
+#customerDetails p {
+    font-size: 16px;
+    color: #555;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+table th, table td {
+    padding: 6px 50px; /* Μειώσαμε λίγο περισσότερο το padding για όλες τις γραμμές */
+    text-align: left;
+    font-size: 14px;
+    border-bottom: 1px solid #ddd;
+}
 
-        table, th, td {
-            border: 1px solid #ddd;
-        }
+table th {
+    background-color: #007BFF;
+    color: white;
+    font-weight: bold;
+}
 
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
+table tr:hover {
+    background-color: #f9f9f9;
+}
 
-        th {
-            background-color: #f2f2f2;
-        }
+table tbody td {
+    color: #555;
+}
+
+/* Στυλ για το input αναζήτησης */
+input#searchInput {
+    width: 20%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+input#searchInput:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+/* Στυλ για τα κουμπιά στο modal */
+button {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    display: block;
+    margin: 20px 0;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
     </style>
 </head>
 <body>
@@ -138,10 +183,24 @@
     <a href="2.html">Δημιουργία Ραντεβού</a>
     <h2>Πελάτες και Ραντεβού</h2>
 
-    <div class="tabs" id="tabs-container">
-        <!-- Οι καρτέλες των πελατών θα προστεθούν εδώ -->
+    <div>
+        <input type="text" id="searchInput" placeholder="Αναζήτηση πελάτη..." onkeyup="filterCustomers()" />
+        <table id="customersTable">
+            <thead>
+                <tr>
+                    <th>Α/Α</th>
+                    <th>Όνομα</th>
+                    <th>Επώνυμο</th>
+                    <th>Τηλέφωνο</th>
+                    <th>Ραντεβού</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Οι πελάτες θα προστεθούν εδώ δυναμικά -->
+            </tbody>
+        </table>
     </div>
-
+    
     <div id="customers-container">
         <!-- Το περιεχόμενο των καρτελών με τα ραντεβού θα προστεθεί εδώ -->
     </div>
@@ -237,36 +296,48 @@
         }
 
         function loadCustomersAndAppointments() {
-            const customers = JSON.parse(localStorage.getItem('customers')) || [];
-            const appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+    const customers = JSON.parse(localStorage.getItem('customers')) || [];
+    const appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+    const customersTableBody = document.querySelector('#customersTable tbody');
 
-            const tabsContainer = document.getElementById('tabs-container');
-            const customersContainer = document.getElementById('customers-container');
+    // Ταξινόμηση πελατών αλφαβητικά με βάση το επώνυμο
+    customers.sort((a, b) => a.lastName.localeCompare(b.lastName));
 
-            // Ταξινόμηση πελατών με βάση το επώνυμο
-            customers.sort((a, b) => a.lastName.localeCompare(b.lastName));
+    // Καθαρισμός πίνακα
+    customersTableBody.innerHTML = '';
 
-            // Καθαρισμός του περιεχόμενου
-            tabsContainer.innerHTML = '';
-            customersContainer.innerHTML = '';
+    // Δημιουργία γραμμών για κάθε πελάτη
+    customers.forEach((customer, index) => {
+        const customerAppointments = appointments.filter(app => app.customerId === customer.id);
 
-            customers.forEach(customer => {
-                const tab = document.createElement('div');
-                tab.classList.add('tab');
-                tab.textContent = `${customer.firstName} ${customer.lastName}`;
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${customer.firstName}</td>
+            <td>${customer.lastName}</td>
+            <td>${customer.phone}</td>
+            <td><button onclick="openModal(${customer.id})">${customerAppointments.length} Ραντεβού</button></td>
+        `;
+        customersTableBody.appendChild(row);
+    });
+}
+function filterCustomers() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#customersTable tbody tr');
 
-                // Υπολογισμός του αριθμού των ραντεβού
-                const customerAppointments = appointments.filter(appointment => appointment.customerId === customer.id);
-                tab.innerHTML = `${customer.firstName} ${customer.lastName} <span>(${customerAppointments.length})</span>`;
+    rows.forEach(row => {
+        const columns = row.querySelectorAll('td');
+        const firstName = columns[1].textContent.toLowerCase();
+        const lastName = columns[2].textContent.toLowerCase();
 
-                // Προσθήκη κλικ στο tab για άνοιγμα modal
-                tab.addEventListener('click', function() {
-                    openModal(customer.id);
-                });
-
-                tabsContainer.appendChild(tab);
-            });
+        if (firstName.includes(searchInput) || lastName.includes(searchInput)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
         }
+    });
+}
+
     </script>
 
 </body>
