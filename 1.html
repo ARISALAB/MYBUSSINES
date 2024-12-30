@@ -80,22 +80,14 @@
             box-sizing: border-box;
         }
 
-        #startButton {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
 
-        #startButton i {
-            margin-right: 8px;
-        }
+
+    #customer-form {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px; /* Απόσταση μεταξύ κουμπιών */
+    }
 
         .input-field:focus {
             outline: none;
@@ -151,6 +143,105 @@
                 padding: 8px;
             }
         }
+        #startButton {
+    width: 80%; /* Το πλάτος να ταιριάζει με τη γραμμή */
+    height: 50px; /* Ρύθμιση ύψους ανάλογα με την αισθητική */
+    border-radius: 10px; /* Στρογγυλεμένες γωνίες */
+    background-color: #007BFF; /* Χρώμα μπλε για την αρχική κατάσταση */
+    font-size: 16px; /* Μείωση γραμματοσειράς για καλύτερη εμφάνιση */
+    display: flex; /* Για κεντραρισμένο περιεχόμενο */
+    justify-content: center; /* Κέντρο ευθυγράμμιση οριζόντια */
+    align-items: center; /* Κέντρο ευθυγράμμιση κάθετα */
+    transition: background-color 0.3s ease; /* Ομαλή μετάβαση στο χρώμα */
+}
+
+#startButton.recording {
+    background-color: #28A745; /* Χρώμα πράσινο για κατάσταση εγγραφής */
+}
+
+#startButton:hover {
+    background-color: #0056B3; /* Σκούρο μπλε χρώμα όταν είναι hover */
+}
+
+  #startButton.recording {
+    width: 80%; /* Το πλάτος να ταιριάζει με τη γραμμή */
+    height: 50px; /* Ρύθμιση ύψους ανάλογα με την αισθητική */
+    border-radius: 10px; /* Στρογγυλεμένες γωνίες */
+    background-color: #007BFF; /* Χρώμα μπλε για την αρχική κατάσταση */
+    font-size: 16px; /* Μείωση γραμματοσειράς για καλύτερη εμφάνιση */
+    display: flex; /* Για κεντραρισμένο περιεχόμενο */
+    justify-content: center; /* Κέντρο ευθυγράμμιση οριζόντια */
+    align-items: center; /* Κέντρο ευθυγράμμιση κάθετα */
+}
+#startButton.recording:hover{
+    background-color: #0056B3; /* Σκούρο μπλε χρώμα όταν είναι hover */
+}
+#startButton.recording .progress-bar {
+    position: static; /* Για ευθυγράμμιση με το κουμπί */
+    transform: none; /* Αφαίρεση μετασχηματισμού */
+    width: 100%; /* Πλάτος όσο το κουμπί */
+    height: 4px; /* Σταθερό ύψος */
+    margin-top: 8px; /* Απόσταση από το κείμενο ή το εικονίδιο */
+}
+
+
+.progress-bar {
+    position: absolute;
+    bottom: 0; /* Βρίσκεται στο κάτω μέρος του κουμπιού */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%; /* Μικρότερη από το πλάτος του κουμπιού */
+    height: 4px;
+    background-color: #ffffff;
+    border-radius: 2px;
+    display: none; /* Απόκρυψη αρχικά */
+}
+
+#startButton.recording .progress-bar {
+    display: block;
+}
+
+
+/* Παλλόμενο animation για τη γραμμή */
+#startButton.recording .progress-bar {
+    display: block;
+    animation: pulse 2s infinite ease-in-out; /* Ενεργοποίηση του animation */
+}
+
+@keyframes pulse {
+    0% {
+        width: 0%;
+        opacity: 0.5;
+    }
+    20% {
+        width: 20%;
+        opacity: 1;
+    }
+    30% {
+        width: 80%;
+        opacity: 1;
+    }
+    50% {
+        width: 40%;
+        opacity: 0.8;
+    }
+    70% {
+        width: 60%;
+        opacity: 1;
+    }
+    100% {
+        width: 0%;
+        opacity: 0.5;
+    }
+}
+
+
+#startButton.recording .progress-bar {
+    display: block;
+    animation: pulse 1s infinite; /* Εφαρμογή του παλλόμενου animation */
+}
+
+
     </style>
 </head>
 <body>
@@ -166,10 +257,16 @@
             <input type="text" id="first-name" class="input-field" placeholder="Όνομα" required>
             <input type="text" id="last-name" class="input-field" placeholder="Επώνυμο" required>
             <input type="text" id="phone" class="input-field" placeholder="Τηλέφωνο" required>
+            <br>
+            
             <button id="startButton">
-                <i class="fa fa-microphone"></i> Εκκίνηση Εγγραφής
+                <i class="fa fa-microphone"></i>
+                <div id="progressBar" class="progress-bar"></div>
             </button>
-                        <button type="submit" class="button">Αποθήκευση Πελάτη</button>
+            
+            
+            <button type="submit" class="button">Αποθήκευση Πελάτη</button>
+            
         </form>
     </div>
 
@@ -263,6 +360,63 @@
                 }
             }
         }
+        document.getElementById('startButton').addEventListener('click', function (event) {
+    event.preventDefault(); // Αποφυγή προεπιλεγμένης συμπεριφοράς φόρμας
+
+    const button = event.target.closest('#startButton');
+    const progressBar = document.getElementById('progressBar');
+
+    if (button.classList.contains('recording')) {
+        stopRecording(button, progressBar);
+    } else {
+        startRecording(button, progressBar);
+    }
+});
+
+function startRecording(button, progressBar) {
+    button.classList.add('recording');
+
+    // Ενεργοποίηση μικροφώνου
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioContext.createMediaStreamSource(stream);
+        const analyser = audioContext.createAnalyser();
+        source.connect(analyser);
+        analyser.fftSize = 256;
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+        // Έλεγχος για επίπεδα ήχου
+        const checkSound = () => {
+            analyser.getByteFrequencyData(dataArray);
+            const isSilent = dataArray.every(value => value < 10); // Threshold για σιωπή
+
+            if (isSilent) {
+                stopRecording(button, progressBar, stream);
+            } else {
+                requestAnimationFrame(checkSound); // Συνέχιση ελέγχου
+            }
+        };
+
+        checkSound();
+    }).catch(error => {
+        console.error('Σφάλμα πρόσβασης στο μικρόφωνο:', error);
+        stopRecording(button, progressBar);
+    });
+}
+
+function stopRecording(button, progressBar, stream = null) {
+    button.classList.remove('recording');
+    progressBar.style.width = '0%';
+    progressBar.style.display = 'none';
+
+    // Τερματισμός του stream αν παρέχεται
+    if (stream) {
+        const tracks = stream.getTracks();
+        tracks.forEach(track => track.stop());
+    }
+}
+
+
 
    // Συνάρτηση για να κάνουμε το πρώτο γράμμα κάθε λέξης κεφαλαίο
 function capitalizeFirstLetter(string) {
@@ -279,13 +433,18 @@ if ('webkitSpeechRecognition' in window) {
     const firstNameInput = document.getElementById('first-name');
     const lastNameInput = document.getElementById('last-name');
     const phoneInput = document.getElementById('phone');
+    const progressBar = document.querySelector('.progress-bar');
 
     // Εκκίνηση αναγνώρισης
     startButton.addEventListener('click', function () {
-        recognition.start();
-        startButton.disabled = true;
-        startButton.textContent = "Ηχογράφηση σε εξέλιξη...";
-    });
+    recognition.start();
+    startButton.disabled = true;
+    startButton.querySelector('i').style.display = 'none'; // Απόκρυψη μικροφώνου
+    progressBar.style.display = 'block'; // Εμφάνιση της γραμμής καταγραφής
+    progressBar.style.width = '0%'; // Μηδενίζουμε την πρόοδο της γραμμής
+    progressBar.style.animation = 'pulse 1s infinite'; // Εφαρμογή του παλλόμενου animation
+});
+
 
     recognition.onresult = function (event) {
         const transcript = event.results[0][0].transcript.trim();
@@ -302,15 +461,24 @@ if ('webkitSpeechRecognition' in window) {
             phoneInput.value = words.slice(2).join(' ') || ''; // Συγκέντρωση όλων των λέξεων που απομένουν για το τηλέφωνο
         }
 
-        startButton.disabled = false;
-        startButton.textContent = "Εκκίνηση Εγγραφής";
+        // Τερματισμός αναγνώρισης
+        stopRecording();
     };
 
     recognition.onerror = function (event) {
         alert("Σφάλμα στην αναγνώριση φωνής: " + event.error);
-        startButton.disabled = false;
-        startButton.textContent = "Εκκίνηση Εγγραφής";
+        stopRecording();
     };
+
+    // Σταματά την εγγραφή και επαναφέρει το μικρόφωνο
+    function stopRecording() {
+        recognition.stop();
+        startButton.disabled = false;
+        progressBar.style.animation = ''; // Σταματάει το παλλόμενο animation
+        progressBar.style.width = '0%'; // Μηδενίζει τη γραμμή
+        progressBar.style.display = 'none'; // Απόκρυψη της γραμμής
+        startButton.querySelector('i').style.display = 'inline'; // Επαναφορά μικροφώνου
+    }
 } else {
     alert("Η φωνητική αναγνώριση δεν υποστηρίζεται από τον περιηγητή σας.");
 }
